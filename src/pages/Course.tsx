@@ -12,12 +12,12 @@ const Course = () => {
   const [currentView, setCurrentView] = useState<"video" | "quiz">("video");
 
   const lessons = [
-    { id: 1, title: "Introduction au Développement Web", duration: "15:30", completed: true, type: "video" as const },
-    { id: 2, title: "Fondamentaux HTML", duration: "22:45", completed: true, type: "video" as const },
-    { id: 3, title: "Quiz Bases CSS", duration: "10:00", completed: false, type: "quiz" as const },
-    { id: 4, title: "Stylisation CSS", duration: "28:15", completed: false, type: "video" as const },
-    { id: 5, title: "Introduction JavaScript", duration: "35:20", completed: false, type: "video" as const },
-    { id: 6, title: "Évaluation Finale", duration: "20:00", completed: false, type: "quiz" as const },
+    { id: 1, title: "Introduction aux Réseaux TCP/IP", duration: "18:30", completed: true, type: "video" as const },
+    { id: 2, title: "Modèle OSI et Encapsulation", duration: "25:45", completed: true, type: "video" as const },
+    { id: 3, title: "Quiz Protocoles de Base", duration: "15:00", completed: false, type: "quiz" as const },
+    { id: 4, title: "Configuration VLAN", duration: "32:15", completed: false, type: "video" as const },
+    { id: 5, title: "Routage Statique et Dynamique", duration: "28:20", completed: false, type: "video" as const },
+    { id: 6, title: "Évaluation Certification", duration: "30:00", completed: false, type: "quiz" as const },
   ];
 
   const currentLesson = lessons.find(l => l.id === 3) || lessons[0];
@@ -25,39 +25,39 @@ const Course = () => {
   const quizQuestions = [
     {
       id: 1,
-      question: "Que signifie CSS ?",
+      question: "Quel protocole est utilisé pour attribuer automatiquement des adresses IP ?",
       options: [
-        "Creative Style Sheets",
-        "Cascading Style Sheets",
-        "Computer Style Sheets",
-        "Colorful Style Sheets"
+        "DNS",
+        "DHCP",
+        "FTP",
+        "HTTP"
       ],
       correctAnswer: 1,
-      explanation: "CSS signifie Cascading Style Sheets. Il est utilisé pour styliser et organiser les pages web."
+      explanation: "DHCP (Dynamic Host Configuration Protocol) est le protocole standard pour attribuer automatiquement des adresses IP aux dispositifs réseau."
     },
     {
       id: 2,
-      question: "Quelle propriété est utilisée pour changer la couleur d'arrière-plan en CSS ?",
+      question: "Quelle est la plage d'adresses IP privées de classe A ?",
       options: [
-        "color",
-        "background-color",
-        "bg-color",
-        "background"
+        "192.168.0.0 à 192.168.255.255",
+        "172.16.0.0 à 172.31.255.255",
+        "10.0.0.0 à 10.255.255.255",
+        "169.254.0.0 à 169.254.255.255"
       ],
-      correctAnswer: 1,
-      explanation: "La propriété background-color est spécifiquement utilisée pour définir la couleur d'arrière-plan d'un élément."
+      correctAnswer: 2,
+      explanation: "La plage d'adresses IP privées de classe A va de 10.0.0.0 à 10.255.255.255, avec un masque de sous-réseau /8."
     },
     {
       id: 3,
-      question: "Comment sélectionne-t-on un élément avec l'id 'header' en CSS ?",
+      question: "Quel port TCP utilise le protocole HTTPS ?",
       options: [
-        ".header",
-        "#header",
-        "header",
-        "*header"
+        "80",
+        "443",
+        "21",
+        "23"
       ],
       correctAnswer: 1,
-      explanation: "Le symbole # est utilisé pour sélectionner les éléments par leur ID en CSS."
+      explanation: "HTTPS utilise le port TCP 443 pour les connexions sécurisées, tandis que HTTP utilise le port 80."
     }
   ];
 
@@ -81,28 +81,28 @@ const Course = () => {
               variant={currentView === "video" ? "default" : "outline"}
               onClick={() => setCurrentView("video")}
             >
-              Leçon Vidéo
+              Module de Formation
             </Button>
             <Button 
               variant={currentView === "quiz" ? "default" : "outline"}
               onClick={() => setCurrentView("quiz")}
             >
-              Faire le Quiz
+              Test de Connaissances
             </Button>
           </div>
         </div>
 
         {currentView === "video" ? (
           <CoursePlayer
-            courseTitle="Introduction au Développement Web"
+            courseTitle="Fondamentaux des Réseaux TCP/IP"
             currentLesson={currentLesson}
             lessons={lessons}
           />
         ) : (
           <QuizComponent
-            title="Quiz Bases CSS"
+            title="Test de Connaissances - Protocoles Réseau"
             questions={quizQuestions}
-            timeLimit={600}
+            timeLimit={900}
           />
         )}
       </main>

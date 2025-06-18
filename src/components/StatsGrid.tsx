@@ -9,33 +9,33 @@ interface StatsGridProps {
 const StatsGrid = ({ userRole = "student" }: StatsGridProps) => {
   const studentStats = [
     {
-      title: "Cours Inscrits",
-      value: "12",
-      description: "Parcours d'apprentissage actifs",
+      title: "Formations Actives",
+      value: "8",
+      description: "Modules en cours",
       icon: BookOpen,
       color: "text-blue-600",
       bgColor: "bg-blue-100"
     },
     {
-      title: "Heures Apprises",
-      value: "24,5",
+      title: "Heures Formation",
+      value: "32,5",
       description: "Ce mois-ci",
       icon: Clock,
       color: "text-green-600",
       bgColor: "bg-green-100"
     },
     {
-      title: "Certificats",
-      value: "5",
-      description: "Cours terminés",
+      title: "Certifications",
+      value: "3",
+      description: "Obtenues",
       icon: Trophy,
       color: "text-yellow-600",
       bgColor: "bg-yellow-100"
     },
     {
-      title: "Série",
-      value: "7",
-      description: "Jours consécutifs",
+      title: "Score Moyen",
+      value: "87%",
+      description: "Aux évaluations",
       icon: TrendingUp,
       color: "text-purple-600",
       bgColor: "bg-purple-100"
@@ -44,16 +44,16 @@ const StatsGrid = ({ userRole = "student" }: StatsGridProps) => {
 
   const adminStats = [
     {
-      title: "Total Étudiants",
-      value: "1,250",
+      title: "Total Employés",
+      value: "145",
       description: "Utilisateurs actifs",
       icon: Users,
       color: "text-blue-600",
       bgColor: "bg-blue-100"
     },
     {
-      title: "Cours Créés",
-      value: "45",
+      title: "Modules Créés",
+      value: "28",
       description: "Contenus disponibles",
       icon: BookOpen,
       color: "text-green-600",
@@ -61,15 +61,15 @@ const StatsGrid = ({ userRole = "student" }: StatsGridProps) => {
     },
     {
       title: "Taux Réussite",
-      value: "87%",
-      description: "Moyenne plateforme",
+      value: "92%",
+      description: "Moyenne équipe",
       icon: Trophy,
       color: "text-yellow-600",
       bgColor: "bg-yellow-100"
     },
     {
       title: "Certifications",
-      value: "2,450",
+      value: "287",
       description: "Délivrées au total",
       icon: GraduationCap,
       color: "text-purple-600",

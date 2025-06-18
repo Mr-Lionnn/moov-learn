@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator 
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, Bell, User, Settings, LogOut, Trophy, Users, BarChart3 } from "lucide-react";
+import { Network, Bell, User, Settings, LogOut, Trophy, Users, BarChart3 } from "lucide-react";
 
 interface HeaderProps {
   userRole?: "student" | "admin";
@@ -23,27 +23,27 @@ const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
         {/* Logo */}
         <div className="flex items-center gap-2">
           <div className="p-2 bg-blue-600 rounded-lg">
-            <BookOpen className="h-6 w-6 text-white" />
+            <Network className="h-6 w-6 text-white" />
           </div>
-          <h1 className="text-xl font-bold text-gray-900">ApprendrePlus</h1>
+          <h1 className="text-xl font-bold text-gray-900">MoovLearn</h1>
         </div>
 
         {/* Navigation */}
         <nav className="hidden md:flex items-center gap-6">
           <Button variant="ghost" className="text-gray-600 hover:text-blue-600">
-            Cours
+            Formations
           </Button>
           <Button variant="ghost" className="text-gray-600 hover:text-blue-600">
-            Mon Apprentissage
+            Mes Formations
           </Button>
           <Button variant="ghost" className="text-gray-600 hover:text-blue-600">
-            Réussites
+            Certifications
           </Button>
           {userRole === "admin" && (
             <>
               <Button variant="ghost" className="text-gray-600 hover:text-blue-600" onClick={onShowAdminPanel}>
                 <Users className="h-4 w-4 mr-2" />
-                Étudiants
+                Employés
               </Button>
               <Button variant="ghost" className="text-gray-600 hover:text-blue-600">
                 <BarChart3 className="h-4 w-4 mr-2" />
@@ -52,7 +52,7 @@ const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
             </>
           )}
           <Button variant="ghost" className="text-gray-600 hover:text-blue-600">
-            Communauté
+            Équipe
           </Button>
         </nav>
 
@@ -77,7 +77,7 @@ const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
                   </AvatarFallback>
                 </Avatar>
                 <span className="hidden md:block text-sm font-medium">
-                  {userRole === "admin" ? "Administrateur" : "Jean Dupont"}
+                  {userRole === "admin" ? "Administrateur IT" : "Jean Dupont"}
                 </span>
               </Button>
             </DropdownMenuTrigger>
@@ -91,10 +91,10 @@ const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
                 </Avatar>
                 <div className="flex flex-col">
                   <span className="text-sm font-medium">
-                    {userRole === "admin" ? "Administrateur" : "Jean Dupont"}
+                    {userRole === "admin" ? "Administrateur IT" : "Jean Dupont"}
                   </span>
                   <span className="text-xs text-gray-500">
-                    {userRole === "admin" ? "admin@example.com" : "jean@example.com"}
+                    {userRole === "admin" ? "admin@moovlearn.com" : "jean.dupont@moovlearn.com"}
                   </span>
                 </div>
               </div>
@@ -105,12 +105,12 @@ const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Trophy className="mr-2 h-4 w-4" />
-                Réussites
+                Certifications
               </DropdownMenuItem>
               {userRole === "admin" && (
                 <DropdownMenuItem onClick={onShowAdminPanel}>
                   <Users className="mr-2 h-4 w-4" />
-                  Gestion des Étudiants
+                  Gestion des Employés
                 </DropdownMenuItem>
               )}
               <DropdownMenuItem>

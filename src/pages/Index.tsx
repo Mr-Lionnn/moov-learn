@@ -20,46 +20,46 @@ const Index = () => {
   const featuredCourses = [
     {
       id: 1,
-      title: "Introduction au Développement Web",
-      instructor: "Sarah Johnson",
-      duration: "12 heures",
-      students: 1250,
-      rating: 4.8,
-      progress: 65,
+      title: "Fondamentaux des Réseaux TCP/IP",
+      instructor: "Marie Dubois - Ingénieur Réseau Senior",
+      duration: "8 heures",
+      students: 45,
+      rating: 4.9,
+      progress: 75,
       image: "/placeholder.svg",
-      category: "Technologie",
+      category: "Réseaux",
       level: "Débutant"
     },
     {
       id: 2,
-      title: "Fondamentaux du Marketing Digital",
-      instructor: "Mike Chen",
-      duration: "8 heures",
-      students: 890,
-      rating: 4.9,
-      progress: 30,
+      title: "Configuration des Switches Cisco",
+      instructor: "Pierre Martin - Expert Cisco",
+      duration: "12 heures",
+      students: 32,
+      rating: 4.8,
+      progress: 40,
       image: "/placeholder.svg",
-      category: "Marketing",
+      category: "Infrastructure",
       level: "Intermédiaire"
     },
     {
       id: 3,
-      title: "Science des Données avec Python",
-      instructor: "Dr. Emily Rodriguez",
+      title: "Sécurité Réseau et Pare-feu",
+      instructor: "Sophie Laurent - Spécialiste Sécurité",
       duration: "15 heures",
-      students: 2100,
-      rating: 4.7,
+      students: 28,
+      rating: 4.9,
       progress: 0,
       image: "/placeholder.svg",
-      category: "Science des Données",
+      category: "Sécurité",
       level: "Avancé"
     }
   ];
 
   const recentAchievements = [
-    { title: "Cours Terminé", description: "Terminé les Bases du Développement Web", date: "Il y a 2 jours", icon: Award },
-    { title: "Score Parfait", description: "100% au Quiz JavaScript", date: "Il y a 1 semaine", icon: CheckCircle },
-    { title: "Série d'Apprentissage", description: "7 jours d'apprentissage continu", date: "Aujourd'hui", icon: TrendingUp }
+    { title: "Certification Obtenue", description: "Cisco CCNA Routing & Switching", date: "Il y a 2 jours", icon: Award },
+    { title: "Score Parfait", description: "100% au Quiz Protocoles Réseau", date: "Il y a 1 semaine", icon: CheckCircle },
+    { title: "Formation Terminée", description: "Sécurité des Réseaux Sans Fil", date: "Il y a 3 jours", icon: TrendingUp }
   ];
 
   return (
@@ -80,12 +80,12 @@ const Index = () => {
             </Avatar>
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
-                {userRole === "admin" ? "Panneau d'Administration" : "Bon retour, Jean !"}
+                {userRole === "admin" ? "Tableau de Bord Administrateur" : "Bienvenue, Jean !"}
               </h1>
               <p className="text-gray-600">
                 {userRole === "admin" 
-                  ? "Gérez vos cours et suivez les progrès des étudiants" 
-                  : "Prêt à continuer votre parcours d'apprentissage ?"}
+                  ? "Gérez les formations réseau et suivez les progrès de l'équipe" 
+                  : "Continuez votre formation en technologies réseau"}
               </p>
             </div>
           </div>
@@ -98,7 +98,7 @@ const Index = () => {
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
-              placeholder="Rechercher des cours, sujets ou instructeurs..."
+              placeholder="Rechercher formations, protocoles, équipements..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
@@ -113,12 +113,12 @@ const Index = () => {
             <section>
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-2xl font-bold text-gray-900">
-                  {userRole === "admin" ? "Gestion des Cours" : "Continuer l'Apprentissage"}
+                  {userRole === "admin" ? "Gestion des Formations" : "Poursuivre ma Formation"}
                 </h2>
                 {userRole === "admin" && (
                   <Button onClick={() => setShowAdminPanel(true)}>
                     <Plus className="h-4 w-4 mr-2" />
-                    Nouveau Cours
+                    Nouvelle Formation
                   </Button>
                 )}
               </div>
@@ -132,7 +132,7 @@ const Index = () => {
             {/* Recommended Courses */}
             {userRole === "student" && (
               <section>
-                <h2 className="text-2xl font-bold mb-4 text-gray-900">Recommandé pour Vous</h2>
+                <h2 className="text-2xl font-bold mb-4 text-gray-900">Formations Recommandées</h2>
                 <div className="grid md:grid-cols-2 gap-6">
                   {featuredCourses.filter(course => course.progress === 0).map((course) => (
                     <CourseCard key={course.id} course={course} userRole={userRole} />
@@ -144,28 +144,28 @@ const Index = () => {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Recent Achievements / Student Progress */}
+            {/* Recent Achievements / Team Progress */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Award className="h-5 w-5 text-yellow-500" />
-                  {userRole === "admin" ? "Progrès des Étudiants" : "Réussites Récentes"}
+                  {userRole === "admin" ? "Progrès de l'Équipe" : "Réussites Récentes"}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {userRole === "admin" ? (
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm">Étudiants Actifs</span>
-                      <Badge>1,250</Badge>
+                      <span className="text-sm">Employés Actifs</span>
+                      <Badge>145</Badge>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm">Cours Terminés</span>
-                      <Badge className="bg-green-100 text-green-800">890</Badge>
+                      <span className="text-sm">Formations Terminées</span>
+                      <Badge className="bg-green-100 text-green-800">287</Badge>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-sm">Taux de Réussite</span>
-                      <span className="text-sm font-medium">87%</span>
+                      <span className="text-sm font-medium">92%</span>
                     </div>
                   </div>
                 ) : (
@@ -189,12 +189,12 @@ const Index = () => {
             <Card>
               <CardHeader>
                 <CardTitle>
-                  {userRole === "admin" ? "Statistiques Hebdomadaires" : "Objectif Hebdomadaire"}
+                  {userRole === "admin" ? "Statistiques Hebdomadaires" : "Objectif Mensuel"}
                 </CardTitle>
                 <CardDescription>
                   {userRole === "admin" 
-                    ? "Activité de la plateforme cette semaine" 
-                    : "Terminer 5 leçons cette semaine"}
+                    ? "Activité de formation cette semaine" 
+                    : "Terminer 3 modules ce mois"}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -204,14 +204,14 @@ const Index = () => {
                       {userRole === "admin" ? "Engagement" : "Progrès"}
                     </span>
                     <span>
-                      {userRole === "admin" ? "85%" : "3/5 leçons"}
+                      {userRole === "admin" ? "92%" : "2/3 modules"}
                     </span>
                   </div>
-                  <Progress value={userRole === "admin" ? 85 : 60} className="h-2" />
+                  <Progress value={userRole === "admin" ? 92 : 67} className="h-2" />
                   <p className="text-xs text-gray-500">
                     {userRole === "admin" 
-                      ? "Excellent engagement cette semaine !" 
-                      : "Encore 2 leçons pour atteindre votre objectif !"}
+                      ? "Excellent engagement de l'équipe !" 
+                      : "Plus qu'un module pour atteindre votre objectif !"}
                   </p>
                 </div>
               </CardContent>
@@ -221,34 +221,36 @@ const Index = () => {
             <Card>
               <CardHeader>
                 <CardTitle>
-                  {userRole === "admin" ? "Statistiques de la Plateforme" : "Vos Statistiques d'Apprentissage"}
+                  {userRole === "admin" ? "Statistiques Plateforme" : "Mes Statistiques"}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">
-                    {userRole === "admin" ? "Total Cours" : "Total Cours"}
+                    {userRole === "admin" ? "Total Formations" : "Formations Actives"}
                   </span>
-                  <Badge variant="secondary">12</Badge>
+                  <Badge variant="secondary">{userRole === "admin" ? "28" : "8"}</Badge>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">
-                    {userRole === "admin" ? "Étudiants Inscrits" : "Terminés"}
+                    {userRole === "admin" ? "Employés Inscrits" : "Terminées"}
                   </span>
                   <Badge className="bg-green-100 text-green-800">
-                    {userRole === "admin" ? "1,250" : "8"}
+                    {userRole === "admin" ? "145" : "12"}
                   </Badge>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Certificats</span>
-                  <Badge className="bg-blue-100 text-blue-800">5</Badge>
+                  <span className="text-gray-600">Certifications</span>
+                  <Badge className="bg-blue-100 text-blue-800">
+                    {userRole === "admin" ? "287" : "3"}
+                  </Badge>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">
-                    {userRole === "admin" ? "Temps Total Plateforme" : "Temps d'Apprentissage"}
+                    {userRole === "admin" ? "Temps Total Équipe" : "Temps de Formation"}
                   </span>
                   <span className="text-sm font-medium">
-                    {userRole === "admin" ? "2,450 heures" : "24,5 heures"}
+                    {userRole === "admin" ? "1,250 heures" : "32,5 heures"}
                   </span>
                 </div>
               </CardContent>
