@@ -1,42 +1,83 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, Clock, Trophy, TrendingUp } from "lucide-react";
+import { BookOpen, Clock, Trophy, TrendingUp, Users, GraduationCap } from "lucide-react";
 
-const StatsGrid = () => {
-  const stats = [
+interface StatsGridProps {
+  userRole?: "student" | "admin";
+}
+
+const StatsGrid = ({ userRole = "student" }: StatsGridProps) => {
+  const studentStats = [
     {
-      title: "Courses Enrolled",
+      title: "Cours Inscrits",
       value: "12",
-      description: "Active learning paths",
+      description: "Parcours d'apprentissage actifs",
       icon: BookOpen,
       color: "text-blue-600",
       bgColor: "bg-blue-100"
     },
     {
-      title: "Hours Learned",
-      value: "24.5",
-      description: "This month",
+      title: "Heures Apprises",
+      value: "24,5",
+      description: "Ce mois-ci",
       icon: Clock,
       color: "text-green-600",
       bgColor: "bg-green-100"
     },
     {
-      title: "Certificates",
+      title: "Certificats",
       value: "5",
-      description: "Completed courses",
+      description: "Cours terminés",
       icon: Trophy,
       color: "text-yellow-600",
       bgColor: "bg-yellow-100"
     },
     {
-      title: "Streak",
+      title: "Série",
       value: "7",
-      description: "Days in a row",
+      description: "Jours consécutifs",
       icon: TrendingUp,
       color: "text-purple-600",
       bgColor: "bg-purple-100"
     }
   ];
+
+  const adminStats = [
+    {
+      title: "Total Étudiants",
+      value: "1,250",
+      description: "Utilisateurs actifs",
+      icon: Users,
+      color: "text-blue-600",
+      bgColor: "bg-blue-100"
+    },
+    {
+      title: "Cours Créés",
+      value: "45",
+      description: "Contenus disponibles",
+      icon: BookOpen,
+      color: "text-green-600",
+      bgColor: "bg-green-100"
+    },
+    {
+      title: "Taux Réussite",
+      value: "87%",
+      description: "Moyenne plateforme",
+      icon: Trophy,
+      color: "text-yellow-600",
+      bgColor: "bg-yellow-100"
+    },
+    {
+      title: "Certifications",
+      value: "2,450",
+      description: "Délivrées au total",
+      icon: GraduationCap,
+      color: "text-purple-600",
+      bgColor: "bg-purple-100"
+    }
+  ];
+
+  const stats = userRole === "admin" ? adminStats : studentStats;
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Clock, Users, Star, Play, BookOpen } from "lucide-react";
+import { Clock, Users, Star, Play, BookOpen, Edit, BarChart3 } from "lucide-react";
 
 interface Course {
   id: number;
@@ -21,16 +21,17 @@ interface Course {
 
 interface CourseCardProps {
   course: Course;
+  userRole?: "student" | "admin";
 }
 
-const CourseCard = ({ course }: CourseCardProps) => {
+const CourseCard = ({ course, userRole = "student" }: CourseCardProps) => {
   const getLevelColor = (level: string) => {
     switch (level) {
-      case "Beginner":
+      case "Débutant":
         return "bg-green-100 text-green-800";
-      case "Intermediate":
+      case "Intermédiaire":
         return "bg-yellow-100 text-yellow-800";
-      case "Advanced":
+      case "Avancé":
         return "bg-red-100 text-red-800";
       default:
         return "bg-gray-100 text-gray-800";
@@ -89,22 +90,35 @@ const CourseCard = ({ course }: CourseCardProps) => {
           </div>
         </div>
 
-        {course.progress > 0 && (
+        {course.progress > 0 && userRole === "student" && (
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Progress</span>
+              <span className="text-gray-600">Progrès</span>
               <span className="font-medium">{course.progress}%</span>
             </div>
             <Progress value={course.progress} className="h-2" />
           </div>
         )}
 
-        <Button 
-          className="w-full"
-          variant={course.progress > 0 ? "default" : "outline"}
-        >
-          {course.progress > 0 ? "Continue Learning" : "Start Course"}
-        </Button>
+        {userRole === "admin" ? (
+          <div className="flex gap-2">
+            <Button variant="outline" className="flex-1">
+              <Edit className="h-4 w-4 mr-2" />
+              Modifier
+            </Button>
+            <Button variant="outline" className="flex-1">
+              <BarChart3 className="h-4 w-4 mr-2" />
+              Statistiques
+            </Button>
+          </div>
+        ) : (
+          <Button 
+            className="w-full"
+            variant={course.progress > 0 ? "default" : "outline"}
+          >
+            {course.progress > 0 ? "Continuer l'Apprentissage" : "Commencer le Cours"}
+          </Button>
+        )}
       </CardContent>
     </Card>
   );

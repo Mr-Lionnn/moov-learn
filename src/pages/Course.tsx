@@ -12,12 +12,12 @@ const Course = () => {
   const [currentView, setCurrentView] = useState<"video" | "quiz">("video");
 
   const lessons = [
-    { id: 1, title: "Introduction to Web Development", duration: "15:30", completed: true, type: "video" as const },
-    { id: 2, title: "HTML Fundamentals", duration: "22:45", completed: true, type: "video" as const },
-    { id: 3, title: "CSS Basics Quiz", duration: "10:00", completed: false, type: "quiz" as const },
-    { id: 4, title: "CSS Styling", duration: "28:15", completed: false, type: "video" as const },
-    { id: 5, title: "JavaScript Introduction", duration: "35:20", completed: false, type: "video" as const },
-    { id: 6, title: "Final Assessment", duration: "20:00", completed: false, type: "quiz" as const },
+    { id: 1, title: "Introduction au Développement Web", duration: "15:30", completed: true, type: "video" as const },
+    { id: 2, title: "Fondamentaux HTML", duration: "22:45", completed: true, type: "video" as const },
+    { id: 3, title: "Quiz Bases CSS", duration: "10:00", completed: false, type: "quiz" as const },
+    { id: 4, title: "Stylisation CSS", duration: "28:15", completed: false, type: "video" as const },
+    { id: 5, title: "Introduction JavaScript", duration: "35:20", completed: false, type: "video" as const },
+    { id: 6, title: "Évaluation Finale", duration: "20:00", completed: false, type: "quiz" as const },
   ];
 
   const currentLesson = lessons.find(l => l.id === 3) || lessons[0];
@@ -25,7 +25,7 @@ const Course = () => {
   const quizQuestions = [
     {
       id: 1,
-      question: "What does CSS stand for?",
+      question: "Que signifie CSS ?",
       options: [
         "Creative Style Sheets",
         "Cascading Style Sheets",
@@ -33,11 +33,11 @@ const Course = () => {
         "Colorful Style Sheets"
       ],
       correctAnswer: 1,
-      explanation: "CSS stands for Cascading Style Sheets. It's used to style and layout web pages."
+      explanation: "CSS signifie Cascading Style Sheets. Il est utilisé pour styliser et organiser les pages web."
     },
     {
       id: 2,
-      question: "Which property is used to change the background color in CSS?",
+      question: "Quelle propriété est utilisée pour changer la couleur d'arrière-plan en CSS ?",
       options: [
         "color",
         "background-color",
@@ -45,11 +45,11 @@ const Course = () => {
         "background"
       ],
       correctAnswer: 1,
-      explanation: "The background-color property is specifically used to set the background color of an element."
+      explanation: "La propriété background-color est spécifiquement utilisée pour définir la couleur d'arrière-plan d'un élément."
     },
     {
       id: 3,
-      question: "How do you select an element with id 'header' in CSS?",
+      question: "Comment sélectionne-t-on un élément avec l'id 'header' en CSS ?",
       options: [
         ".header",
         "#header",
@@ -57,7 +57,7 @@ const Course = () => {
         "*header"
       ],
       correctAnswer: 1,
-      explanation: "The # symbol is used to select elements by their ID in CSS."
+      explanation: "Le symbole # est utilisé pour sélectionner les éléments par leur ID en CSS."
     }
   ];
 
@@ -73,7 +73,7 @@ const Course = () => {
             className="mb-4"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Dashboard
+            Retour au Tableau de Bord
           </Button>
           
           <div className="flex gap-4 mb-6">
@@ -81,26 +81,26 @@ const Course = () => {
               variant={currentView === "video" ? "default" : "outline"}
               onClick={() => setCurrentView("video")}
             >
-              Video Lesson
+              Leçon Vidéo
             </Button>
             <Button 
               variant={currentView === "quiz" ? "default" : "outline"}
               onClick={() => setCurrentView("quiz")}
             >
-              Take Quiz
+              Faire le Quiz
             </Button>
           </div>
         </div>
 
         {currentView === "video" ? (
           <CoursePlayer
-            courseTitle="Introduction to Web Development"
+            courseTitle="Introduction au Développement Web"
             currentLesson={currentLesson}
             lessons={lessons}
           />
         ) : (
           <QuizComponent
-            title="CSS Basics Quiz"
+            title="Quiz Bases CSS"
             questions={quizQuestions}
             timeLimit={600}
           />
