@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator 
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { Network, Bell, User, Settings, LogOut, Trophy, Users, BarChart3 } from "lucide-react";
+import { Network, Bell, User, Settings, LogOut, Trophy, Users, BarChart3, BookOpen, Award, UserCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import NotificationCenter from "./NotificationCenter";
 
@@ -42,6 +42,7 @@ const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
               className="text-gray-600 hover:text-blue-600"
               onClick={() => navigate("/my-trainings")}
             >
+              <BookOpen className="h-4 w-4 mr-2" />
               Mes Formations
             </Button>
             <Button 
@@ -49,6 +50,7 @@ const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
               className="text-gray-600 hover:text-blue-600"
               onClick={() => navigate("/certifications")}
             >
+              <Award className="h-4 w-4 mr-2" />
               Certifications
             </Button>
             {userRole === "admin" && (
@@ -76,6 +78,7 @@ const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
               className="text-gray-600 hover:text-blue-600"
               onClick={() => navigate("/team")}
             >
+              <UserCheck className="h-4 w-4 mr-2" />
               Équipe
             </Button>
           </nav>
