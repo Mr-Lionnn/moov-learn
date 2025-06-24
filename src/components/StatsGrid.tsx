@@ -80,17 +80,17 @@ const StatsGrid = ({ userRole = "student" }: StatsGridProps) => {
   const stats = userRole === "admin" ? adminStats : studentStats;
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
       {stats.map((stat, index) => (
         <Card key={index} className="hover:shadow-md transition-shadow duration-300">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-lg ${stat.bgColor}`}>
-                <stat.icon className={`h-5 w-5 ${stat.color}`} />
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className={`p-1.5 sm:p-2 rounded-lg ${stat.bgColor} flex-shrink-0`}>
+                <stat.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${stat.color}`} />
               </div>
-              <div className="flex-1">
-                <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                <p className="text-xs text-gray-600">{stat.description}</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-lg sm:text-2xl font-bold text-gray-900 leading-tight">{stat.value}</p>
+                <p className="text-xs text-gray-600 truncate">{stat.description}</p>
               </div>
             </div>
           </CardContent>

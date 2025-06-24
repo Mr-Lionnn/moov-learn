@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator 
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { Network, Bell, User, Settings, LogOut, Trophy, Users, BarChart3, BookOpen, Award, UserCheck } from "lucide-react";
+import { Network, Bell, User, Settings, LogOut, Trophy, Users, BarChart3, BookOpen, Award, UserCheck, Menu } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import NotificationCenter from "./NotificationCenter";
 
@@ -22,6 +22,7 @@ interface HeaderProps {
 const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
   const navigate = useNavigate();
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   return (
     <>
@@ -30,16 +31,16 @@ const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
           {/* Logo */}
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
             <div className="p-2 bg-blue-600 rounded-lg">
-              <Network className="h-6 w-6 text-white" />
+              <Network className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
             </div>
-            <h1 className="text-xl font-bold text-gray-900">MoovLearn</h1>
+            <h1 className="text-lg sm:text-xl font-bold text-gray-900">MoovLearn</h1>
           </div>
 
-          {/* Navigation */}
-          <nav className="hidden md:flex items-center gap-6">
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center gap-4 xl:gap-6">
             <Button 
               variant="ghost" 
-              className="text-gray-600 hover:text-blue-600"
+              className="text-gray-600 hover:text-blue-600 text-sm xl:text-base"
               onClick={() => navigate("/my-trainings")}
             >
               <BookOpen className="h-4 w-4 mr-2" />
@@ -47,7 +48,7 @@ const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
             </Button>
             <Button 
               variant="ghost" 
-              className="text-gray-600 hover:text-blue-600"
+              className="text-gray-600 hover:text-blue-600 text-sm xl:text-base"
               onClick={() => navigate("/certifications")}
             >
               <Award className="h-4 w-4 mr-2" />
@@ -57,7 +58,7 @@ const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
               <>
                 <Button 
                   variant="ghost" 
-                  className="text-gray-600 hover:text-blue-600" 
+                  className="text-gray-600 hover:text-blue-600 text-sm xl:text-base" 
                   onClick={() => navigate("/employees")}
                 >
                   <Users className="h-4 w-4 mr-2" />
@@ -65,7 +66,7 @@ const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
                 </Button>
                 <Button 
                   variant="ghost" 
-                  className="text-gray-600 hover:text-blue-600"
+                  className="text-gray-600 hover:text-blue-600 text-sm xl:text-base"
                   onClick={() => navigate("/analytics")}
                 >
                   <BarChart3 className="h-4 w-4 mr-2" />
@@ -75,7 +76,7 @@ const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
             )}
             <Button 
               variant="ghost" 
-              className="text-gray-600 hover:text-blue-600"
+              className="text-gray-600 hover:text-blue-600 text-sm xl:text-base"
               onClick={() => navigate("/team")}
             >
               <UserCheck className="h-4 w-4 mr-2" />
@@ -83,28 +84,19 @@ const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
             </Button>
           </nav>
 
-          {/* Mobile Navigation */}
-          <nav className="md:hidden flex items-center gap-2">
+          {/* Mobile Navigation Toggle */}
+          <div className="lg:hidden">
             <Button 
               variant="ghost" 
-              size="sm"
-              onClick={() => navigate("/my-trainings")}
+              size="icon"
+              onClick={() => setShowMobileMenu(!showMobileMenu)}
             >
-              Formations
+              <Menu className="h-5 w-5" />
             </Button>
-            {userRole === "admin" && (
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => navigate("/employees")}
-              >
-                <Users className="h-4 w-4" />
-              </Button>
-            )}
-          </nav>
+          </div>
 
           {/* User Actions */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             {/* Notifications */}
             <Button 
               variant="ghost" 
@@ -112,8 +104,8 @@ const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
               className="relative"
               onClick={() => setShowNotifications(true)}
             >
-              <Bell className="h-5 w-5" />
-              <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-red-500">
+              <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
+              <Badge className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 rounded-full p-0 flex items-center justify-center text-xs bg-red-500">
                 3
               </Badge>
             </Button>
@@ -121,14 +113,14 @@ const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center gap-2 hover:bg-gray-100">
-                  <Avatar className="h-8 w-8">
+                <Button variant="ghost" className="flex items-center gap-2 hover:bg-gray-100 p-1 sm:p-2">
+                  <Avatar className="h-6 w-6 sm:h-8 sm:w-8">
                     <AvatarImage src="/placeholder.svg" />
-                    <AvatarFallback>
+                    <AvatarFallback className="text-xs sm:text-sm">
                       {userRole === "admin" ? "AD" : "JD"}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="hidden lg:block text-sm font-medium">
+                  <span className="hidden xl:block text-sm font-medium">
                     {userRole === "admin" ? "Administrateur IT" : "Jean Dupont"}
                   </span>
                 </Button>
@@ -178,6 +170,73 @@ const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
             </DropdownMenu>
           </div>
         </div>
+
+        {/* Mobile Navigation Menu */}
+        {showMobileMenu && (
+          <div className="lg:hidden bg-white border-t border-gray-200 px-4 py-4">
+            <nav className="flex flex-col space-y-2">
+              <Button 
+                variant="ghost" 
+                className="justify-start text-gray-600 hover:text-blue-600"
+                onClick={() => {
+                  navigate("/my-trainings");
+                  setShowMobileMenu(false);
+                }}
+              >
+                <BookOpen className="h-4 w-4 mr-2" />
+                Mes Formations
+              </Button>
+              <Button 
+                variant="ghost" 
+                className="justify-start text-gray-600 hover:text-blue-600"
+                onClick={() => {
+                  navigate("/certifications");
+                  setShowMobileMenu(false);
+                }}
+              >
+                <Award className="h-4 w-4 mr-2" />
+                Certifications
+              </Button>
+              {userRole === "admin" && (
+                <>
+                  <Button 
+                    variant="ghost" 
+                    className="justify-start text-gray-600 hover:text-blue-600"
+                    onClick={() => {
+                      navigate("/employees");
+                      setShowMobileMenu(false);
+                    }}
+                  >
+                    <Users className="h-4 w-4 mr-2" />
+                    Employés
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    className="justify-start text-gray-600 hover:text-blue-600"
+                    onClick={() => {
+                      navigate("/analytics");
+                      setShowMobileMenu(false);
+                    }}
+                  >
+                    <BarChart3 className="h-4 w-4 mr-2" />
+                    Analytiques
+                  </Button>
+                </>
+              )}
+              <Button 
+                variant="ghost" 
+                className="justify-start text-gray-600 hover:text-blue-600"
+                onClick={() => {
+                  navigate("/team");
+                  setShowMobileMenu(false);
+                }}
+              >
+                <UserCheck className="h-4 w-4 mr-2" />
+                Équipe
+              </Button>
+            </nav>
+          </div>
+        )}
       </header>
 
       {/* Notification Center */}
