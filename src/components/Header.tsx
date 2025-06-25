@@ -12,17 +12,33 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Network, Bell, User, Settings, LogOut, Users, BarChart3, BookOpen, UserCheck, Menu } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 import NotificationCenter from "./NotificationCenter";
 
 interface HeaderProps {
-  userRole?: "student" | "admin";
   onShowAdminPanel?: () => void;
 }
 
-const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
+const Header = ({ onShowAdminPanel }: HeaderProps) => {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  const { toast } = useToast();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+
+  const handleLogout = () => {
+    logout();
+    toast({
+      title: "Déconnexion réussie",
+      description: "À bientôt !",
+    });
+    navigate("/login");
+  };
+
+  const getInitials = (name: string) => {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase();
+  };
 
   return (
     <>
@@ -46,7 +62,7 @@ const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
               <BookOpen className="h-4 w-4 mr-2" />
               Mes Formations
             </Button>
-            {userRole === "admin" && (
+            {user?.role === "admin" && (
               <>
                 <Button 
                   variant="ghost" 
@@ -109,11 +125,11 @@ const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
                   <Avatar className="h-6 w-6 sm:h-8 sm:w-8">
                     <AvatarImage src="/placeholder.svg" />
                     <AvatarFallback className="text-xs sm:text-sm">
-                      {userRole === "admin" ? "AD" : "JD"}
+                      {user ? getInitials(user.name) : "U"}
                     </AvatarFallback>
                   </Avatar>
                   <span className="hidden xl:block text-sm font-medium">
-                    {userRole === "admin" ? "Administrateur IT" : "Jean Dupont"}
+                    {user?.name || "Utilisateur"}
                   </span>
                 </Button>
               </DropdownMenuTrigger>
@@ -122,15 +138,15 @@ const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
                   <Avatar className="h-8 w-8">
                     <AvatarImage src="/placeholder.svg" />
                     <AvatarFallback>
-                      {userRole === "admin" ? "AD" : "JD"}
+                      {user ? getInitials(user.name) : "U"}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col">
                     <span className="text-sm font-medium">
-                      {userRole === "admin" ? "Administrateur IT" : "Jean Dupont"}
+                      {user?.name || "Utilisateur"}
                     </span>
                     <span className="text-xs text-gray-500">
-                      {userRole === "admin" ? "admin@moovlearn.com" : "jean.dupont@moovlearn.com"}
+                      {user?.email || "email@moov.bj"}
                     </span>
                   </div>
                 </div>
@@ -139,7 +155,7 @@ const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
                   <User className="mr-2 h-4 w-4" />
                   Profil
                 </DropdownMenuItem>
-                {userRole === "admin" && (
+                {user?.role === "admin" && (
                   <DropdownMenuItem onClick={onShowAdminPanel}>
                     <Users className="mr-2 h-4 w-4" />
                     Gestion des Employés
@@ -150,7 +166,7 @@ const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
                   Paramètres
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-red-600">
+                <DropdownMenuItem className="text-red-600" onClick={handleLogout}>
                   <LogOut className="mr-2 h-4 w-4" />
                   Déconnexion
                 </DropdownMenuItem>
@@ -174,7 +190,7 @@ const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
                 <BookOpen className="h-4 w-4 mr-2" />
                 Mes Formations
               </Button>
-              {userRole === "admin" && (
+              {user?.role === "admin" && (
                 <>
                   <Button 
                     variant="ghost" 
