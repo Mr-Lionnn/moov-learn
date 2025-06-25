@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator 
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { Network, Bell, User, Settings, LogOut, Trophy, Users, BarChart3, BookOpen, Award, UserCheck, Menu } from "lucide-react";
+import { Network, Bell, User, Settings, LogOut, Users, BarChart3, BookOpen, UserCheck, Menu } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import NotificationCenter from "./NotificationCenter";
 
@@ -45,14 +45,6 @@ const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
             >
               <BookOpen className="h-4 w-4 mr-2" />
               Mes Formations
-            </Button>
-            <Button 
-              variant="ghost" 
-              className="text-gray-600 hover:text-blue-600 text-sm xl:text-base"
-              onClick={() => navigate("/certifications")}
-            >
-              <Award className="h-4 w-4 mr-2" />
-              Certifications
             </Button>
             {userRole === "admin" && (
               <>
@@ -147,10 +139,6 @@ const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
                   <User className="mr-2 h-4 w-4" />
                   Profil
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/certifications")}>
-                  <Trophy className="mr-2 h-4 w-4" />
-                  Certifications
-                </DropdownMenuItem>
                 {userRole === "admin" && (
                   <DropdownMenuItem onClick={onShowAdminPanel}>
                     <Users className="mr-2 h-4 w-4" />
@@ -185,17 +173,6 @@ const Header = ({ userRole = "student", onShowAdminPanel }: HeaderProps) => {
               >
                 <BookOpen className="h-4 w-4 mr-2" />
                 Mes Formations
-              </Button>
-              <Button 
-                variant="ghost" 
-                className="justify-start text-gray-600 hover:text-blue-600"
-                onClick={() => {
-                  navigate("/certifications");
-                  setShowMobileMenu(false);
-                }}
-              >
-                <Award className="h-4 w-4 mr-2" />
-                Certifications
               </Button>
               {userRole === "admin" && (
                 <>
