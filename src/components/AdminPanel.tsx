@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,13 +9,16 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { X, Plus, Users, BookOpen, BarChart3, Save, Upload } from "lucide-react";
+import { X, Plus, Users, BookOpen, BarChart3, Save, Upload, Clock } from "lucide-react";
+import ModuleTimeLimit from "./ModuleTimeLimit";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface AdminPanelProps {
   onClose: () => void;
 }
 
 const AdminPanel = ({ onClose }: AdminPanelProps) => {
+  const { setModuleDeadline } = useAuth();
   const [newCourse, setNewCourse] = useState({
     title: "",
     description: "",
@@ -46,6 +48,10 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
     });
   };
 
+  const handleSetTimeLimit = (moduleId: string, deadline: string, teamMembers: string[]) => {
+    setModuleDeadline(moduleId, deadline, teamMembers);
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg w-full max-w-6xl max-h-[90vh] overflow-hidden">
@@ -58,10 +64,14 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
 
         <div className="p-6 overflow-y-auto max-h-[calc(90vh-100px)]">
           <Tabs defaultValue="courses" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="courses">
                 <BookOpen className="h-4 w-4 mr-2" />
                 Gestion des Cours
+              </TabsTrigger>
+              <TabsTrigger value="deadlines">
+                <Clock className="h-4 w-4 mr-2" />
+                Délais de Formation
               </TabsTrigger>
               <TabsTrigger value="students">
                 <Users className="h-4 w-4 mr-2" />
@@ -163,6 +173,37 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
                       <Upload className="h-4 w-4 mr-2" />
                       Télécharger du Contenu
                     </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="deadlines" className="space-y-6">
+              <ModuleTimeLimit onTimeLimit={handleSetTimeLimit} />
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Délais Actifs</CardTitle>
+                  <CardDescription>
+                    Gérez les délais de formation en cours
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center p-3 border rounded-lg">
+                      <div>
+                        <h4 className="font-medium">Fondamentaux des Réseaux TCP/IP</h4>
+                        <p className="text-sm text-gray-600">Équipe Réseau • Échéance: 30 Déc 2024</p>
+                      </div>
+                      <Badge className="bg-orange-100 text-orange-800">En cours</Badge>
+                    </div>
+                    <div className="flex justify-between items-center p-3 border rounded-lg">
+                      <div>
+                        <h4 className="font-medium">Sécurité Informatique Avancée</h4>
+                        <p className="text-sm text-gray-600">Équipe Sécurité • Échéance: 15 Jan 2025</p>
+                      </div>
+                      <Badge className="bg-blue-100 text-blue-800">Planifié</Badge>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

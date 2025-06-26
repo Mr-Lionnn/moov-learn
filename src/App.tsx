@@ -18,6 +18,7 @@ import Profile from "./pages/Profile";
 import Files from "./pages/Files";
 import Tasks from "./pages/Tasks";
 import NotFound from "./pages/NotFound";
+import SessionWrapper from "./components/SessionWrapper";
 
 const queryClient = new QueryClient();
 
@@ -28,61 +29,63 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/" element={
-              <ProtectedRoute>
-                <Index />
-              </ProtectedRoute>
-            } />
-            <Route path="/course/:id" element={
-              <ProtectedRoute>
-                <Course />
-              </ProtectedRoute>
-            } />
-            <Route path="/my-trainings" element={
-              <ProtectedRoute>
-                <MyTrainings />
-              </ProtectedRoute>
-            } />
-            <Route path="/files" element={
-              <ProtectedRoute>
-                <Files />
-              </ProtectedRoute>
-            } />
-            <Route path="/tasks" element={
-              <ProtectedRoute>
-                <Tasks />
-              </ProtectedRoute>
-            } />
-            <Route path="/employees" element={
-              <ProtectedRoute>
-                <Employees />
-              </ProtectedRoute>
-            } />
-            <Route path="/analytics" element={
-              <ProtectedRoute>
-                <Analytics />
-              </ProtectedRoute>
-            } />
-            <Route path="/team" element={
-              <ProtectedRoute>
-                <Team />
-              </ProtectedRoute>
-            } />
-            <Route path="/settings" element={
-              <ProtectedRoute>
-                <Settings />
-              </ProtectedRoute>
-            } />
-            <Route path="/profile" element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            } />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <SessionWrapper>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/" element={
+                <ProtectedRoute>
+                  <Index />
+                </ProtectedRoute>
+              } />
+              <Route path="/course/:id" element={
+                <ProtectedRoute>
+                  <Course />
+                </ProtectedRoute>
+              } />
+              <Route path="/my-trainings" element={
+                <ProtectedRoute>
+                  <MyTrainings />
+                </ProtectedRoute>
+              } />
+              <Route path="/files" element={
+                <ProtectedRoute>
+                  <Files />
+                </ProtectedRoute>
+              } />
+              <Route path="/tasks" element={
+                <ProtectedRoute>
+                  <Tasks />
+                </ProtectedRoute>
+              } />
+              <Route path="/employees" element={
+                <ProtectedRoute>
+                  <Employees />
+                </ProtectedRoute>
+              } />
+              <Route path="/analytics" element={
+                <ProtectedRoute>
+                  <Analytics />
+                </ProtectedRoute>
+              } />
+              <Route path="/team" element={
+                <ProtectedRoute>
+                  <Team />
+                </ProtectedRoute>
+              } />
+              <Route path="/settings" element={
+                <ProtectedRoute>
+                  <Settings />
+                </ProtectedRoute>
+              } />
+              <Route path="/profile" element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              } />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </SessionWrapper>
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
