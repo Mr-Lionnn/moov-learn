@@ -22,53 +22,53 @@ const Settings = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
       <Header />
       
-      <main className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Paramètres</h1>
-            <p className="text-gray-600">Gérez vos préférences et paramètres de compte</p>
+      <main className="container mx-auto px-4 py-6 sm:py-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="mb-6 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Paramètres</h1>
+            <p className="text-gray-600 text-sm sm:text-base">Gérez vos préférences et paramètres de compte</p>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
             {/* Profile Section */}
             <div className="lg:col-span-2 space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
                     <User className="h-5 w-5" />
                     Informations du Profil
                   </CardTitle>
-                  <CardDescription>
+                  <CardDescription className="text-sm">
                     Mettez à jour vos informations personnelles
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="flex items-center gap-4">
-                    <Avatar className="h-16 w-16">
+                  <div className="flex flex-col sm:flex-row items-center gap-4">
+                    <Avatar className="h-16 w-16 sm:h-20 sm:w-20">
                       <AvatarImage src="/placeholder.svg" />
-                      <AvatarFallback>
+                      <AvatarFallback className="text-lg">
                         {userRole === "admin" ? "AD" : "JD"}
                       </AvatarFallback>
                     </Avatar>
-                    <div className="flex-1">
-                      <h3 className="font-medium">
+                    <div className="flex-1 text-center sm:text-left">
+                      <h3 className="font-medium text-lg">
                         {userRole === "admin" ? "Administrateur IT" : "Jean Dupont"}
                       </h3>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-gray-500 break-all sm:break-normal">
                         {userRole === "admin" ? "admin@moovlearn.com" : "jean.dupont@moovlearn.com"}
                       </p>
-                      <Badge className="mt-1">
+                      <Badge className="mt-2">
                         {userRole === "admin" ? "Administrateur" : "Étudiant"}
                       </Badge>
                     </div>
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" className="w-full sm:w-auto">
                       Changer Photo
                     </Button>
                   </div>
                   
                   <Separator />
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="firstName">Prénom</Label>
                       <Input 
@@ -83,7 +83,7 @@ const Settings = () => {
                         defaultValue={userRole === "admin" ? "IT" : "Dupont"} 
                       />
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-2 sm:col-span-2">
                       <Label htmlFor="email">Email</Label>
                       <Input 
                         id="email" 
@@ -91,7 +91,7 @@ const Settings = () => {
                         defaultValue={userRole === "admin" ? "admin@moovlearn.com" : "jean.dupont@moovlearn.com"} 
                       />
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-2 sm:col-span-2">
                       <Label htmlFor="phone">Téléphone</Label>
                       <Input 
                         id="phone" 
@@ -105,19 +105,19 @@ const Settings = () => {
               {/* Notifications */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
                     <Bell className="h-5 w-5" />
                     Notifications
                   </CardTitle>
-                  <CardDescription>
+                  <CardDescription className="text-sm">
                     Gérez vos préférences de notification
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label>Notifications Push</Label>
-                      <p className="text-sm text-gray-500">
+                    <div className="space-y-1 flex-1 pr-4">
+                      <Label className="text-sm font-medium">Notifications Push</Label>
+                      <p className="text-xs sm:text-sm text-gray-500">
                         Recevoir des notifications pour les nouvelles formations
                       </p>
                     </div>
@@ -128,9 +128,9 @@ const Settings = () => {
                   </div>
                   
                   <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label>Emails de Mise à Jour</Label>
-                      <p className="text-sm text-gray-500">
+                    <div className="space-y-1 flex-1 pr-4">
+                      <Label className="text-sm font-medium">Emails de Mise à Jour</Label>
+                      <p className="text-xs sm:text-sm text-gray-500">
                         Recevoir des emails sur les progrès et certifications
                       </p>
                     </div>
@@ -145,19 +145,19 @@ const Settings = () => {
               {/* Security */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
                     <Shield className="h-5 w-5" />
                     Sécurité
                   </CardTitle>
-                  <CardDescription>
+                  <CardDescription className="text-sm">
                     Paramètres de sécurité et mot de passe
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <Button variant="outline" className="w-full">
+                <CardContent className="space-y-3">
+                  <Button variant="outline" className="w-full justify-start">
                     Changer le Mot de Passe
                   </Button>
-                  <Button variant="outline" className="w-full">
+                  <Button variant="outline" className="w-full justify-start">
                     Authentification à Deux Facteurs
                   </Button>
                 </CardContent>
@@ -169,16 +169,16 @@ const Settings = () => {
               {/* Preferences */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 text-lg">
                     <Globe className="h-5 w-5" />
                     Préférences
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label>Langue</Label>
+                    <Label className="text-sm font-medium">Langue</Label>
                     <select 
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
                       value={language}
                       onChange={(e) => setLanguage(e.target.value)}
                     >
@@ -189,8 +189,8 @@ const Settings = () => {
                   </div>
                   
                   <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label>Mode Sombre</Label>
+                    <div className="space-y-1 flex-1 pr-4">
+                      <Label className="text-sm font-medium">Mode Sombre</Label>
                       <p className="text-xs text-gray-500">
                         Basculer vers le thème sombre
                       </p>
@@ -206,26 +206,26 @@ const Settings = () => {
               {/* Stats */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Statistiques du Compte</CardTitle>
+                  <CardTitle className="text-lg">Statistiques du Compte</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Membre depuis</span>
-                    <span className="text-sm font-medium">Janvier 2024</span>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Membre depuis</span>
+                    <span className="font-medium">Janvier 2024</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm text-gray-600">Dernière connexion</span>
-                    <span className="text-sm font-medium">Aujourd'hui</span>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Dernière connexion</span>
+                    <span className="font-medium">Aujourd'hui</span>
                   </div>
                   {userRole === "student" && (
                     <>
-                      <div className="flex justify-between">
-                        <span className="text-sm text-gray-600">Formations terminées</span>
-                        <span className="text-sm font-medium">12</span>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Formations terminées</span>
+                        <span className="font-medium">12</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-sm text-gray-600">Certifications</span>
-                        <span className="text-sm font-medium">3</span>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Certifications</span>
+                        <span className="font-medium">3</span>
                       </div>
                     </>
                   )}

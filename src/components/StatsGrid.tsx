@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, Clock, Trophy, TrendingUp, Users, GraduationCap } from "lucide-react";
 
@@ -80,17 +79,21 @@ const StatsGrid = ({ userRole = "student" }: StatsGridProps) => {
   const stats = userRole === "admin" ? adminStats : studentStats;
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
       {stats.map((stat, index) => (
-        <Card key={index} className="hover:shadow-md transition-shadow duration-300">
-          <CardContent className="p-3 sm:p-4">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <div className={`p-1.5 sm:p-2 rounded-lg ${stat.bgColor} flex-shrink-0`}>
-                <stat.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${stat.color}`} />
+        <Card key={index} className="hover:shadow-md transition-shadow duration-300 border-0 shadow-sm">
+          <CardContent className="p-4 sm:p-5 lg:p-6">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className={`p-2 sm:p-3 rounded-lg ${stat.bgColor} flex-shrink-0`}>
+                <stat.icon className={`h-5 w-5 sm:h-6 sm:w-6 ${stat.color}`} />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-lg sm:text-2xl font-bold text-gray-900 leading-tight">{stat.value}</p>
-                <p className="text-xs text-gray-600 truncate">{stat.description}</p>
+                <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 leading-tight mb-1">
+                  {stat.value}
+                </p>
+                <p className="text-xs sm:text-sm text-gray-600 truncate">
+                  {stat.description}
+                </p>
               </div>
             </div>
           </CardContent>

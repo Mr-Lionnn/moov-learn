@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -22,7 +21,8 @@ import {
   UserCheck, 
   Menu, 
   FileText,
-  CheckSquare
+  CheckSquare,
+  X
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -68,102 +68,103 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
   return (
     <>
       <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-3 sm:py-4 flex items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
-            <div className="p-2 bg-blue-600 rounded-lg">
-              <Network className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+          <div className="flex items-center gap-2 cursor-pointer flex-shrink-0" onClick={() => navigate("/")}>
+            <div className="p-1.5 sm:p-2 bg-blue-600 rounded-lg">
+              <Network className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
             </div>
-            <h1 className="text-lg sm:text-xl font-bold text-gray-900">MoovLearn</h1>
+            <h1 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 hidden xs:block">MoovLearn</h1>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-4 xl:gap-6">
+          <nav className="hidden lg:flex items-center gap-2 xl:gap-4 flex-1 justify-center">
             <Button 
               variant="ghost" 
-              className="text-gray-600 hover:text-blue-600 text-sm xl:text-base"
+              className="text-gray-600 hover:text-blue-600 text-sm px-2 xl:px-3"
               onClick={() => navigate("/my-trainings")}
             >
-              <BookOpen className="h-4 w-4 mr-2" />
-              Mes Formations
+              <BookOpen className="h-4 w-4 mr-1 xl:mr-2" />
+              <span className="hidden xl:inline">Mes Formations</span>
+              <span className="xl:hidden">Formations</span>
             </Button>
             
             {canAccessFiles() && (
               <Button 
                 variant="ghost" 
-                className="text-gray-600 hover:text-blue-600 text-sm xl:text-base"
+                className="text-gray-600 hover:text-blue-600 text-sm px-2 xl:px-3"
                 onClick={() => navigate("/files")}
               >
-                <FileText className="h-4 w-4 mr-2" />
-                Fichiers
+                <FileText className="h-4 w-4 mr-1 xl:mr-2" />
+                <span>Fichiers</span>
               </Button>
             )}
 
             {hasPermission('assign_tasks') && (
               <Button 
                 variant="ghost" 
-                className="text-gray-600 hover:text-blue-600 text-sm xl:text-base"
+                className="text-gray-600 hover:text-blue-600 text-sm px-2 xl:px-3"
                 onClick={() => navigate("/tasks")}
               >
-                <CheckSquare className="h-4 w-4 mr-2" />
-                Tâches
+                <CheckSquare className="h-4 w-4 mr-1 xl:mr-2" />
+                <span>Tâches</span>
               </Button>
             )}
 
             {canManageUsers() && (
               <Button 
                 variant="ghost" 
-                className="text-gray-600 hover:text-blue-600 text-sm xl:text-base" 
+                className="text-gray-600 hover:text-blue-600 text-sm px-2 xl:px-3" 
                 onClick={() => navigate("/employees")}
               >
-                <Users className="h-4 w-4 mr-2" />
-                {user?.role === 'admin' ? 'Employés' : 'Équipe'}
+                <Users className="h-4 w-4 mr-1 xl:mr-2" />
+                <span>{user?.role === 'admin' ? 'Employés' : 'Équipe'}</span>
               </Button>
             )}
             
             {hasPermission('view_analytics') && (
               <Button 
                 variant="ghost" 
-                className="text-gray-600 hover:text-blue-600 text-sm xl:text-base"
+                className="text-gray-600 hover:text-blue-600 text-sm px-2 xl:px-3"
                 onClick={() => navigate("/analytics")}
               >
-                <BarChart3 className="h-4 w-4 mr-2" />
-                Analytiques
+                <BarChart3 className="h-4 w-4 mr-1 xl:mr-2" />
+                <span>Analytiques</span>
               </Button>
             )}
 
             <Button 
               variant="ghost" 
-              className="text-gray-600 hover:text-blue-600 text-sm xl:text-base"
+              className="text-gray-600 hover:text-blue-600 text-sm px-2 xl:px-3"
               onClick={() => navigate("/team")}
             >
-              <UserCheck className="h-4 w-4 mr-2" />
-              Équipe
+              <UserCheck className="h-4 w-4 mr-1 xl:mr-2" />
+              <span>Équipe</span>
             </Button>
           </nav>
 
-          {/* Mobile Navigation Toggle */}
-          <div className="lg:hidden">
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={() => setShowMobileMenu(!showMobileMenu)}
-            >
-              <Menu className="h-5 w-5" />
-            </Button>
-          </div>
-
           {/* User Actions */}
-          <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+            {/* Mobile Navigation Toggle */}
+            <div className="lg:hidden">
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => setShowMobileMenu(!showMobileMenu)}
+              >
+                {showMobileMenu ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+              </Button>
+            </div>
+
             {/* Notifications */}
             <Button 
               variant="ghost" 
-              size="icon" 
-              className="relative"
+              size="sm"
+              className="relative p-2"
               onClick={() => setShowNotifications(true)}
             >
-              <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
-              <Badge className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 rounded-full p-0 flex items-center justify-center text-xs bg-red-500">
+              <Bell className="h-4 w-4" />
+              <Badge className="absolute -top-1 -right-1 h-4 w-4 rounded-full p-0 flex items-center justify-center text-xs bg-red-500">
                 3
               </Badge>
             </Button>
@@ -171,14 +172,14 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center gap-2 hover:bg-gray-100 p-1 sm:p-2">
+                <Button variant="ghost" className="flex items-center gap-1 sm:gap-2 hover:bg-gray-100 p-1 sm:p-2">
                   <Avatar className="h-6 w-6 sm:h-8 sm:w-8">
                     <AvatarImage src="/placeholder.svg" />
-                    <AvatarFallback className="text-xs sm:text-sm">
+                    <AvatarFallback className="text-xs">
                       {user ? getInitials(user.name) : "U"}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="hidden xl:block text-sm font-medium">
+                  <span className="hidden sm:block xl:block text-sm font-medium max-w-24 truncate">
                     {user?.name || "Utilisateur"}
                   </span>
                 </Button>
@@ -227,44 +228,58 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
 
         {/* Mobile Navigation Menu */}
         {showMobileMenu && (
-          <div className="lg:hidden bg-white border-t border-gray-200 px-4 py-4">
+          <div className="lg:hidden bg-white border-t border-gray-200 px-4 py-4 shadow-lg">
             <nav className="flex flex-col space-y-2">
               <Button 
                 variant="ghost" 
-                className="justify-start text-gray-600 hover:text-blue-600"
+                className="justify-start text-gray-600 hover:text-blue-600 h-10"
                 onClick={() => {
                   navigate("/my-trainings");
                   setShowMobileMenu(false);
                 }}
               >
-                <BookOpen className="h-4 w-4 mr-2" />
+                <BookOpen className="h-4 w-4 mr-3" />
                 Mes Formations
               </Button>
               
               {canAccessFiles() && (
                 <Button 
                   variant="ghost" 
-                  className="justify-start text-gray-600 hover:text-blue-600"
+                  className="justify-start text-gray-600 hover:text-blue-600 h-10"
                   onClick={() => {
                     navigate("/files");
                     setShowMobileMenu(false);
                   }}
                 >
-                  <FileText className="h-4 w-4 mr-2" />
+                  <FileText className="h-4 w-4 mr-3" />
                   Fichiers
+                </Button>
+              )}
+
+              {hasPermission('assign_tasks') && (
+                <Button 
+                  variant="ghost" 
+                  className="justify-start text-gray-600 hover:text-blue-600 h-10"
+                  onClick={() => {
+                    navigate("/tasks");
+                    setShowMobileMenu(false);
+                  }}
+                >
+                  <CheckSquare className="h-4 w-4 mr-3" />
+                  Tâches
                 </Button>
               )}
 
               {canManageUsers() && (
                 <Button 
                   variant="ghost" 
-                  className="justify-start text-gray-600 hover:text-blue-600"
+                  className="justify-start text-gray-600 hover:text-blue-600 h-10"
                   onClick={() => {
                     navigate("/employees");
                     setShowMobileMenu(false);
                   }}
                 >
-                  <Users className="h-4 w-4 mr-2" />
+                  <Users className="h-4 w-4 mr-3" />
                   {user?.role === 'admin' ? 'Employés' : 'Équipe'}
                 </Button>
               )}
@@ -272,26 +287,26 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
               {hasPermission('view_analytics') && (
                 <Button 
                   variant="ghost" 
-                  className="justify-start text-gray-600 hover:text-blue-600"
+                  className="justify-start text-gray-600 hover:text-blue-600 h-10"
                   onClick={() => {
                     navigate("/analytics");
                     setShowMobileMenu(false);
                   }}
                 >
-                  <BarChart3 className="h-4 w-4 mr-2" />
+                  <BarChart3 className="h-4 w-4 mr-3" />
                   Analytiques
                 </Button>
               )}
 
               <Button 
                 variant="ghost" 
-                className="justify-start text-gray-600 hover:text-blue-600"
+                className="justify-start text-gray-600 hover:text-blue-600 h-10"
                 onClick={() => {
                   navigate("/team");
                   setShowMobileMenu(false);
                 }}
               >
-                <UserCheck className="h-4 w-4 mr-2" />
+                <UserCheck className="h-4 w-4 mr-3" />
                 Équipe
               </Button>
             </nav>

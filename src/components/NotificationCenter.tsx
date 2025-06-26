@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -131,15 +130,21 @@ const NotificationCenter = ({ onClose }: NotificationCenterProps) => {
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center pt-16">
-      <Card className="w-full max-w-md mx-4 max-h-[80vh] flex flex-col">
-        <CardHeader className="flex-shrink-0">
+    <div 
+      className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center pt-4 sm:pt-16 px-4"
+      onClick={onClose}
+    >
+      <Card 
+        className="w-full max-w-md sm:max-w-lg lg:max-w-xl h-[90vh] sm:h-[80vh] flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <CardHeader className="flex-shrink-0 pb-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Bell className="h-5 w-5" />
-              <CardTitle>Notifications</CardTitle>
+              <CardTitle className="text-lg sm:text-xl">Notifications</CardTitle>
               {unreadCount > 0 && (
-                <Badge className="bg-red-500">{unreadCount}</Badge>
+                <Badge className="bg-red-500 text-xs">{unreadCount}</Badge>
               )}
             </div>
             <Button variant="ghost" size="sm" onClick={onClose}>
@@ -147,7 +152,7 @@ const NotificationCenter = ({ onClose }: NotificationCenterProps) => {
             </Button>
           </div>
           {unreadCount > 0 && (
-            <Button variant="outline" size="sm" onClick={markAllAsRead} className="w-full">
+            <Button variant="outline" size="sm" onClick={markAllAsRead} className="w-full text-sm">
               Marquer toutes comme lues
             </Button>
           )}
@@ -155,7 +160,7 @@ const NotificationCenter = ({ onClose }: NotificationCenterProps) => {
         
         <CardContent className="flex-1 p-0 overflow-hidden">
           <ScrollArea className="h-full">
-            <div className="space-y-2 p-6 pt-0">
+            <div className="space-y-2 p-4 sm:p-6 pt-0">
               {notifications.length === 0 ? (
                 <div className="text-center py-8 text-gray-500">
                   <Bell className="h-12 w-12 mx-auto mb-4 opacity-50" />
@@ -165,25 +170,25 @@ const NotificationCenter = ({ onClose }: NotificationCenterProps) => {
                 notifications.map((notification) => (
                   <div
                     key={notification.id}
-                    className={`p-4 rounded-lg cursor-pointer transition-all duration-200 hover:shadow-md ${
+                    className={`p-3 sm:p-4 rounded-lg cursor-pointer transition-all duration-200 hover:shadow-md group ${
                       getNotificationStyle(notification.type)
                     } ${!notification.read ? 'ring-2 ring-blue-200' : ''}`}
                     onClick={() => markAsRead(notification.id)}
                   >
                     <div className="flex items-start gap-3">
                       <notification.icon 
-                        className={`h-5 w-5 mt-0.5 flex-shrink-0 ${getIconColor(notification.type)}`} 
+                        className={`h-4 w-4 sm:h-5 sm:w-5 mt-0.5 flex-shrink-0 ${getIconColor(notification.type)}`} 
                       />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h4 className="font-medium text-gray-900 mb-1">
+                          <div className="flex-1 pr-2">
+                            <h4 className="font-medium text-gray-900 mb-1 text-sm sm:text-base">
                               {notification.title}
                               {!notification.read && (
                                 <span className="ml-2 inline-block w-2 h-2 bg-blue-600 rounded-full"></span>
                               )}
                             </h4>
-                            <p className="text-sm text-gray-600 mb-2">{notification.message}</p>
+                            <p className="text-xs sm:text-sm text-gray-600 mb-2 break-words">{notification.message}</p>
                             <p className="text-xs text-gray-500">{notification.time}</p>
                           </div>
                           <Button
@@ -193,9 +198,9 @@ const NotificationCenter = ({ onClose }: NotificationCenterProps) => {
                               e.stopPropagation();
                               deleteNotification(notification.id);
                             }}
-                            className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                            className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 h-8 w-8 p-0"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
                           </Button>
                         </div>
                       </div>
