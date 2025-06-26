@@ -28,6 +28,7 @@ const Index = () => {
   const navigate = useNavigate();
   const { user, convertRole, getRoleDisplayName } = useAuth();
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [unreadCount, setUnreadCount] = useState(5);
 
   useEffect(() => {
@@ -255,15 +256,32 @@ const Index = () => {
           </CardContent>
         </Card>
 
-        {/* Admin Panel */}
+        {/* Admin Panel Button */}
         {(user?.role === 'admin' || user?.role === 'team_chief') && (
-          <AdminPanel userRole={convertRole(user?.role)} />
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Target className="h-5 w-5 text-primary" />
+                Administration
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button onClick={() => setShowAdminPanel(true)} className="w-full">
+                Ouvrir le Panneau d'Administration
+              </Button>
+            </CardContent>
+          </Card>
         )}
       </main>
 
       {/* Notification Center */}
       {showNotifications && (
         <NotificationCenter onClose={() => setShowNotifications(false)} />
+      )}
+
+      {/* Admin Panel */}
+      {showAdminPanel && (
+        <AdminPanel onClose={() => setShowAdminPanel(false)} />
       )}
     </div>
   );

@@ -19,6 +19,8 @@ interface AuthContextType {
   canAccessFiles: () => boolean;
   canManageUsers: () => boolean;
   canAssignTasks: () => boolean;
+  convertRole: (role: string | undefined) => 'admin' | 'student';
+  getRoleDisplayName: (role: 'admin' | 'student') => string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -71,6 +73,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return hasPermission('assign_tasks');
   };
 
+  const convertRole = (role: string | undefined): 'admin' | 'student' => {
+    if (role === 'admin' || role === 'team_chief') {
+      return 'admin';
+    }
+    return 'student';
+  };
+
+  const getRoleDisplayName = (role: 'admin' | 'student'): string => {
+    return role === 'admin' ? 'Administrateur' : 'Étudiant';
+  };
+
   const isAuthenticated = user !== null;
 
   return (
@@ -82,7 +95,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       hasPermission, 
       canAccessFiles, 
       canManageUsers, 
-      canAssignTasks 
+      canAssignTasks,
+      convertRole,
+      getRoleDisplayName
     }}>
       {children}
     </AuthContext.Provider>
