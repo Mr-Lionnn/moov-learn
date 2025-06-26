@@ -64,7 +64,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
-      <Header userRole={userRole} onShowAdminPanel={() => setShowAdminPanel(true)} />
+      <Header onShowAdminPanel={() => setShowAdminPanel(true)} />
       
       {showAdminPanel && userRole === "admin" && (
         <AdminPanel onClose={() => setShowAdminPanel(false)} />
