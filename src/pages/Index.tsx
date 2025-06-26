@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -65,6 +66,11 @@ const Index = () => {
   const isAdmin = user?.role === "admin";
   const canManage = hasPermission('manage_users') || hasPermission('manage_employees');
 
+  // Convert role to legacy format for components that still expect it
+  const getLegacyRole = (role: string): "admin" | "student" => {
+    return role === "admin" ? "admin" : "student";
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
       <Header onShowAdminPanel={() => setShowAdminPanel(true)} />
@@ -95,7 +101,7 @@ const Index = () => {
             </div>
           </div>
           
-          <StatsGrid userRole={user?.role || "employee"} />
+          <StatsGrid userRole={getLegacyRole(user?.role || "employee")} />
         </div>
 
         {/* Search Bar */}
@@ -129,7 +135,7 @@ const Index = () => {
               </div>
               <div className="space-y-4 sm:space-y-6">
                 {featuredCourses.filter(course => canManage || course.progress > 0).map((course) => (
-                  <CourseCard key={course.id} course={course} userRole={user?.role || "employee"} />
+                  <CourseCard key={course.id} course={course} userRole={getLegacyRole(user?.role || "employee")} />
                 ))}
               </div>
             </section>
@@ -140,7 +146,7 @@ const Index = () => {
                 <h2 className="text-xl sm:text-2xl font-bold mb-4 text-gray-900">Formations Recommandées</h2>
                 <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
                   {featuredCourses.filter(course => course.progress === 0).map((course) => (
-                    <CourseCard key={course.id} course={course} userRole={user?.role || "employee"} />
+                    <CourseCard key={course.id} course={course} userRole={getLegacyRole(user?.role || "employee")} />
                   ))}
                 </div>
               </section>

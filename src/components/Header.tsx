@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -21,7 +22,7 @@ import {
   UserCheck, 
   Menu, 
   FileText,
-  Tasks
+  CheckSquare
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -104,7 +105,7 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
                 className="text-gray-600 hover:text-blue-600 text-sm xl:text-base"
                 onClick={() => navigate("/tasks")}
               >
-                <Tasks className="h-4 w-4 mr-2" />
+                <CheckSquare className="h-4 w-4 mr-2" />
                 Tâches
               </Button>
             )}

@@ -11,14 +11,14 @@ import { useAuth } from "@/contexts/AuthContext";
 
 // Sample users with different roles from Republic of Benin
 const SAMPLE_USERS = [
-  { id: 1, email: "adeline.agbodjan@moov.bj", password: "password123", name: "Adeline Agbodjan", role: "admin", department: "IT" },
-  { id: 2, email: "rodrigue.hounkpatin@moov.bj", password: "password123", name: "Rodrigue Hounkpatin", role: "team_chief", department: "Network", teamId: 1 },
-  { id: 3, email: "christelle.adjovi@moov.bj", password: "password123", name: "Christelle Adjovi", role: "team_responsible", department: "Security", teamId: 2 },
-  { id: 4, email: "kossi.dossou@moov.bj", password: "password123", name: "Kossi Dossou", role: "team_member", department: "Network", teamId: 1 },
-  { id: 5, email: "fatima.alassane@moov.bj", password: "password123", name: "Fatima Alassane", role: "team_member", department: "Network", teamId: 1 },
-  { id: 6, email: "aminata.bio@moov.bj", password: "password123", name: "Aminata Bio", role: "assistant", department: "Support" },
-  { id: 7, email: "serge.kpohomou@moov.bj", password: "password123", name: "Serge Kpohomou", role: "employee", department: "Operations" },
-  { id: 8, email: "olivier.tognon@moov.bj", password: "password123", name: "Olivier Tognon", role: "employee", department: "Maintenance" }
+  { id: 1, email: "adeline.agbodjan@moov.bj", password: "password123", name: "Adeline Agbodjan", role: "admin" as const, department: "IT" },
+  { id: 2, email: "rodrigue.hounkpatin@moov.bj", password: "password123", name: "Rodrigue Hounkpatin", role: "team_chief" as const, department: "Network", teamId: 1 },
+  { id: 3, email: "christelle.adjovi@moov.bj", password: "password123", name: "Christelle Adjovi", role: "team_responsible" as const, department: "Security", teamId: 2 },
+  { id: 4, email: "kossi.dossou@moov.bj", password: "password123", name: "Kossi Dossou", role: "team_member" as const, department: "Network", teamId: 1 },
+  { id: 5, email: "fatima.alassane@moov.bj", password: "password123", name: "Fatima Alassane", role: "team_member" as const, department: "Network", teamId: 1 },
+  { id: 6, email: "aminata.bio@moov.bj", password: "password123", name: "Aminata Bio", role: "assistant" as const, department: "Support" },
+  { id: 7, email: "serge.kpohomou@moov.bj", password: "password123", name: "Serge Kpohomou", role: "employee" as const, department: "Operations" },
+  { id: 8, email: "olivier.tognon@moov.bj", password: "password123", name: "Olivier Tognon", role: "employee" as const, department: "Maintenance" }
 ];
 
 const Login = () => {
