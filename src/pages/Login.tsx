@@ -7,17 +7,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Network, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
-// Sample users from Republic of Benin
+// Sample users with different roles from Republic of Benin
 const SAMPLE_USERS = [
-  { id: 1, email: "adeline.agbodjan@moov.bj", password: "password123", name: "Adeline Agbodjan", role: "admin" },
-  { id: 2, email: "kossi.dossou@moov.bj", password: "password123", name: "Kossi Dossou", role: "student" },
-  { id: 3, email: "fatima.alassane@moov.bj", password: "password123", name: "Fatima Alassane", role: "student" },
-  { id: 4, email: "rodrigue.hounkpatin@moov.bj", password: "password123", name: "Rodrigue Hounkpatin", role: "admin" },
-  { id: 5, email: "aminata.bio@moov.bj", password: "password123", name: "Aminata Bio", role: "student" },
-  { id: 6, email: "serge.kpohomou@moov.bj", password: "password123", name: "Serge Kpohomou", role: "student" },
-  { id: 7, email: "christelle.adjovi@moov.bj", password: "password123", name: "Christelle Adjovi", role: "admin" },
-  { id: 8, email: "olivier.tognon@moov.bj", password: "password123", name: "Olivier Tognon", role: "student" }
+  { id: 1, email: "adeline.agbodjan@moov.bj", password: "password123", name: "Adeline Agbodjan", role: "admin", department: "IT" },
+  { id: 2, email: "rodrigue.hounkpatin@moov.bj", password: "password123", name: "Rodrigue Hounkpatin", role: "team_chief", department: "Network", teamId: 1 },
+  { id: 3, email: "christelle.adjovi@moov.bj", password: "password123", name: "Christelle Adjovi", role: "team_responsible", department: "Security", teamId: 2 },
+  { id: 4, email: "kossi.dossou@moov.bj", password: "password123", name: "Kossi Dossou", role: "team_member", department: "Network", teamId: 1 },
+  { id: 5, email: "fatima.alassane@moov.bj", password: "password123", name: "Fatima Alassane", role: "team_member", department: "Network", teamId: 1 },
+  { id: 6, email: "aminata.bio@moov.bj", password: "password123", name: "Aminata Bio", role: "assistant", department: "Support" },
+  { id: 7, email: "serge.kpohomou@moov.bj", password: "password123", name: "Serge Kpohomou", role: "employee", department: "Operations" },
+  { id: 8, email: "olivier.tognon@moov.bj", password: "password123", name: "Olivier Tognon", role: "employee", department: "Maintenance" }
 ];
 
 const Login = () => {
@@ -27,6 +28,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { login } = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,8 +39,7 @@ const Login = () => {
       const user = SAMPLE_USERS.find(u => u.email === email && u.password === password);
       
       if (user) {
-        // Store user data in localStorage
-        localStorage.setItem('user', JSON.stringify(user));
+        login(user);
         toast({
           title: "Connexion réussie",
           description: `Bienvenue, ${user.name}!`,
@@ -56,12 +57,24 @@ const Login = () => {
   };
 
   const handleQuickLogin = (user: typeof SAMPLE_USERS[0]) => {
-    localStorage.setItem('user', JSON.stringify(user));
+    login(user);
     toast({
       title: "Connexion réussie",
       description: `Bienvenue, ${user.name}!`,
     });
     navigate("/");
+  };
+
+  const getRoleLabel = (role: string) => {
+    const roleLabels = {
+      admin: "Administrateur",
+      team_chief: "Chef d'Équipe",
+      team_responsible: "Responsable d'Équipe",
+      team_member: "Membre d'Équipe",
+      assistant: "Assistant",
+      employee: "Employé"
+    };
+    return roleLabels[role as keyof typeof roleLabels] || role;
   };
 
   return (
@@ -140,7 +153,7 @@ const Login = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              {SAMPLE_USERS.slice(0, 4).map((user) => (
+              {SAMPLE_USERS.map((user) => (
                 <Button
                   key={user.id}
                   variant="outline"
@@ -151,7 +164,7 @@ const Login = () => {
                   <div className="flex flex-col items-start">
                     <span className="font-medium">{user.name}</span>
                     <span className="text-gray-500">
-                      {user.email} • {user.role === "admin" ? "Administrateur" : "Employé"}
+                      {user.email} • {getRoleLabel(user.role)}
                     </span>
                   </div>
                 </Button>

@@ -15,6 +15,7 @@ import Analytics from "./pages/Analytics";
 import Team from "./pages/Team";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
+import Files from "./pages/Files";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -41,6 +42,11 @@ const App = () => (
             <Route path="/my-trainings" element={
               <ProtectedRoute>
                 <MyTrainings />
+              </ProtectedRoute>
+            } />
+            <Route path="/files" element={
+              <ProtectedRoute>
+                <Files />
               </ProtectedRoute>
             } />
             <Route path="/employees" element={

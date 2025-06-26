@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -10,7 +9,20 @@ import {
   DropdownMenuSeparator 
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { Network, Bell, User, Settings, LogOut, Users, BarChart3, BookOpen, UserCheck, Menu } from "lucide-react";
+import { 
+  Network, 
+  Bell, 
+  User, 
+  Settings, 
+  LogOut, 
+  Users, 
+  BarChart3, 
+  BookOpen, 
+  UserCheck, 
+  Menu, 
+  FileText,
+  Tasks
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -22,7 +34,7 @@ interface HeaderProps {
 
 const Header = ({ onShowAdminPanel }: HeaderProps) => {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout, hasPermission, canManageUsers, canAccessFiles } = useAuth();
   const { toast } = useToast();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -38,6 +50,18 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
 
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
+  };
+
+  const getRoleLabel = (role: string) => {
+    const roleLabels = {
+      admin: "Administrateur",
+      team_chief: "Chef d'Équipe",
+      team_responsible: "Responsable d'Équipe",
+      team_member: "Membre d'Équipe",
+      assistant: "Assistant",
+      employee: "Employé"
+    };
+    return roleLabels[role as keyof typeof roleLabels] || role;
   };
 
   return (
@@ -62,26 +86,51 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
               <BookOpen className="h-4 w-4 mr-2" />
               Mes Formations
             </Button>
-            {user?.role === "admin" && (
-              <>
-                <Button 
-                  variant="ghost" 
-                  className="text-gray-600 hover:text-blue-600 text-sm xl:text-base" 
-                  onClick={() => navigate("/employees")}
-                >
-                  <Users className="h-4 w-4 mr-2" />
-                  Employés
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  className="text-gray-600 hover:text-blue-600 text-sm xl:text-base"
-                  onClick={() => navigate("/analytics")}
-                >
-                  <BarChart3 className="h-4 w-4 mr-2" />
-                  Analytiques
-                </Button>
-              </>
+            
+            {canAccessFiles() && (
+              <Button 
+                variant="ghost" 
+                className="text-gray-600 hover:text-blue-600 text-sm xl:text-base"
+                onClick={() => navigate("/files")}
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                Fichiers
+              </Button>
             )}
+
+            {hasPermission('assign_tasks') && (
+              <Button 
+                variant="ghost" 
+                className="text-gray-600 hover:text-blue-600 text-sm xl:text-base"
+                onClick={() => navigate("/tasks")}
+              >
+                <Tasks className="h-4 w-4 mr-2" />
+                Tâches
+              </Button>
+            )}
+
+            {canManageUsers() && (
+              <Button 
+                variant="ghost" 
+                className="text-gray-600 hover:text-blue-600 text-sm xl:text-base" 
+                onClick={() => navigate("/employees")}
+              >
+                <Users className="h-4 w-4 mr-2" />
+                {user?.role === 'admin' ? 'Employés' : 'Équipe'}
+              </Button>
+            )}
+            
+            {hasPermission('view_analytics') && (
+              <Button 
+                variant="ghost" 
+                className="text-gray-600 hover:text-blue-600 text-sm xl:text-base"
+                onClick={() => navigate("/analytics")}
+              >
+                <BarChart3 className="h-4 w-4 mr-2" />
+                Analytiques
+              </Button>
+            )}
+
             <Button 
               variant="ghost" 
               className="text-gray-600 hover:text-blue-600 text-sm xl:text-base"
@@ -146,7 +195,7 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
                       {user?.name || "Utilisateur"}
                     </span>
                     <span className="text-xs text-gray-500">
-                      {user?.email || "email@moov.bj"}
+                      {user ? getRoleLabel(user.role) : "Rôle"}
                     </span>
                   </div>
                 </div>
@@ -155,7 +204,7 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
                   <User className="mr-2 h-4 w-4" />
                   Profil
                 </DropdownMenuItem>
-                {user?.role === "admin" && (
+                {onShowAdminPanel && user?.role === "admin" && (
                   <DropdownMenuItem onClick={onShowAdminPanel}>
                     <Users className="mr-2 h-4 w-4" />
                     Gestion des Employés
@@ -190,32 +239,49 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
                 <BookOpen className="h-4 w-4 mr-2" />
                 Mes Formations
               </Button>
-              {user?.role === "admin" && (
-                <>
-                  <Button 
-                    variant="ghost" 
-                    className="justify-start text-gray-600 hover:text-blue-600"
-                    onClick={() => {
-                      navigate("/employees");
-                      setShowMobileMenu(false);
-                    }}
-                  >
-                    <Users className="h-4 w-4 mr-2" />
-                    Employés
-                  </Button>
-                  <Button 
-                    variant="ghost" 
-                    className="justify-start text-gray-600 hover:text-blue-600"
-                    onClick={() => {
-                      navigate("/analytics");
-                      setShowMobileMenu(false);
-                    }}
-                  >
-                    <BarChart3 className="h-4 w-4 mr-2" />
-                    Analytiques
-                  </Button>
-                </>
+              
+              {canAccessFiles() && (
+                <Button 
+                  variant="ghost" 
+                  className="justify-start text-gray-600 hover:text-blue-600"
+                  onClick={() => {
+                    navigate("/files");
+                    setShowMobileMenu(false);
+                  }}
+                >
+                  <FileText className="h-4 w-4 mr-2" />
+                  Fichiers
+                </Button>
               )}
+
+              {canManageUsers() && (
+                <Button 
+                  variant="ghost" 
+                  className="justify-start text-gray-600 hover:text-blue-600"
+                  onClick={() => {
+                    navigate("/employees");
+                    setShowMobileMenu(false);
+                  }}
+                >
+                  <Users className="h-4 w-4 mr-2" />
+                  {user?.role === 'admin' ? 'Employés' : 'Équipe'}
+                </Button>
+              )}
+              
+              {hasPermission('view_analytics') && (
+                <Button 
+                  variant="ghost" 
+                  className="justify-start text-gray-600 hover:text-blue-600"
+                  onClick={() => {
+                    navigate("/analytics");
+                    setShowMobileMenu(false);
+                  }}
+                >
+                  <BarChart3 className="h-4 w-4 mr-2" />
+                  Analytiques
+                </Button>
+              )}
+
               <Button 
                 variant="ghost" 
                 className="justify-start text-gray-600 hover:text-blue-600"
