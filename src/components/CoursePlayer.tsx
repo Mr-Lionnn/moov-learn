@@ -35,7 +35,6 @@ interface CoursePlayerProps {
 const CoursePlayer = ({ courseTitle, currentLesson, lessons }: CoursePlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(45);
-  const [volume, setVolume] = useState(80);
 
   const togglePlay = () => {
     setIsPlaying(!isPlaying);
@@ -62,28 +61,23 @@ const CoursePlayer = ({ courseTitle, currentLesson, lessons }: CoursePlayerProps
       <div className="lg:col-span-2">
         <Card>
           <CardContent className="p-0">
-            {/* Video Display */}
+            {/* Video Display with actual video */}
             <div className="aspect-video bg-black rounded-t-lg relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-white text-center">
-                  <h3 className="text-xl font-semibold mb-2">{currentLesson.title}</h3>
-                  <p className="text-gray-300">Video content would play here</p>
-                </div>
-              </div>
-              
-              {/* Play Button Overlay */}
-              <Button
-                size="icon"
-                onClick={togglePlay}
-                className="absolute inset-0 m-auto h-16 w-16 rounded-full bg-white/20 backdrop-blur-sm border-2 border-white/30 hover:bg-white/30"
+              <video
+                className="w-full h-full object-cover"
+                controls
+                poster="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1600&h=900&q=80"
               >
-                {isPlaying ? (
-                  <Pause className="h-6 w-6 text-white" />
-                ) : (
-                  <Play className="h-6 w-6 text-white ml-1" />
-                )}
-              </Button>
+                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
+                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4" />
+                Votre navigateur ne supporte pas la lecture vidéo.
+              </video>
+              
+              <div className="absolute top-4 left-4">
+                <Badge className="bg-black/70 text-white border-none">
+                  {currentLesson.type === "video" ? "Vidéo" : currentLesson.type === "quiz" ? "Quiz" : "Lecture"}
+                </Badge>
+              </div>
             </div>
 
             {/* Video Controls */}
@@ -94,7 +88,7 @@ const CoursePlayer = ({ courseTitle, currentLesson, lessons }: CoursePlayerProps
                   <Progress value={progress} className="h-2" />
                   <div className="flex justify-between text-sm text-gray-600">
                     <span>12:45</span>
-                    <span>28:30</span>
+                    <span>{currentLesson.duration}</span>
                   </div>
                 </div>
 
@@ -104,7 +98,7 @@ const CoursePlayer = ({ courseTitle, currentLesson, lessons }: CoursePlayerProps
                     <Button size="icon" variant="ghost">
                       <SkipBack className="h-4 w-4" />
                     </Button>
-                    <Button size="icon" onClick={togglePlay}>
+                    <Button size="icon" onClick={togglePlay} className="moov-gradient text-white">
                       {isPlaying ? (
                         <Pause className="h-4 w-4" />
                       ) : (
@@ -145,11 +139,19 @@ const CoursePlayer = ({ courseTitle, currentLesson, lessons }: CoursePlayerProps
             </div>
           </CardHeader>
           <CardContent>
-            <p className="text-gray-700 leading-relaxed">
-              In this lesson, you'll learn the fundamental concepts that will serve as the foundation 
-              for your understanding of this topic. We'll cover practical examples and real-world 
-              applications to help you grasp the material effectively.
+            <p className="text-gray-700 leading-relaxed mb-4">
+              Dans cette leçon, vous apprendrez les concepts fondamentaux qui serviront de base 
+              à votre compréhension de ce sujet. Nous couvrirons des exemples pratiques et des 
+              applications du monde réel pour vous aider à saisir efficacement le matériel.
             </p>
+            <div className="flex gap-2">
+              <Button className="moov-gradient text-white">
+                Marquer comme Terminé
+              </Button>
+              <Button variant="outline">
+                Prendre des Notes
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -159,8 +161,8 @@ const CoursePlayer = ({ courseTitle, currentLesson, lessons }: CoursePlayerProps
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              Course Content
-              <Badge variant="outline">
+              Contenu du Cours
+              <Badge variant="outline" className="bg-blue-50 text-primary border-primary">
                 {lessons.filter(l => l.completed).length}/{lessons.length}
               </Badge>
             </CardTitle>
@@ -170,8 +172,8 @@ const CoursePlayer = ({ courseTitle, currentLesson, lessons }: CoursePlayerProps
               {lessons.map((lesson, index) => (
                 <div key={lesson.id}>
                   <div 
-                    className={`p-4 hover:bg-gray-50 cursor-pointer transition-colors ${
-                      lesson.id === currentLesson.id ? 'bg-blue-50 border-r-2 border-blue-600' : ''
+                    className={`p-4 hover:bg-blue-50 cursor-pointer transition-colors ${
+                      lesson.id === currentLesson.id ? 'bg-blue-50 border-r-4 border-primary' : ''
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -184,7 +186,7 @@ const CoursePlayer = ({ courseTitle, currentLesson, lessons }: CoursePlayerProps
                         </h4>
                         <div className="flex items-center gap-2 mt-1">
                           <Badge variant="outline" className="text-xs">
-                            {lesson.type}
+                            {lesson.type === "video" ? "Vidéo" : lesson.type === "quiz" ? "Quiz" : "Lecture"}
                           </Badge>
                           <span className="text-xs text-gray-500">{lesson.duration}</span>
                         </div>
@@ -197,6 +199,23 @@ const CoursePlayer = ({ courseTitle, currentLesson, lessons }: CoursePlayerProps
                   {index < lessons.length - 1 && <Separator />}
                 </div>
               ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Course Actions */}
+        <Card className="mt-4">
+          <CardContent className="p-4">
+            <div className="space-y-3">
+              <Button className="w-full moov-gradient text-white">
+                Leçon Suivante
+              </Button>
+              <Button variant="outline" className="w-full">
+                Télécharger les Ressources
+              </Button>
+              <Button variant="outline" className="w-full">
+                Rejoindre la Discussion
+              </Button>
             </div>
           </CardContent>
         </Card>

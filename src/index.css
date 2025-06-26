@@ -16,17 +16,19 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
+    /* Moov Africa Blue */
     --primary: 214 80% 47%;
-    --primary-foreground: 210 40% 98%;
+    --primary-foreground: 0 0% 100%;
 
+    /* Moov Africa Orange */
     --secondary: 25 95% 53%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary-foreground: 0 0% 100%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
     --accent: 25 95% 53%;
-    --accent-foreground: 0 0% 98%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
@@ -96,11 +98,45 @@
   }
 }
 
-/* Moov Africa gradient backgrounds */
+/* Moov Africa gradient backgrounds - Updated to match exact brand colors */
 .moov-gradient {
   background: linear-gradient(135deg, #3b82f6 0%, #f97316 100%);
 }
 
 .moov-gradient-subtle {
   background: linear-gradient(135deg, #eff6ff 0%, #fff7ed 100%);
+}
+
+/* Additional Moov Africa specific styles */
+.moov-blue {
+  color: #3b82f6;
+}
+
+.moov-orange {
+  color: #f97316;
+}
+
+.bg-moov-blue {
+  background-color: #3b82f6;
+}
+
+.bg-moov-orange {
+  background-color: #f97316;
+}
+
+.border-moov-blue {
+  border-color: #3b82f6;
+}
+
+.border-moov-orange {
+  border-color: #f97316;
+}
+
+/* Enhanced button styles for Moov branding */
+.btn-moov-primary {
+  @apply bg-gradient-to-r from-blue-500 to-orange-500 text-white font-medium px-6 py-3 rounded-lg hover:from-blue-600 hover:to-orange-600 transition-all duration-300 shadow-lg hover:shadow-xl;
+}
+
+.btn-moov-secondary {
+  @apply border-2 border-blue-500 text-blue-500 font-medium px-6 py-3 rounded-lg hover:bg-blue-500 hover:text-white transition-all duration-300;
 }
