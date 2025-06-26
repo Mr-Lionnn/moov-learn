@@ -1,274 +1,270 @@
-
-import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { BookOpen, Clock, Users, Award, Search, Play, CheckCircle, TrendingUp, Plus, Settings } from "lucide-react";
-import CourseCard from "@/components/CourseCard";
+import { Progress } from "@/components/ui/progress";
+import {
+  Bell,
+  Search,
+  Zap,
+  Play,
+  BookOpen,
+  Award,
+  FileText,
+  Star,
+  Clock,
+  ChevronRight,
+  CheckCircle,
+  Target
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import StatsGrid from "@/components/StatsGrid";
+import NotificationCenter from "@/components/NotificationCenter";
 import AdminPanel from "@/components/AdminPanel";
 import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const { user, hasPermission } = useAuth();
-  const [showAdminPanel, setShowAdminPanel] = useState(false);
+  const navigate = useNavigate();
+  const { user, convertRole, getRoleDisplayName } = useAuth();
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(5);
 
-  const featuredCourses = [
-    {
-      id: 1,
-      title: "Fondamentaux des Réseaux TCP/IP",
-      instructor: "Marie Dubois - Ingénieur Réseau Senior",
-      duration: "8 heures",
-      students: 45,
-      rating: 4.9,
-      progress: 75,
-      image: "/placeholder.svg",
-      category: "Réseaux",
-      level: "Débutant"
-    },
-    {
-      id: 2,
-      title: "Configuration des Switches Cisco",
-      instructor: "Pierre Martin - Expert Cisco",
-      duration: "12 heures",
-      students: 32,
-      rating: 4.8,
-      progress: 40,
-      image: "/placeholder.svg",
-      category: "Infrastructure",
-      level: "Intermédiaire"
-    },
-    {
-      id: 3,
-      title: "Sécurité Réseau et Pare-feu",
-      instructor: "Sophie Laurent - Spécialiste Sécurité",
-      duration: "15 heures",
-      students: 28,
-      rating: 4.9,
-      progress: 0,
-      image: "/placeholder.svg",
-      category: "Sécurité",
-      level: "Avancé"
-    }
-  ];
-
-  const recentAchievements = [
-    { title: "Certification Obtenue", description: "Cisco CCNA Routing & Switching", date: "Il y a 2 jours", icon: Award },
-    { title: "Score Parfait", description: "100% au Quiz Protocoles Réseau", date: "Il y a 1 semaine", icon: CheckCircle },
-    { title: "Formation Terminée", description: "Sécurité des Réseaux Sans Fil", date: "Il y a 3 jours", icon: TrendingUp }
-  ];
-
-  const isAdmin = user?.role === "admin";
-  const canManage = hasPermission('manage_users') || hasPermission('manage_employees');
-
-  // Convert role to legacy format for components that still expect it
-  const getLegacyRole = (role: string): "admin" | "student" => {
-    return role === "admin" ? "admin" : "student";
-  };
+  useEffect(() => {
+    // Simulate fetching unread notifications count from an API
+    // In a real application, this would be an API call
+    setTimeout(() => {
+      setUnreadCount(3); // Example: set unread count to 3 after fetching
+    }, 1500);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
-      <Header onShowAdminPanel={() => setShowAdminPanel(true)} />
+    <div className="min-h-screen moov-gradient-subtle">
+      <Header />
       
-      {showAdminPanel && isAdmin && (
-        <AdminPanel onClose={() => setShowAdminPanel(false)} />
-      )}
-      
-      <main className="container mx-auto px-4 py-4 sm:py-8">
+      <main className="container mx-auto px-4 py-6 space-y-6">
         {/* Welcome Section */}
-        <div className="mb-6 sm:mb-8">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6">
-            <Avatar className="h-12 w-12 sm:h-16 sm:w-16">
-              <AvatarImage src="/placeholder.svg" />
-              <AvatarFallback>
-                {user ? user.name.split(' ').map(n => n[0]).join('').toUpperCase() : "U"}
-              </AvatarFallback>
-            </Avatar>
+        <div className="moov-gradient rounded-xl p-6 text-white">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                {canManage ? "Tableau de Bord Administrateur" : `Bienvenue, ${user?.name?.split(' ')[0] || 'Utilisateur'} !`}
+              <h1 className="text-2xl md:text-3xl font-bold mb-2">
+                Bienvenue, {user?.name || 'Utilisateur'} !
               </h1>
-              <p className="text-gray-600 text-sm sm:text-base">
-                {canManage 
-                  ? "Gérez les formations réseau et suivez les progrès de l'équipe" 
-                  : "Continuez votre formation en technologies réseau"}
+              <p className="text-blue-100 mb-4 md:mb-0">
+                {getRoleDisplayName(convertRole(user?.role))} - Continuez votre apprentissage
               </p>
             </div>
-          </div>
-          
-          <StatsGrid userRole={getLegacyRole(user?.role || "employee")} />
-        </div>
-
-        {/* Search Bar */}
-        <div className="mb-6 sm:mb-8">
-          <div className="relative max-w-full sm:max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              placeholder="Rechercher formations, protocoles, équipements..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-        </div>
-
-        <div className="grid lg:grid-cols-3 gap-6 sm:gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6 sm:space-y-8">
-            {/* Continue Learning / Course Management */}
-            <section>
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
-                  {canManage ? "Gestion des Formations" : "Poursuivre ma Formation"}
-                </h2>
-                {canManage && (
-                  <Button onClick={() => setShowAdminPanel(true)} className="w-full sm:w-auto">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Nouvelle Formation
-                  </Button>
+            <div className="flex gap-3">
+              <Button 
+                variant="secondary" 
+                onClick={() => setShowNotifications(true)}
+                className="relative bg-white text-primary hover:bg-gray-100"
+              >
+                <Bell className="h-4 w-4 mr-2" />
+                Notifications
+                {unreadCount > 0 && (
+                  <Badge className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs min-w-[1.25rem] h-5">
+                    {unreadCount}
+                  </Badge>
                 )}
-              </div>
-              <div className="space-y-4 sm:space-y-6">
-                {featuredCourses.filter(course => canManage || course.progress > 0).map((course) => (
-                  <CourseCard key={course.id} course={course} userRole={getLegacyRole(user?.role || "employee")} />
-                ))}
-              </div>
-            </section>
-
-            {/* Recommended Courses */}
-            {!canManage && (
-              <section>
-                <h2 className="text-xl sm:text-2xl font-bold mb-4 text-gray-900">Formations Recommandées</h2>
-                <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
-                  {featuredCourses.filter(course => course.progress === 0).map((course) => (
-                    <CourseCard key={course.id} course={course} userRole={getLegacyRole(user?.role || "employee")} />
-                  ))}
-                </div>
-              </section>
-            )}
+              </Button>
+              <Button 
+                variant="secondary"
+                className="bg-white text-primary hover:bg-gray-100"
+              >
+                <Search className="h-4 w-4 mr-2" />
+                Rechercher
+              </Button>
+            </div>
           </div>
+        </div>
 
-          {/* Sidebar */}
-          <div className="space-y-4 sm:space-y-6">
-            {/* Recent Achievements / Team Progress */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <Award className="h-5 w-5 text-yellow-500" />
-                  {canManage ? "Progrès de l'Équipe" : "Réussites Récentes"}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {canManage ? (
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">Employés Actifs</span>
-                      <Badge>145</Badge>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">Formations Terminées</span>
-                      <Badge className="bg-green-100 text-green-800">287</Badge>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">Taux de Réussite</span>
-                      <span className="text-sm font-medium">92%</span>
+        {/* Stats Grid */}
+        <StatsGrid userRole={convertRole(user?.role)} />
+
+        {/* Quick Actions */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Zap className="h-5 w-5 text-primary" />
+              Actions Rapides
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <Button 
+                variant="outline" 
+                className="h-20 flex-col gap-2 hover:bg-blue-50 hover:border-primary"
+                onClick={() => navigate("/course/1")}
+              >
+                <Play className="h-6 w-6 text-primary" />
+                <span className="text-sm">Nouvelle Formation</span>
+              </Button>
+              <Button 
+                variant="outline" 
+                className="h-20 flex-col gap-2 hover:bg-orange-50 hover:border-secondary"
+                onClick={() => navigate("/my-trainings")}
+              >
+                <BookOpen className="h-6 w-6 text-secondary" />
+                <span className="text-sm">Mes Formations</span>
+              </Button>
+              <Button 
+                variant="outline" 
+                className="h-20 flex-col gap-2 hover:bg-green-50 hover:border-green-500"
+              >
+                <Award className="h-6 w-6 text-green-600" />
+                <span className="text-sm">Certifications</span>
+              </Button>
+              <Button 
+                variant="outline" 
+                className="h-20 flex-col gap-2 hover:bg-purple-50 hover:border-purple-500"
+                onClick={() => navigate("/files")}
+              >
+                <FileText className="h-6 w-6 text-purple-600" />
+                <span className="text-sm">Fichiers</span>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Course Recommendations */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <span className="flex items-center gap-2">
+                <Star className="h-5 w-5 text-primary" />
+                Formations Recommandées
+              </span>
+              <Button variant="ghost" size="sm">
+                Voir tout
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                {
+                  title: "Fondamentaux des Réseaux TCP/IP",
+                  description: "Apprenez les bases des protocoles réseau",
+                  duration: "4h 30min",
+                  level: "Débutant",
+                  progress: 65,
+                  image: "bg-gradient-to-br from-blue-500 to-blue-600"
+                },
+                {
+                  title: "Sécurité Informatique Avancée",
+                  description: "Techniques de protection et cybersécurité",
+                  duration: "6h 15min",
+                  level: "Avancé",
+                  progress: 0,
+                  image: "bg-gradient-to-br from-red-500 to-red-600"
+                },
+                {
+                  title: "Administration Système Linux",
+                  description: "Maîtrisez l'administration des serveurs Linux",
+                  duration: "8h 45min",
+                  level: "Intermédiaire",
+                  progress: 25,
+                  image: "bg-gradient-to-br from-green-500 to-green-600"
+                }
+              ].map((course, index) => (
+                <Card 
+                  key={index} 
+                  className="hover:shadow-lg transition-shadow cursor-pointer group"
+                  onClick={() => navigate("/course/1")}
+                >
+                  <div className={`h-32 ${course.image} rounded-t-lg relative overflow-hidden`}>
+                    <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all" />
+                    <div className="absolute bottom-2 left-2">
+                      <Badge variant="secondary" className="bg-white text-gray-800">
+                        {course.level}
+                      </Badge>
                     </div>
                   </div>
-                ) : (
-                  recentAchievements.map((achievement, index) => (
-                    <div key={index} className="flex items-start gap-3">
-                      <div className="p-2 bg-green-100 rounded-full flex-shrink-0">
-                        <achievement.icon className="h-4 w-4 text-green-600" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-gray-900">{achievement.title}</h4>
-                        <p className="text-sm text-gray-600 break-words">{achievement.description}</p>
-                        <span className="text-xs text-gray-400">{achievement.date}</span>
-                      </div>
+                  <CardContent className="p-4">
+                    <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors">
+                      {course.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 mb-3">{course.description}</p>
+                    <div className="flex items-center justify-between text-sm text-gray-500 mb-3">
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        {course.duration}
+                      </span>
                     </div>
-                  ))
-                )}
-              </CardContent>
-            </Card>
+                    {course.progress > 0 && (
+                      <div className="space-y-1">
+                        <div className="flex justify-between text-xs text-gray-500">
+                          <span>Progression</span>
+                          <span>{course.progress}%</span>
+                        </div>
+                        <Progress value={course.progress} className="h-2" />
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
-            {/* Learning Goal / Admin Stats */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">
-                  {canManage ? "Statistiques Hebdomadaires" : "Objectif Mensuel"}
-                </CardTitle>
-                <CardDescription className="text-sm">
-                  {canManage 
-                    ? "Activité de formation cette semaine" 
-                    : "Terminer 3 modules ce mois"}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>
-                      {canManage ? "Engagement" : "Progrès"}
-                    </span>
-                    <span>
-                      {canManage ? "92%" : "2/3 modules"}
-                    </span>
+        {/* Recent Activity */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Clock className="h-5 w-5 text-primary" />
+              Activité Récente
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {[
+                {
+                  action: "Formation terminée",
+                  details: "Introduction aux Bases de Données",
+                  time: "Il y a 2 heures",
+                  icon: CheckCircle,
+                  color: "text-green-600"
+                },
+                {
+                  action: "Nouveau badge obtenu",
+                  details: "Expert en Sécurité Réseau",
+                  time: "Hier",
+                  icon: Award,
+                  color: "text-yellow-600"
+                },
+                {
+                  action: "Quiz complété",
+                  details: "Protocoles TCP/IP - Score: 87%",
+                  time: "Il y a 3 jours",
+                  icon: Target,
+                  color: "text-blue-600"
+                }
+              ].map((activity, index) => (
+                <div key={index} className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50">
+                  <activity.icon className={`h-5 w-5 ${activity.color}`} />
+                  <div className="flex-1">
+                    <p className="font-medium">{activity.action}</p>
+                    <p className="text-sm text-gray-600">{activity.details}</p>
                   </div>
-                  <Progress value={canManage ? 92 : 67} className="h-2" />
-                  <p className="text-xs text-gray-500">
-                    {canManage 
-                      ? "Excellent engagement de l'équipe !" 
-                      : "Plus qu'un module pour atteindre votre objectif !"}
-                  </p>
+                  <span className="text-xs text-gray-500">{activity.time}</span>
                 </div>
-              </CardContent>
-            </Card>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
-            {/* Quick Stats */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">
-                  {canManage ? "Statistiques Plateforme" : "Mes Statistiques"}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600 text-sm">
-                    {canManage ? "Total Formations" : "Formations Actives"}
-                  </span>
-                  <Badge variant="secondary">{canManage ? "28" : "8"}</Badge>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600 text-sm">
-                    {canManage ? "Employés Inscrits" : "Terminées"}
-                  </span>
-                  <Badge className="bg-green-100 text-green-800">
-                    {canManage ? "145" : "12"}
-                  </Badge>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600 text-sm">Certifications</span>
-                  <Badge className="bg-blue-100 text-blue-800">
-                    {canManage ? "287" : "3"}
-                  </Badge>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600 text-sm">
-                    {canManage ? "Temps Total Équipe" : "Temps de Formation"}
-                  </span>
-                  <span className="text-sm font-medium">
-                    {canManage ? "1,250 heures" : "32,5 heures"}
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+        {/* Admin Panel */}
+        {(user?.role === 'admin' || user?.role === 'team_chief') && (
+          <AdminPanel userRole={convertRole(user?.role)} />
+        )}
       </main>
+
+      {/* Notification Center */}
+      {showNotifications && (
+        <NotificationCenter onClose={() => setShowNotifications(false)} />
+      )}
     </div>
   );
 };

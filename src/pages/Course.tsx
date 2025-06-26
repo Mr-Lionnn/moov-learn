@@ -6,10 +6,14 @@ import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import CoursePlayer from "@/components/CoursePlayer";
 import QuizComponent from "@/components/QuizComponent";
+import LessonFormatSelector from "@/components/LessonFormatSelector";
+import LessonTextContent from "@/components/LessonTextContent";
+import LessonAudioContent from "@/components/LessonAudioContent";
 
 const Course = () => {
   const navigate = useNavigate();
   const [currentView, setCurrentView] = useState<"video" | "quiz">("video");
+  const [selectedFormat, setSelectedFormat] = useState<"video" | "text" | "audio">("video");
 
   const lessons = [
     { id: 1, title: "Introduction aux Réseaux TCP/IP", duration: "18:30", completed: true, type: "video" as const },
@@ -20,7 +24,27 @@ const Course = () => {
     { id: 6, title: "Évaluation Certification", duration: "30:00", completed: false, type: "quiz" as const },
   ];
 
-  const currentLesson = lessons.find(l => l.id === 3) || lessons[0];
+  const currentLesson = lessons.find(l => l.id === 1) || lessons[0];
+
+  const lessonTextContent = `
+Les réseaux TCP/IP constituent l'épine dorsale d'Internet et des réseaux modernes. Cette technologie fondamentale permet la communication entre milliards d'appareils à travers le monde.
+
+Le protocole TCP/IP (Transmission Control Protocol/Internet Protocol) est en réalité une suite de protocoles qui travaillent ensemble pour assurer une communication fiable et efficace. TCP s'occupe de la transmission fiable des données, tandis qu'IP gère l'adressage et le routage.
+
+Le modèle OSI (Open Systems Interconnection) propose une approche structurée de la communication réseau en 7 couches distinctes :
+
+1. Couche Physique : Transmission des bits sur le support physique
+2. Couche Liaison : Contrôle d'accès au medium et détection d'erreurs
+3. Couche Réseau : Routage et adressage logique (IP)
+4. Couche Transport : Transmission fiable (TCP) ou rapide (UDP)
+5. Couche Session : Gestion des sessions de communication
+6. Couche Présentation : Chiffrement et compression des données
+7. Couche Application : Interface avec les applications utilisateur
+
+L'encapsulation est un processus clé où chaque couche ajoute ses propres informations d'en-tête aux données reçues de la couche supérieure. Ce processus permet un acheminement précis et fiable des informations à travers le réseau.
+
+Comprendre ces concepts est essentiel pour tout professionnel IT, car ils forment la base de toutes les communications modernes, des emails aux services cloud en passant par le streaming vidéo.
+  `;
 
   const quizQuestions = [
     {
@@ -61,8 +85,55 @@ const Course = () => {
     }
   ];
 
+  const renderContent = () => {
+    if (currentView === "quiz") {
+      return (
+        <QuizComponent
+          title="Test de Connaissances - Protocoles Réseau"
+          questions={quizQuestions}
+          timeLimit={900}
+        />
+      );
+    }
+
+    return (
+      <div className="space-y-6">
+        <LessonFormatSelector
+          onFormatSelect={setSelectedFormat}
+          selectedFormat={selectedFormat}
+          lessonTitle={currentLesson.title}
+          duration={currentLesson.duration}
+        />
+        
+        {selectedFormat === "video" && (
+          <CoursePlayer
+            courseTitle="Fondamentaux des Réseaux TCP/IP"
+            currentLesson={currentLesson}
+            lessons={lessons}
+          />
+        )}
+        
+        {selectedFormat === "text" && (
+          <LessonTextContent
+            title={currentLesson.title}
+            content={lessonTextContent}
+            progress={45}
+          />
+        )}
+        
+        {selectedFormat === "audio" && (
+          <LessonAudioContent
+            title={currentLesson.title}
+            duration={currentLesson.duration}
+            transcript="Transcription disponible pour ce contenu audio..."
+          />
+        )}
+      </div>
+    );
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
+    <div className="min-h-screen moov-gradient-subtle">
       <Header />
       
       <main className="container mx-auto px-4 py-6">
@@ -80,31 +151,21 @@ const Course = () => {
             <Button 
               variant={currentView === "video" ? "default" : "outline"}
               onClick={() => setCurrentView("video")}
+              className={currentView === "video" ? "moov-gradient text-white" : ""}
             >
               Module de Formation
             </Button>
             <Button 
               variant={currentView === "quiz" ? "default" : "outline"}
               onClick={() => setCurrentView("quiz")}
+              className={currentView === "quiz" ? "moov-gradient text-white" : ""}
             >
               Test de Connaissances
             </Button>
           </div>
         </div>
 
-        {currentView === "video" ? (
-          <CoursePlayer
-            courseTitle="Fondamentaux des Réseaux TCP/IP"
-            currentLesson={currentLesson}
-            lessons={lessons}
-          />
-        ) : (
-          <QuizComponent
-            title="Test de Connaissances - Protocoles Réseau"
-            questions={quizQuestions}
-            timeLimit={900}
-          />
-        )}
+        {renderContent()}
       </main>
     </div>
   );
