@@ -74,6 +74,7 @@ export const useQuizManager = () => {
       correctAnswers,
       totalQuestions: currentQuiz.questions.length,
       percentage,
+      passed,
       feedback
     };
 
