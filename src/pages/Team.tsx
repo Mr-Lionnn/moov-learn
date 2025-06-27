@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,9 +7,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { Users, Search, MessageCircle, Calendar, Award, BookOpen, Clock, TrendingUp } from "lucide-react";
 import Header from "@/components/Header";
+import ContactModal from "@/components/ContactModal";
+import UserProfileModal from "@/components/UserProfileModal";
 
 const Team = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedMemberForContact, setSelectedMemberForContact] = useState<any>(null);
+  const [selectedMemberForProfile, setSelectedMemberForProfile] = useState<any>(null);
 
   const teamMembers = [
     {
@@ -117,6 +120,19 @@ const Team = () => {
     totalCertifications: teamMembers.reduce((acc, m) => acc + m.certifications, 0)
   };
 
+  const handleContactMember = (member: any) => {
+    setSelectedMemberForContact(member);
+  };
+
+  const handleViewProfile = (member: any) => {
+    setSelectedMemberForProfile(member);
+  };
+
+  const handleTeamDiscussion = () => {
+    console.log("Opening team discussion...");
+    alert("Discussion d'équipe ouverte!");
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
       <Header />
@@ -128,7 +144,7 @@ const Team = () => {
               <h1 className="text-3xl font-bold text-gray-900 mb-2">Équipe</h1>
               <p className="text-gray-600">Collaborez et suivez les progrès de l'équipe</p>
             </div>
-            <Button>
+            <Button onClick={handleTeamDiscussion}>
               <MessageCircle className="h-4 w-4 mr-2" />
               Discussion Équipe
             </Button>
@@ -268,11 +284,19 @@ const Team = () => {
 
                 {/* Actions */}
                 <div className="flex gap-2 pt-2 border-t">
-                  <Button size="sm" className="flex-1">
+                  <Button 
+                    size="sm" 
+                    className="flex-1"
+                    onClick={() => handleContactMember(member)}
+                  >
                     <MessageCircle className="h-4 w-4 mr-2" />
                     Contacter
                   </Button>
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleViewProfile(member)}
+                  >
                     Profil
                   </Button>
                 </div>
@@ -293,6 +317,19 @@ const Team = () => {
           </div>
         )}
       </main>
+
+      {/* Modals */}
+      <ContactModal
+        isOpen={!!selectedMemberForContact}
+        onClose={() => setSelectedMemberForContact(null)}
+        member={selectedMemberForContact}
+      />
+
+      <UserProfileModal
+        isOpen={!!selectedMemberForProfile}
+        onClose={() => setSelectedMemberForProfile(null)}
+        member={selectedMemberForProfile}
+      />
     </div>
   );
 };

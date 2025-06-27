@@ -1,134 +1,166 @@
 
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
-  FileText, 
-  Download, 
-  Upload, 
   Search, 
   Filter, 
+  Download, 
   Eye, 
-  Edit, 
-  Trash2, 
-  FolderOpen,
-  Plus,
-  Calendar
+  FileText, 
+  FileVideo, 
+  FileAudio,
+  File,
+  ArrowLeft
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
-import { useAuth } from "@/contexts/AuthContext";
+import FileViewerModal from "@/components/FileViewerModal";
 
 const Files = () => {
-  const { user, hasPermission, canAccessFiles } = useAuth();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedFile, setSelectedFile] = useState<any>(null);
 
-  // Sample files data
   const files = [
     {
       id: 1,
       name: "Configuration Réseau Template.pdf",
-      category: "Templates",
       size: "2.4 MB",
-      uploadedBy: "Adeline Agbodjan",
-      uploadDate: "2024-01-15",
+      type: "Templates",
+      author: "Adeline Agbodan",
       downloads: 45,
-      type: "pdf",
-      department: "IT"
+      date: "2024-01-15",
+      category: "template"
     },
     {
       id: 2,
       name: "Procédures Sécurité.docx",
-      category: "Documentation",
       size: "1.8 MB",
-      uploadedBy: "Christelle Adjovi",
-      uploadDate: "2024-01-20",
+      type: "Documentation",
+      author: "Christelle Adjovi",
       downloads: 32,
-      type: "docx",
-      department: "Security"
+      date: "2024-01-20",
+      category: "documentation"
     },
     {
       id: 3,
       name: "Formation Cisco Routing.pptx",
-      category: "Formations",
       size: "15.6 MB",
-      uploadedBy: "Rodrigue Hounkpatin",
-      uploadDate: "2024-01-18",
+      type: "Formations",
+      author: "Rodrigue Hounkpatin",
       downloads: 78,
-      type: "pptx",
-      department: "Network"
+      date: "2024-01-18",
+      category: "formation"
     },
     {
       id: 4,
       name: "Checklist Maintenance.xlsx",
-      category: "Checklists",
-      size: "0.8 MB",
-      uploadedBy: "Olivier Tognon",
-      uploadDate: "2024-01-22",
+      size: "892 KB",
+      type: "Checklists",
+      author: "Marie Martin",
       downloads: 23,
-      type: "xlsx",
-      department: "Maintenance"
+      date: "2024-01-22",
+      category: "checklist"
+    },
+    {
+      id: 5,
+      name: "Guide VLAN Configuration.pdf",
+      size: "3.2 MB",
+      type: "Documentation",
+      author: "Pierre Durand",
+      downloads: 56,
+      date: "2024-01-25",
+      category: "documentation"
     }
   ];
 
-  const categories = ["all", "Templates", "Documentation", "Formations", "Checklists"];
+  const filteredFiles = files.filter(file =>
+    file.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    file.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    file.type.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  const filteredFiles = files.filter(file => {
-    const matchesSearch = file.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         file.uploadedBy.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === "all" || file.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
-
-  const getFileIcon = (type: string) => {
-    return <FileText className="h-8 w-8 text-blue-600" />;
+  const getFileIcon = (name: string) => {
+    const extension = name.split('.').pop()?.toLowerCase();
+    switch (extension) {
+      case 'pdf':
+      case 'doc':
+      case 'docx':
+        return <FileText className="h-8 w-8 text-red-600" />;
+      case 'mp4':
+      case 'avi':
+      case 'mov':
+        return <FileVideo className="h-8 w-8 text-purple-600" />;
+      case 'mp3':
+      case 'wav':
+        return <FileAudio className="h-8 w-8 text-green-600" />;
+      case 'pptx':
+      case 'ppt':
+        return <FileText className="h-8 w-8 text-orange-600" />;
+      default:
+        return <File className="h-8 w-8 text-gray-600" />;
+    }
   };
 
-  const canUpload = hasPermission('upload_files') || hasPermission('manage_files');
-  const canEdit = hasPermission('manage_files') || hasPermission('edit_limited');
-  const canDelete = hasPermission('manage_files');
+  const getTypeColor = (type: string) => {
+    switch (type.toLowerCase()) {
+      case 'templates':
+        return 'bg-orange-100 text-orange-800 border-orange-200';
+      case 'documentation':
+        return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'formations':
+        return 'bg-green-100 text-green-800 border-green-200';
+      case 'checklists':
+        return 'bg-purple-100 text-purple-800 border-purple-200';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
 
-  if (!canAccessFiles()) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
-        <Header />
-        <main className="container mx-auto px-4 py-8">
-          <Card>
-            <CardContent className="p-8 text-center">
-              <h2 className="text-xl font-semibold mb-2">Accès refusé</h2>
-              <p className="text-gray-600">Vous n'avez pas les permissions nécessaires pour accéder aux fichiers.</p>
-            </CardContent>
-          </Card>
-        </main>
-      </div>
+  const handleViewFile = (file: any) => {
+    setSelectedFile(file);
+  };
+
+  const handleDownloadFile = (file: any) => {
+    console.log(`Downloading: ${file.name}`);
+    // Simulate download
+    const link = document.createElement('a');
+    link.href = '#';
+    link.download = file.name;
+    link.click();
+    alert(`Téléchargement de ${file.name} commencé!`);
+  };
+
+  const getCategoryFiles = (category: string) => {
+    return filteredFiles.filter(file => 
+      category === 'tous' || file.category === category
     );
-  }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
+    <div className="min-h-screen moov-gradient-subtle">
       <Header />
       
-      <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Gestion des Fichiers</h1>
-              <p className="text-gray-600">Gérez et organisez vos documents de formation</p>
-            </div>
-            {canUpload && (
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                Nouveau Fichier
-              </Button>
-            )}
-          </div>
+      <main className="container mx-auto px-4 py-6">
+        <div className="mb-6">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate("/")}
+            className="mb-4"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Retour au Tableau de Bord
+          </Button>
+          
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Fichiers</h1>
+          <p className="text-gray-600">Accédez aux ressources et documents de formation</p>
         </div>
 
-        {/* Search and Filter */}
-        <div className="mb-6 flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
@@ -138,92 +170,296 @@ const Files = () => {
               className="pl-10"
             />
           </div>
-          <div className="flex gap-2">
-            {categories.map((category) => (
-              <Button
-                key={category}
-                variant={selectedCategory === category ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedCategory(category)}
-              >
-                {category === "all" ? "Tous" : category}
-              </Button>
-            ))}
-          </div>
+          <Button variant="outline">
+            <Filter className="h-4 w-4 mr-2" />
+            Filtres
+          </Button>
         </div>
 
-        {/* Files Grid */}
-        <div className="grid gap-6">
-          {filteredFiles.map((file) => (
-            <Card key={file.id} className="hover:shadow-md transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0">
-                    {getFileIcon(file.type)}
-                  </div>
-                  
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900 truncate">{file.name}</h3>
-                        <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
-                          <span>{file.size}</span>
-                          <Badge variant="secondary">{file.category}</Badge>
-                          <span className="flex items-center gap-1">
-                            <Calendar className="h-3 w-3" />
-                            {file.uploadDate}
-                          </span>
+        <Tabs defaultValue="tous" className="w-full">
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="tous">Tous</TabsTrigger>
+            <TabsTrigger value="template">Templates</TabsTrigger>
+            <TabsTrigger value="documentation">Documentation</TabsTrigger>
+            <TabsTrigger value="formation">Formations</TabsTrigger>
+            <TabsTrigger value="checklist">Checklists</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="tous" className="mt-6">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {getCategoryFiles('tous').map((file) => (
+                <Card key={file.id} className="hover:shadow-lg transition-shadow">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start gap-3">
+                      {getFileIcon(file.name)}
+                      <div className="flex-1 min-w-0">
+                        <CardTitle className="text-sm truncate">{file.name}</CardTitle>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Badge className={`${getTypeColor(file.type)} border text-xs`}>
+                            {file.type}
+                          </Badge>
+                          <span className="text-xs text-gray-500">{file.size}</span>
                         </div>
-                        <div className="flex items-center gap-2 mt-2">
-                          <Avatar className="h-5 w-5">
-                            <AvatarFallback className="text-xs">
-                              {file.uploadedBy.split(' ').map(n => n[0]).join('')}
-                            </AvatarFallback>
-                          </Avatar>
-                          <span className="text-sm text-gray-600">{file.uploadedBy}</span>
-                          <span className="text-sm text-gray-400">•</span>
-                          <span className="text-sm text-gray-400">{file.downloads} téléchargements</span>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-2">
-                        <Button variant="ghost" size="sm">
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="sm">
-                          <Download className="h-4 w-4" />
-                        </Button>
-                        {canEdit && (
-                          <Button variant="ghost" size="sm">
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                        )}
-                        {canDelete && (
-                          <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700">
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        )}
                       </div>
                     </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="space-y-3">
+                      <div className="text-xs text-gray-600">
+                        <p>Par: {file.author}</p>
+                        <p>{file.downloads} téléchargements</p>
+                        <p>Créé le: {new Date(file.date).toLocaleDateString('fr-FR')}</p>
+                      </div>
+                      
+                      <div className="flex gap-2">
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="flex-1"
+                          onClick={() => handleViewFile(file)}
+                        >
+                          <Eye className="h-3 w-3 mr-1" />
+                          Voir
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          className="flex-1"
+                          onClick={() => handleDownloadFile(file)}
+                        >
+                          <Download className="h-3 w-3 mr-1" />
+                          Télécharger
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="template" className="mt-6">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {getCategoryFiles('template').map((file) => (
+                <Card key={file.id} className="hover:shadow-lg transition-shadow">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start gap-3">
+                      {getFileIcon(file.name)}
+                      <div className="flex-1 min-w-0">
+                        <CardTitle className="text-sm truncate">{file.name}</CardTitle>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Badge className={`${getTypeColor(file.type)} border text-xs`}>
+                            {file.type}
+                          </Badge>
+                          <span className="text-xs text-gray-500">{file.size}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="space-y-3">
+                      <div className="text-xs text-gray-600">
+                        <p>Par: {file.author}</p>
+                        <p>{file.downloads} téléchargements</p>
+                        <p>Créé le: {new Date(file.date).toLocaleDateString('fr-FR')}</p>
+                      </div>
+                      
+                      <div className="flex gap-2">
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="flex-1"
+                          onClick={() => handleViewFile(file)}
+                        >
+                          <Eye className="h-3 w-3 mr-1" />
+                          Voir
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          className="flex-1"
+                          onClick={() => handleDownloadFile(file)}
+                        >
+                          <Download className="h-3 w-3 mr-1" />
+                          Télécharger
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="documentation" className="mt-6">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {getCategoryFiles('documentation').map((file) => (
+                <Card key={file.id} className="hover:shadow-lg transition-shadow">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start gap-3">
+                      {getFileIcon(file.name)}
+                      <div className="flex-1 min-w-0">
+                        <CardTitle className="text-sm truncate">{file.name}</CardTitle>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Badge className={`${getTypeColor(file.type)} border text-xs`}>
+                            {file.type}
+                          </Badge>
+                          <span className="text-xs text-gray-500">{file.size}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="space-y-3">
+                      <div className="text-xs text-gray-600">
+                        <p>Par: {file.author}</p>
+                        <p>{file.downloads} téléchargements</p>
+                        <p>Créé le: {new Date(file.date).toLocaleDateString('fr-FR')}</p>
+                      </div>
+                      
+                      <div className="flex gap-2">
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="flex-1"
+                          onClick={() => handleViewFile(file)}
+                        >
+                          <Eye className="h-3 w-3 mr-1" />
+                          Voir
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          className="flex-1"
+                          onClick={() => handleDownloadFile(file)}
+                        >
+                          <Download className="h-3 w-3 mr-1" />
+                          Télécharger
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="formation" className="mt-6">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {getCategoryFiles('formation').map((file) => (
+                <Card key={file.id} className="hover:shadow-lg transition-shadow">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start gap-3">
+                      {getFileIcon(file.name)}
+                      <div className="flex-1 min-w-0">
+                        <CardTitle className="text-sm truncate">{file.name}</CardTitle>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Badge className={`${getTypeColor(file.type)} border text-xs`}>
+                            {file.type}
+                          </Badge>
+                          <span className="text-xs text-gray-500">{file.size}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="space-y-3">
+                      <div className="text-xs text-gray-600">
+                        <p>Par: {file.author}</p>
+                        <p>{file.downloads} téléchargements</p>
+                        <p>Créé le: {new Date(file.date).toLocaleDateString('fr-FR')}</p>
+                      </div>
+                      
+                      <div className="flex gap-2">
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="flex-1"
+                          onClick={() => handleViewFile(file)}
+                        >
+                          <Eye className="h-3 w-3 mr-1" />
+                          Voir
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          className="flex-1"
+                          onClick={() => handleDownloadFile(file)}
+                        >
+                          <Download className="h-3 w-3 mr-1" />
+                          Télécharger
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="checklist" className="mt-6">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {getCategoryFiles('checklist').map((file) => (
+                <Card key={file.id} className="hover:shadow-lg transition-shadow">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start gap-3">
+                      {getFileIcon(file.name)}
+                      <div className="flex-1 min-w-0">
+                        <CardTitle className="text-sm truncate">{file.name}</CardTitle>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Badge className={`${getTypeColor(file.type)} border text-xs`}>
+                            {file.type}
+                          </Badge>
+                          <span className="text-xs text-gray-500">{file.size}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="space-y-3">
+                      <div className="text-xs text-gray-600">
+                        <p>Par: {file.author}</p>
+                        <p>{file.downloads} téléchargements</p>
+                        <p>Créé le: {new Date(file.date).toLocaleDateString('fr-FR')}</p>
+                      </div>
+                      
+                      <div className="flex gap-2">
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="flex-1"
+                          onClick={() => handleViewFile(file)}
+                        >
+                          <Eye className="h-3 w-3 mr-1" />
+                          Voir
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          className="flex-1"
+                          onClick={() => handleDownloadFile(file)}
+                        >
+                          <Download className="h-3 w-3 mr-1" />
+                          Télécharger
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
 
         {filteredFiles.length === 0 && (
-          <Card>
-            <CardContent className="p-8 text-center">
-              <FolderOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Aucun fichier trouvé</h3>
-              <p className="text-gray-600">
-                {searchQuery ? "Essayez de modifier votre recherche" : "Aucun fichier dans cette catégorie"}
-              </p>
-            </CardContent>
-          </Card>
+          <div className="text-center py-12">
+            <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun fichier trouvé</h3>
+            <p className="text-gray-600">Essayez de modifier vos critères de recherche</p>
+          </div>
         )}
       </main>
+
+      <FileViewerModal
+        isOpen={!!selectedFile}
+        onClose={() => setSelectedFile(null)}
+        file={selectedFile}
+      />
     </div>
   );
 };
