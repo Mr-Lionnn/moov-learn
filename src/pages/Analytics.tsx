@@ -5,9 +5,9 @@ import { useAuth } from "@/contexts/AuthContext";
 const Analytics = () => {
   const { user } = useAuth();
   
-  // Default role if user context doesn't have role info
-  const userRole = user?.metadata?.role || 'Employé';
-  const userId = user?.id || 'current_user';
+  // Use role directly from user object, with fallback
+  const userRole = user?.role || 'employee';
+  const userId = user?.id?.toString() || 'current_user';
 
   return (
     <div className="min-h-screen bg-gray-50">
