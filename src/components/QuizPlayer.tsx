@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import { useQuizManager } from "@/hooks/useQuizManager";
 import { Quiz, QuizResult } from "@/types/quiz";
+import EnhancedQuizResults from "./EnhancedQuizResults";
+import { progressService } from "@/services/progressService";
 
 interface QuizPlayerProps {
   quiz: Quiz;
@@ -66,12 +68,23 @@ const QuizPlayer = ({ quiz, onComplete, onAbandon }: QuizPlayerProps) => {
   const handleSubmitQuiz = () => {
     const result = submitQuiz();
     if (result) {
+      // Save progress
+      progressService.saveQuizResult(result);
+      
       setQuizResult(result);
       setShowResult(true);
       if (onComplete) {
         onComplete(result);
       }
     }
+  };
+
+  const handleRetryQuiz = () => {
+    setShowResult(false);
+    setQuizResult(null);
+    setCurrentQuestionIndex(0);
+    setSelectedAnswer(-1);
+    startQuiz(quiz);
   };
 
   const handleAbandonQuiz = () => {
@@ -83,61 +96,11 @@ const QuizPlayer = ({ quiz, onComplete, onAbandon }: QuizPlayerProps) => {
 
   if (showResult && quizResult) {
     return (
-      <Card className="max-w-2xl mx-auto">
-        <CardHeader className="text-center">
-          <div className="flex justify-center mb-4">
-            {quizResult.passed ? (
-              <Award className="h-16 w-16 text-green-500" />
-            ) : (
-              <AlertCircle className="h-16 w-16 text-red-500" />
-            )}
-          </div>
-          <CardTitle className="text-2xl">
-            {quizResult.passed ? "Félicitations!" : "Résultat"}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="text-center space-y-2">
-            <div className="text-3xl font-bold text-primary">
-              {quizResult.percentage}%
-            </div>
-            <p className="text-gray-600">
-              {quizResult.correctAnswers} sur {quizResult.totalQuestions} questions correctes
-            </p>
-            <Badge variant={quizResult.passed ? "default" : "destructive"} className="mt-2">
-              {quizResult.passed ? "Réussi" : "Échoué"}
-            </Badge>
-          </div>
-          
-          <div className="space-y-4">
-            <h3 className="font-semibold">Détails des réponses:</h3>
-            {quizResult.feedback.map((feedback, index) => (
-              <div key={feedback.questionId} className="border rounded-lg p-4">
-                <div className="flex items-start gap-3">
-                  {feedback.isCorrect ? (
-                    <CheckCircle className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
-                  ) : (
-                    <AlertCircle className="h-5 w-5 text-red-500 mt-1 flex-shrink-0" />
-                  )}
-                  <div className="flex-1">
-                    <p className="font-medium">Question {index + 1}</p>
-                    <p className="text-sm text-gray-600 mt-1">{feedback.explanation}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          
-          <div className="flex gap-2 justify-center">
-            <Button onClick={() => window.location.reload()} className="moov-gradient text-white">
-              Recommencer
-            </Button>
-            <Button variant="outline" onClick={handleAbandonQuiz}>
-              Fermer
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      <EnhancedQuizResults
+        result={quizResult}
+        onRetry={handleRetryQuiz}
+        onContinue={handleAbandonQuiz}
+      />
     );
   }
 
@@ -176,6 +139,16 @@ const QuizPlayer = ({ quiz, onComplete, onAbandon }: QuizPlayerProps) => {
       
       <CardContent className="space-y-6">
         <div className="space-y-4">
+          <div className="flex items-center gap-2 mb-4">
+            <Badge variant="secondary">
+              Question {currentQuestionIndex + 1}
+            </Badge>
+            <Badge variant="outline">
+              {currentQuestion.difficulty === 'easy' ? 'Facile' : 
+               currentQuestion.difficulty === 'medium' ? 'Moyen' : 'Difficile'}
+            </Badge>
+          </div>
+          
           <h3 className="text-lg font-medium">{currentQuestion.question}</h3>
           
           <RadioGroup
