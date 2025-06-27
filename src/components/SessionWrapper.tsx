@@ -1,7 +1,6 @@
 
 import { useAuth } from "@/contexts/AuthContext";
 import { useSessionManager } from "@/hooks/useSessionManager";
-import { useQuizManager } from "@/hooks/useQuizManager";
 
 interface SessionWrapperProps {
   children: React.ReactNode;
@@ -9,11 +8,11 @@ interface SessionWrapperProps {
 
 const SessionWrapper = ({ children }: SessionWrapperProps) => {
   const { isAuthenticated } = useAuth();
-  const { isQuizActive } = useQuizManager();
   
-  // Only enforce strict session management if user is authenticated AND actively taking a quiz
+  // Only enforce strict session management if user is authenticated
+  // For now, we'll set isQuizActive to false by default to prevent session conflicts
   if (isAuthenticated) {
-    useSessionManager(isQuizActive);
+    useSessionManager(false); // Always use non-strict mode to prevent blank pages
   }
 
   return <>{children}</>;

@@ -28,24 +28,20 @@ export const useSessionManager = (enforceStrictMode = false) => {
       localStorage.setItem(SESSION_KEY, sessionId.current);
 
       // Start heartbeat to maintain session
-      const startHeartbeat = () => {
-        heartbeatInterval.current = setInterval(() => {
-          const currentSession = localStorage.getItem(SESSION_KEY);
-          if (currentSession !== sessionId.current) {
-            // Session hijacked by another tab
-            logout();
-            alert('Cette session a été fermée car un quiz est en cours dans un autre onglet.');
-            if (heartbeatInterval.current) {
-              clearInterval(heartbeatInterval.current);
-            }
-          } else {
-            // Update timestamp to show activity
-            localStorage.setItem(SESSION_KEY, sessionId.current);
+      heartbeatInterval.current = setInterval(() => {
+        const currentSession = localStorage.getItem(SESSION_KEY);
+        if (currentSession !== sessionId.current) {
+          // Session hijacked by another tab
+          logout();
+          alert('Cette session a été fermée car un quiz est en cours dans un autre onglet.');
+          if (heartbeatInterval.current) {
+            clearInterval(heartbeatInterval.current);
           }
-        }, HEARTBEAT_INTERVAL);
-      };
-
-      startHeartbeat();
+        } else {
+          // Update timestamp to show activity
+          localStorage.setItem(SESSION_KEY, sessionId.current);
+        }
+      }, HEARTBEAT_INTERVAL);
 
       // Listen for storage changes (other tabs)
       const handleStorageChange = (e: StorageEvent) => {
