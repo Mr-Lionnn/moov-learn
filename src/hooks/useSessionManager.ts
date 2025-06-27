@@ -14,7 +14,6 @@ export const useSessionManager = (enforceStrictMode = false) => {
     // Generate unique session ID
     sessionId.current = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
-    // Only enforce single-session restrictions when in strict mode (during quiz)
     if (enforceStrictMode) {
       // Check for existing session
       const existingSession = localStorage.getItem(SESSION_KEY);
@@ -36,7 +35,9 @@ export const useSessionManager = (enforceStrictMode = false) => {
             // Session hijacked by another tab
             logout();
             alert('Cette session a été fermée car un quiz est en cours dans un autre onglet.');
-            clearInterval(heartbeatInterval.current!);
+            if (heartbeatInterval.current) {
+              clearInterval(heartbeatInterval.current);
+            }
           } else {
             // Update timestamp to show activity
             localStorage.setItem(SESSION_KEY, sessionId.current);
@@ -51,7 +52,9 @@ export const useSessionManager = (enforceStrictMode = false) => {
         if (e.key === SESSION_KEY && e.newValue !== sessionId.current) {
           logout();
           alert('Cette session a été fermée car un quiz est en cours dans un autre onglet.');
-          clearInterval(heartbeatInterval.current!);
+          if (heartbeatInterval.current) {
+            clearInterval(heartbeatInterval.current);
+          }
         }
       };
 
@@ -69,7 +72,7 @@ export const useSessionManager = (enforceStrictMode = false) => {
       window.addEventListener('storage', handleStorageChange);
       document.addEventListener('visibilitychange', handleVisibilityChange);
 
-      // Cleanup on unmount
+      // Cleanup function
       return () => {
         if (heartbeatInterval.current) {
           clearInterval(heartbeatInterval.current);
@@ -87,6 +90,7 @@ export const useSessionManager = (enforceStrictMode = false) => {
       // In normal browsing mode, just set a session marker without strict enforcement
       localStorage.setItem(`${SESSION_KEY}_browse`, sessionId.current);
       
+      // Simple cleanup for normal mode
       return () => {
         const currentSession = localStorage.getItem(`${SESSION_KEY}_browse`);
         if (currentSession === sessionId.current) {
