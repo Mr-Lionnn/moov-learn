@@ -1,59 +1,92 @@
-
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { BookmarkPlus, CheckCircle } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import { BookOpen, Clock, CheckCircle, Eye, Download } from "lucide-react";
 
 interface LessonTextContentProps {
   title: string;
   content: string;
   progress: number;
+  onComplete?: () => void;
 }
 
-const LessonTextContent = ({ title, content, progress }: LessonTextContentProps) => {
+const LessonTextContent = ({ title, content, progress, onComplete }: LessonTextContentProps) => {
+  const [readingProgress, setReadingProgress] = useState(progress);
+  const [estimatedTime] = useState("12 min");
+
+  const handleMarkComplete = () => {
+    setReadingProgress(100);
+    if (onComplete) {
+      onComplete();
+    }
+  };
+
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-xl">{title}</CardTitle>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm">
-              <BookmarkPlus className="h-4 w-4 mr-2" />
-              Marquer
-            </Button>
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-xl flex items-center gap-2">
+              <BookOpen className="h-5 w-5 text-primary" />
+              {title}
+            </CardTitle>
+            <Badge variant="outline" className="flex items-center gap-1 bg-blue-50 text-primary border-primary">
+              <Clock className="h-3 w-3" />
+              {estimatedTime}
+            </Badge>
           </div>
-        </div>
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm text-gray-600">
-            <span>Progression de lecture</span>
-            <span>{progress}%</span>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-6">
+            {/* Reading Progress */}
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm text-gray-600">
+                <span>Progression de lecture</span>
+                <span>{readingProgress}%</span>
+              </div>
+              <Progress value={readingProgress} className="h-2" />
+            </div>
+
+            {/* Reading Content */}
+            <div className="prose max-w-none">
+              <div className="text-gray-700 leading-relaxed space-y-4">
+                {content.split('\n\n').map((paragraph, index) => (
+                  <p key={index}>{paragraph}</p>
+                ))}
+              </div>
+            </div>
+
+            {/* Reading Actions */}
+            <div className="flex gap-2 pt-4 border-t">
+              <Button 
+                className="moov-gradient text-white"
+                onClick={handleMarkComplete}
+                disabled={readingProgress === 100}
+              >
+                {readingProgress === 100 ? (
+                  <>
+                    <CheckCircle className="h-4 w-4 mr-2" />
+                    Lecture Terminée
+                  </>
+                ) : (
+                  "Marquer comme Lu"
+                )}
+              </Button>
+              <Button variant="outline">
+                <Eye className="h-4 w-4 mr-2" />
+                Mode Focus
+              </Button>
+              <Button variant="outline">
+                <Download className="h-4 w-4 mr-2" />
+                Télécharger PDF
+              </Button>
+            </div>
           </div>
-          <Progress value={progress} className="h-2" />
-        </div>
-      </CardHeader>
-      <CardContent className="prose max-w-none">
-        <div className="space-y-4 text-gray-800 leading-relaxed">
-          {content.split('\n\n').map((paragraph, index) => (
-            <p key={index} className="text-base">
-              {paragraph}
-            </p>
-          ))}
-        </div>
-        
-        <div className="mt-8 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
-          <div className="flex items-center gap-2 mb-2">
-            <CheckCircle className="h-5 w-5 text-blue-600" />
-            <h4 className="font-semibold text-blue-900">Points Clés à Retenir</h4>
-          </div>
-          <ul className="list-disc list-inside space-y-1 text-blue-800">
-            <li>Les protocoles TCP/IP forment la base d'Internet</li>
-            <li>Le modèle OSI structure la communication réseau en 7 couches</li>
-            <li>L'encapsulation permet l'acheminement des données</li>
-            <li>Chaque couche a un rôle spécifique dans la transmission</li>
-          </ul>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

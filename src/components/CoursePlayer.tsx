@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -30,9 +29,10 @@ interface CoursePlayerProps {
   courseTitle: string;
   currentLesson: Lesson;
   lessons: Lesson[];
+  onCourseComplete?: () => void;
 }
 
-const CoursePlayer = ({ courseTitle, currentLesson, lessons }: CoursePlayerProps) => {
+const CoursePlayer = ({ courseTitle, currentLesson, lessons, onCourseComplete }: CoursePlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(45);
 
@@ -52,6 +52,12 @@ const CoursePlayer = ({ courseTitle, currentLesson, lessons }: CoursePlayerProps
         return <Clock className="h-4 w-4 text-orange-600" />;
       default:
         return <PlayCircle className="h-4 w-4 text-gray-600" />;
+    }
+  };
+
+  const handleCourseComplete = () => {
+    if (onCourseComplete) {
+      onCourseComplete();
     }
   };
 
@@ -145,7 +151,7 @@ const CoursePlayer = ({ courseTitle, currentLesson, lessons }: CoursePlayerProps
               applications du monde réel pour vous aider à saisir efficacement le matériel.
             </p>
             <div className="flex gap-2">
-              <Button className="moov-gradient text-white">
+              <Button className="moov-gradient text-white" onClick={handleCourseComplete}>
                 Marquer comme Terminé
               </Button>
               <Button variant="outline">

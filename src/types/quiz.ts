@@ -38,6 +38,7 @@ export interface QuizResult {
   correctAnswers: number;
   totalQuestions: number;
   percentage: number;
+  passed: boolean;
   feedback: QuizFeedback[];
 }
 

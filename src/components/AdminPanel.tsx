@@ -86,7 +86,7 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
   };
 
   // Check if user has permission to upload content
-  const canUploadContent = user?.role === 'admin' || user?.role === 'team_chief' || user?.role === 'responsible';
+  const canUploadContent = user?.role === 'admin' || user?.role === 'team_chief' || user?.role === 'team_responsible';
 
   if (showQuizCreator && selectedCourseForQuiz) {
     return (

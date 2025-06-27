@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,9 +18,10 @@ interface LessonAudioContentProps {
   title: string;
   duration: string;
   transcript?: string;
+  onComplete?: () => void;
 }
 
-const LessonAudioContent = ({ title, duration, transcript }: LessonAudioContentProps) => {
+const LessonAudioContent = ({ title, duration, transcript, onComplete }: LessonAudioContentProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(25);
   const [showTranscript, setShowTranscript] = useState(false);
@@ -43,6 +43,12 @@ const LessonAudioContent = ({ title, duration, transcript }: LessonAudioContentP
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const handleAudioComplete = () => {
+    if (onComplete) {
+      onComplete();
+    }
   };
 
   return (
@@ -128,6 +134,13 @@ const LessonAudioContent = ({ title, duration, transcript }: LessonAudioContentP
               <Button variant="default" size="sm" className="text-xs moov-gradient text-white">1x</Button>
               <Button variant="outline" size="sm" className="text-xs">1.25x</Button>
               <Button variant="outline" size="sm" className="text-xs">1.5x</Button>
+            </div>
+
+            {/* Complete Button */}
+            <div className="flex justify-center">
+              <Button onClick={handleAudioComplete} className="moov-gradient text-white">
+                Marquer comme Terminé
+              </Button>
             </div>
           </div>
         </CardContent>
