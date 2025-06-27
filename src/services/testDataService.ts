@@ -392,6 +392,26 @@ class TestDataService {
     return this.testCourses.find(course => course.id === id);
   }
 
+  getCoursesForUser(userId: number): any[] {
+    const user = this.getUserById(userId);
+    if (!user) return [];
+
+    // Transform TestCourse to match the expected format for CourseCard
+    return this.testCourses.map(course => ({
+      id: course.id,
+      title: course.title,
+      instructor: 'Instructeur Expert',
+      duration: course.duration,
+      students: course.enrolledUsers,
+      rating: 4.5,
+      progress: Math.floor(Math.random() * 100), // Random progress for demo
+      image: '/placeholder.svg',
+      category: course.category,
+      level: course.level === 'beginner' ? 'Débutant' : 
+             course.level === 'intermediate' ? 'Intermédiaire' : 'Avancé'
+    }));
+  }
+
   getTasksForUser(userId: number): TestTask[] {
     const user = this.getUserById(userId);
     if (!user) return [];

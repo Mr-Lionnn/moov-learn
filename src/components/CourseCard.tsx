@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,9 +21,10 @@ interface Course {
 interface CourseCardProps {
   course: Course;
   userRole?: "student" | "admin";
+  onClick?: () => void;
 }
 
-const CourseCard = ({ course, userRole = "student" }: CourseCardProps) => {
+const CourseCard = ({ course, userRole = "student", onClick }: CourseCardProps) => {
   const getLevelColor = (level: string) => {
     switch (level) {
       case "Débutant":
@@ -38,8 +38,14 @@ const CourseCard = ({ course, userRole = "student" }: CourseCardProps) => {
     }
   };
 
+  const handleCardClick = () => {
+    if (onClick) {
+      onClick();
+    }
+  };
+
   return (
-    <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden">
+    <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden cursor-pointer" onClick={handleCardClick}>
       <div className="relative">
         <div className="aspect-video bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
           <div className="text-white text-center">
@@ -115,6 +121,10 @@ const CourseCard = ({ course, userRole = "student" }: CourseCardProps) => {
           <Button 
             className="w-full text-xs sm:text-sm"
             variant={course.progress > 0 ? "default" : "outline"}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleCardClick();
+            }}
           >
             {course.progress > 0 ? "Continuer l'Apprentissage" : "Commencer le Cours"}
           </Button>
