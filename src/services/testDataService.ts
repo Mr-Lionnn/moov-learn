@@ -436,33 +436,95 @@ class TestDataService {
     }
   }
 
-  getTasksForUser(userId: number): TestTask[] {
-    console.log('getTasksForUser called with userId:', userId);
+  getTasksForUser(userId: number) {
+    const allTasks = [
+      {
+        id: 1,
+        title: "Compléter le module de sécurité réseau",
+        description: "Terminer les 5 leçons sur la sécurité des réseaux informatiques",
+        courseId: 1,
+        assignedBy: "Marie Dupont",
+        priority: "high",
+        status: "in-progress",
+        progress: 65,
+        deadline: "2024-02-15",
+        category: "mandatory",
+        completionCriteria: "Obtenir au moins 80% au quiz final et compléter tous les exercices pratiques",
+        evaluation: 78,
+        timeLimit: "3 heures par module"
+      },
+      {
+        id: 2,
+        title: "Quiz de certification Cisco",
+        description: "Passer l'examen de certification pour le routage Cisco",
+        courseId: 2,
+        assignedBy: "Pierre Martin",
+        priority: "high",
+        status: "pending",
+        progress: 0,
+        deadline: "2024-02-20",
+        category: "mandatory",
+        completionCriteria: "Score minimum de 85% requis pour la certification",
+        evaluation: null,
+        timeLimit: "2 heures"
+      },
+      {
+        id: 3,
+        title: "Formation développement professionnel",
+        description: "Participer au séminaire sur les compétences de leadership",
+        courseId: null,
+        assignedBy: "Sophie Legrand",
+        priority: "medium",
+        status: "completed",
+        progress: 100,
+        deadline: "2024-01-30",
+        category: "professional_development",
+        completionCriteria: "Présence obligatoire et participation active aux discussions",
+        evaluation: 92,
+        timeLimit: "1 jour"
+      },
+      {
+        id: 4,
+        title: "Mise à jour sécurité informatique",
+        description: "Lire et valider les nouvelles procédures de sécurité",
+        courseId: 3,
+        assignedBy: "Thomas Leroy",
+        priority: "medium",
+        status: "in-progress",
+        progress: 40,
+        deadline: "2024-02-25",
+        category: "mandatory",
+        completionCriteria: "Lire tous les documents et passer le test de validation",
+        evaluation: null,
+        timeLimit: "1 heure"
+      },
+      {
+        id: 5,
+        title: "Formation avancée réseaux",
+        description: "Approfondir les connaissances en architecture réseau",
+        courseId: 1,
+        assignedBy: "Marie Dupont",
+        priority: "low",
+        status: "overdue",
+        progress: 25,
+        deadline: "2024-01-25",
+        category: "specialized",
+        completionCriteria: "Compléter le projet final et présenter la solution",
+        evaluation: 45,
+        timeLimit: "5 heures par module"
+      }
+    ];
+
+    // Return tasks based on user role
+    if (userId === 1) { // Adeline Agbodan - Network Administrator
+      return allTasks.filter(task => [1, 2, 4].includes(task.id));
+    } else if (userId === 2) { // Christelle Adjovi - IT Support
+      return allTasks.filter(task => [3, 4, 5].includes(task.id));
+    } else if (userId === 3) { // Rodrigue Hounkpatin - Network Engineer
+      return allTasks.filter(task => [1, 2, 3, 5].includes(task.id));
+    }
     
-    const user = this.getUserById(userId);
-    if (!user) {
-      console.warn('User not found for ID:', userId);
-      return [];
-    }
-
-    try {
-      const userTasks = this.testTasks.filter(task => {
-        if (!task || !task.id || !task.title) {
-          console.warn('Invalid task data:', task);
-          return false;
-        }
-        
-        return task.assignedTo.includes('All Employees') ||
-               task.assignedTo.includes(`${user.department} Team`) ||
-               task.assignedTo.includes('Team Leaders');
-      });
-
-      console.log('Filtered tasks for user:', userTasks);
-      return userTasks;
-    } catch (error) {
-      console.error('Error filtering tasks:', error);
-      return [];
-    }
+    return allTasks; // Default for other users
   }
 
   getUserProgress(userId: number): TestProgress[] {

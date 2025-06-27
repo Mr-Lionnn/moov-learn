@@ -16,7 +16,10 @@ import {
   CheckCircle, 
   AlertCircle,
   Award,
-  Target
+  Target,
+  CalendarDays,
+  Timer,
+  BarChart3
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { testDataService } from "@/services/testDataService";
@@ -41,14 +44,12 @@ const Index = () => {
         console.log('Loaded courses:', userCourses);
         console.log('Loaded tasks:', userTasks);
         
-        // Validate courses data
         const validCourses = userCourses.filter(course => 
           course && 
           course.title && 
           course.id !== undefined
         );
         
-        // Validate tasks data
         const validTasks = userTasks.filter(task => 
           task && 
           task.title && 
@@ -115,6 +116,18 @@ const Index = () => {
       case "overdue": return <AlertCircle className="h-4 w-4 text-red-600" />;
       default: return <Clock className="h-4 w-4 text-gray-600" />;
     }
+  };
+
+  const getUrgencyLevel = (deadline: string) => {
+    const now = new Date();
+    const deadlineDate = new Date(deadline);
+    const diffTime = deadlineDate.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 0) return { level: "overdue", color: "text-red-600", text: "En retard" };
+    if (diffDays <= 1) return { level: "urgent", color: "text-red-600", text: "Urgent" };
+    if (diffDays <= 3) return { level: "soon", color: "text-orange-600", text: "Bientôt" };
+    return { level: "normal", color: "text-green-600", text: "Dans les temps" };
   };
 
   if (loading) {
@@ -204,7 +217,7 @@ const Index = () => {
                             <p className="text-sm text-gray-600 mb-3">{task.description || 'Aucune description disponible'}</p>
                             
                             {task.status !== "completed" && (
-                              <div className="space-y-1">
+                              <div className="space-y-1 mb-3">
                                 <div className="flex justify-between text-xs text-gray-500">
                                   <span>Progression</span>
                                   <span>{task.progress || 0}%</span>
@@ -213,8 +226,20 @@ const Index = () => {
                               </div>
                             )}
                             
-                            <div className="flex items-center justify-between mt-3 text-xs text-gray-500">
-                              <span>Échéance: {task.deadline ? new Date(task.deadline).toLocaleDateString('fr-FR') : 'Non définie'}</span>
+                            <div className="grid grid-cols-2 gap-2 text-xs mb-3">
+                              <div className="flex items-center gap-1">
+                                <CalendarDays className="h-3 w-3" />
+                                <span>Échéance: {task.deadline ? new Date(task.deadline).toLocaleDateString('fr-FR') : 'Non définie'}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Timer className="h-3 w-3" />
+                                <span className={getUrgencyLevel(task.deadline).color}>
+                                  {getUrgencyLevel(task.deadline).text}
+                                </span>
+                              </div>
+                            </div>
+                            
+                            <div className="flex items-center justify-between text-xs text-gray-500">
                               <span className={`
                                 ${task.status === "completed" ? "text-green-600" :
                                   task.status === "in-progress" ? "text-blue-600" : 
@@ -222,6 +247,12 @@ const Index = () => {
                               `}>
                                 {task.category === "mandatory" ? "Obligatoire" : "Optionnel"}
                               </span>
+                              {task.evaluation && (
+                                <div className="flex items-center gap-1">
+                                  <BarChart3 className="h-3 w-3" />
+                                  <span>Note: {task.evaluation}/100</span>
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -237,6 +268,97 @@ const Index = () => {
             </div>
           </section>
         </div>
+
+        {/* Dedicated Tasks Section */}
+        <section className="mt-12">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">Gestion des Tâches</h2>
+              <p className="text-gray-600">Suivi détaillé de vos délais, évaluations et modules</p>
+            </div>
+            <Button onClick={() => navigate("/tasks")} className="moov-gradient text-white">
+              <Target className="h-4 w-4 mr-2" />
+              Gérer Toutes les Tâches
+            </Button>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {/* Time Limits Card */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Timer className="h-5 w-5 text-blue-600" />
+                  Limites de Temps
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {tasks.slice(0, 3).map((task) => (
+                    task && task.deadline ? (
+                      <div key={task.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                        <span className="text-sm font-medium truncate">{task.title}</span>
+                        <span className={`text-xs ${getUrgencyLevel(task.deadline).color}`}>
+                          {Math.ceil((new Date(task.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))}j
+                        </span>
+                      </div>
+                    ) : null
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Evaluations Card */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <BarChart3 className="h-5 w-5 text-green-600" />
+                  Évaluations
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {tasks.filter(task => task.evaluation).slice(0, 3).map((task) => (
+                    <div key={task.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                      <span className="text-sm font-medium truncate">{task.title}</span>
+                      <Badge variant={task.evaluation >= 70 ? "default" : "destructive"} className="text-xs">
+                        {task.evaluation}/100
+                      </Badge>
+                    </div>
+                  ))}
+                  {tasks.filter(task => task.evaluation).length === 0 && (
+                    <p className="text-sm text-gray-500 text-center">Aucune évaluation disponible</p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Modules Progress Card */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <BookOpen className="h-5 w-5 text-purple-600" />
+                  Modules en Cours
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {tasks.filter(task => task.status === "in-progress").slice(0, 3).map((task) => (
+                    <div key={task.id} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium truncate">{task.title}</span>
+                        <span className="text-xs text-gray-500">{task.progress}%</span>
+                      </div>
+                      <Progress value={task.progress || 0} className="h-1.5" />
+                    </div>
+                  ))}
+                  {tasks.filter(task => task.status === "in-progress").length === 0 && (
+                    <p className="text-sm text-gray-500 text-center">Aucun module en cours</p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
       </main>
 
       {selectedCourse && (
