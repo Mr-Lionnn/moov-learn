@@ -1,4 +1,3 @@
-
 import { Quiz } from '@/types/quiz';
 
 export interface TestUser {
@@ -248,7 +247,7 @@ class TestDataService {
       userId: 3,
       courseId: 'customer-service-excellence',
       progress: 60,
-      status: 'in-progress',
+      status: 'in_progress',
       lastAccessed: '2024-12-26',
       timeSpent: 90,
       quizAttempts: 0
@@ -267,7 +266,7 @@ class TestDataService {
       userId: 5,
       courseId: 'gdpr-compliance',
       progress: 5,
-      status: 'in-progress',
+      status: 'in_progress',
       lastAccessed: '2024-12-27',
       timeSpent: 10,
       quizAttempts: 0
