@@ -12,7 +12,6 @@ import {
   Headphones,
   Target
 } from "lucide-react";
-import LessonContent from "./LessonContent";
 
 interface Lesson {
   id: number;
@@ -76,24 +75,85 @@ const CoursePlayer = ({ courseTitle, currentLesson, lessons, onCourseComplete }:
 
   const sampleContent = `Introduction aux Réseaux TCP/IP
 
-  Les réseaux informatiques constituent l'épine dorsale de notre monde numérique moderne. Dans ce chapitre, nous explorerons les fondements des protocoles TCP/IP qui permettent la communication entre les ordinateurs du monde entier.
+Les réseaux informatiques constituent l'épine dorsale de notre monde numérique moderne. Dans ce chapitre, nous explorerons les fondements des protocoles TCP/IP qui permettent la communication entre les ordinateurs du monde entier.
 
-  Le protocole TCP/IP (Transmission Control Protocol/Internet Protocol) est une suite de protocoles de communication qui définit comment les données sont transmises sur Internet. Développé dans les années 1970, il est devenu la norme universelle pour les communications réseau.
+Le protocole TCP/IP (Transmission Control Protocol/Internet Protocol) est une suite de protocoles de communication qui définit comment les données sont transmises sur Internet. Développé dans les années 1970, il est devenu la norme universelle pour les communications réseau.
 
-  Comprendre TCP/IP est essentiel pour tout professionnel de l'informatique, car il sous-tend pratiquement tous les aspects de la connectivité réseau moderne, des sites web aux applications mobiles.`;
+Comprendre TCP/IP est essentiel pour tout professionnel de l'informatique, car il sous-tend pratiquement tous les aspects de la connectivité réseau moderne, des sites web aux applications mobiles.`;
 
   return (
     <div className="grid lg:grid-cols-3 gap-6">
       {/* Main Content */}
       <div className="lg:col-span-2">
-        <LessonContent
-          lessonId={currentLesson.id}
-          title={currentLesson.title}
-          type={currentLesson.type}
-          content={sampleContent}
-          duration={currentLesson.duration}
-          onComplete={handleLessonComplete}
-        />
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-xl flex items-center gap-2">
+              {getLessonIcon(currentLesson.type, false)}
+              {currentLesson.title}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {currentLesson.type === "video" && (
+                <div className="aspect-video bg-black rounded-lg relative overflow-hidden">
+                  <video
+                    className="w-full h-full object-cover"
+                    controls
+                    poster="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1600&h=900&q=80"
+                  >
+                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
+                    Votre navigateur ne supporte pas la lecture vidéo.
+                  </video>
+                </div>
+              )}
+              
+              {currentLesson.type === "text" && (
+                <div className="prose max-w-none">
+                  <div className="text-gray-700 leading-relaxed space-y-4">
+                    {sampleContent.split('\n\n').map((paragraph, index) => (
+                      <p key={index}>{paragraph}</p>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              {currentLesson.type === "audio" && (
+                <div className="bg-gray-50 p-6 rounded-lg">
+                  <div className="flex items-center gap-4 mb-4">
+                    <Headphones className="h-8 w-8 text-primary" />
+                    <div>
+                      <h3 className="font-medium">{currentLesson.title}</h3>
+                      <p className="text-sm text-gray-600">Durée: {currentLesson.duration}</p>
+                    </div>
+                  </div>
+                  <audio controls className="w-full">
+                    <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" type="audio/wav" />
+                    Votre navigateur ne supporte pas la lecture audio.
+                  </audio>
+                </div>
+              )}
+              
+              {currentLesson.type === "quiz" && (
+                <div className="bg-purple-50 p-6 rounded-lg border border-purple-200">
+                  <div className="text-center space-y-4">
+                    <Target className="h-12 w-12 text-purple-600 mx-auto" />
+                    <h3 className="text-lg font-semibold text-purple-800">Quiz Interactif</h3>
+                    <p className="text-purple-700">
+                      Testez vos connaissances avec ce quiz de 3 questions sur les protocoles réseau.
+                    </p>
+                    <Button className="bg-purple-600 hover:bg-purple-700 text-white">
+                      Commencer le Quiz
+                    </Button>
+                  </div>
+                </div>
+              )}
+              
+              <Button onClick={handleLessonComplete} className="moov-gradient text-white w-full">
+                Marquer comme Terminé
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Course Curriculum */}
