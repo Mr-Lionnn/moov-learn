@@ -1,27 +1,89 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Header from "@/components/Header";
 import CoursePlayer from "@/components/CoursePlayer";
+import { testDataService } from "@/services/testDataService";
 
 const Course = () => {
   const navigate = useNavigate();
+  const { courseId } = useParams();
+  const [course, setCourse] = useState<any>(null);
+  const [lessons, setLessons] = useState<any[]>([]);
 
-  const lessons = [
-    { id: 1, title: "Introduction aux Réseaux TCP/IP", duration: "18:30", completed: true, type: "video" as const },
-    { id: 2, title: "Modèle OSI et Encapsulation", duration: "25:45", completed: true, type: "text" as const },
-    { id: 3, title: "Quiz Protocoles de Base", duration: "15:00", completed: false, type: "quiz" as const },
-    { id: 4, title: "Configuration VLAN", duration: "32:15", completed: false, type: "audio" as const },
-    { id: 5, title: "Routage Statique et Dynamique", duration: "28:20", completed: false, type: "video" as const },
-  ];
+  useEffect(() => {
+    // Load course data based on courseId or default to first course
+    const testCourses = testDataService.getTestCourses();
+    const selectedCourse = courseId 
+      ? testCourses.find(c => c.id === courseId)
+      : testCourses[0];
+    
+    if (selectedCourse) {
+      setCourse(selectedCourse);
+      
+      // Generate realistic lessons based on course content
+      const courseLessons = generateLessonsForCourse(selectedCourse);
+      setLessons(courseLessons);
+    }
+  }, [courseId]);
 
-  const currentLesson = lessons.find(l => l.id === 1) || lessons[0];
+  const generateLessonsForCourse = (course: any) => {
+    const lessonSets: { [key: string]: any[] } = {
+      'customer-service-excellence': [
+        { id: 1, title: "Introduction au Service Client", duration: "15:30", completed: true, type: "video" },
+        { id: 2, title: "Communication Efficace", duration: "20:45", completed: true, type: "text" },
+        { id: 3, title: "Gestion des Situations Difficiles", duration: "25:15", completed: false, type: "video" },
+        { id: 4, title: "Techniques de Désescalade", duration: "18:20", completed: false, type: "audio" },
+        { id: 5, title: "Quiz d'Évaluation", duration: "15:00", completed: false, type: "quiz" }
+      ],
+      'gdpr-compliance': [
+        { id: 1, title: "Principes Fondamentaux du RGPD", duration: "22:30", completed: true, type: "text" },
+        { id: 2, title: "Droits des Personnes Concernées", duration: "18:45", completed: true, type: "text" },
+        { id: 3, title: "Violations de Données", duration: "20:15", completed: false, type: "video" },
+        { id: 4, title: "Mise en Conformité Pratique", duration: "25:30", completed: false, type: "text" },
+        { id: 5, title: "Évaluation RGPD", duration: "20:00", completed: false, type: "quiz" }
+      ],
+      'advanced-sales-techniques': [
+        { id: 1, title: "Vente Consultative", duration: "30:00", completed: true, type: "video" },
+        { id: 2, title: "Identification des Besoins Client", duration: "25:45", completed: true, type: "video" },
+        { id: 3, title: "Gestion des Objections", duration: "28:30", completed: false, type: "video" },
+        { id: 4, title: "Techniques de Closing", duration: "22:15", completed: false, type: "video" },
+        { id: 5, title: "Suivi et Fidélisation", duration: "20:00", completed: false, type: "audio" },
+        { id: 6, title: "Évaluation Finale", duration: "25:00", completed: false, type: "quiz" }
+      ],
+      'leadership-fundamentals': [
+        { id: 1, title: "Qu'est-ce que le Leadership?", duration: "35:00", completed: false, type: "video" },
+        { id: 2, title: "Styles de Management", duration: "40:30", completed: false, type: "text" },
+        { id: 3, title: "Motivation d'Équipe", duration: "30:45", completed: false, type: "video" },
+        { id: 4, title: "Gestion des Conflits", duration: "45:20", completed: false, type: "video" },
+        { id: 5, title: "Feedback et Coaching", duration: "35:15", completed: false, type: "audio" },
+        { id: 6, title: "Évaluation Leadership", duration: "30:00", completed: false, type: "quiz" }
+      ]
+    };
+
+    return lessonSets[course.id] || lessonSets['customer-service-excellence'];
+  };
 
   const handleCourseComplete = () => {
     console.log("Course completed!");
+    // Update progress in test data
+    navigate("/");
   };
+
+  if (!course) {
+    return (
+      <div className="min-h-screen moov-gradient-subtle flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p>Chargement du cours...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const currentLesson = lessons.find(l => l.id === 1) || lessons[0];
 
   return (
     <div className="min-h-screen moov-gradient-subtle">
@@ -40,7 +102,7 @@ const Course = () => {
         </div>
 
         <CoursePlayer
-          courseTitle="Fondamentaux des Réseaux TCP/IP"
+          courseTitle={course.title}
           currentLesson={currentLesson}
           lessons={lessons}
           onCourseComplete={handleCourseComplete}

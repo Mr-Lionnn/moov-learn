@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,41 +7,20 @@ import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, CheckCircle, Clock, AlertCircle, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
+import { useAuth } from "@/contexts/AuthContext";
+import { testDataService } from "@/services/testDataService";
 
 const Tasks = () => {
   const navigate = useNavigate();
-  const [tasks] = useState([
-    {
-      id: 1,
-      title: "Terminer le module TCP/IP",
-      description: "Compléter toutes les leçons du module Fondamentaux des Réseaux TCP/IP",
-      assignedBy: "Mme. Diallo",
-      deadline: "30 Décembre 2024",
-      priority: "high" as const,
-      status: "in-progress" as const,
-      progress: 65
-    },
-    {
-      id: 2,
-      title: "Quiz Sécurité Informatique",
-      description: "Passer le quiz d'évaluation sur la sécurité informatique avancée",
-      assignedBy: "M. Kouame",
-      deadline: "28 Décembre 2024",
-      priority: "medium" as const,
-      status: "pending" as const,
-      progress: 0
-    },
-    {
-      id: 3,
-      title: "Rapport d'Administration Linux",
-      description: "Rédiger un rapport sur l'administration système Linux",
-      assignedBy: "Mme. Traore",
-      deadline: "2 Janvier 2025",
-      priority: "low" as const,
-      status: "completed" as const,
-      progress: 100
+  const { user } = useAuth();
+  const [tasks, setTasks] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (user?.id) {
+      const userTasks = testDataService.getTasksForUser(user.id);
+      setTasks(userTasks);
     }
-  ]);
+  }, [user]);
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
@@ -57,7 +36,26 @@ const Tasks = () => {
       case "completed": return <CheckCircle className="h-5 w-5 text-green-600" />;
       case "in-progress": return <Clock className="h-5 w-5 text-blue-600" />;
       case "pending": return <AlertCircle className="h-5 w-5 text-orange-600" />;
+      case "overdue": return <AlertCircle className="h-5 w-5 text-red-600" />;
       default: return <Clock className="h-5 w-5 text-gray-600" />;
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case "completed": return "Terminé";
+      case "in-progress": return "En cours";
+      case "pending": return "En attente";
+      case "overdue": return "En retard";
+      default: return status;
+    }
+  };
+
+  const handleStartTask = (task: any) => {
+    if (task.courseId) {
+      navigate(`/course/${task.courseId}`);
+    } else {
+      navigate("/course/1");
     }
   };
 
@@ -80,72 +78,98 @@ const Tasks = () => {
           <p className="text-gray-600">Gérez vos tâches assignées et suivez votre progression</p>
         </div>
 
-        <div className="grid gap-6">
-          {tasks.map((task) => (
-            <Card key={task.id} className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    {getStatusIcon(task.status)}
-                    <div>
-                      <CardTitle className="text-xl">{task.title}</CardTitle>
-                      <p className="text-gray-600 mt-1">{task.description}</p>
+        {tasks.length === 0 ? (
+          <Card>
+            <CardContent className="p-8 text-center">
+              <AlertCircle className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+              <p className="text-gray-500 mb-4">Aucune tâche assignée pour le moment</p>
+              <p className="text-sm text-gray-400">
+                Connectez-vous avec un compte de test pour voir les tâches réalistes
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid gap-6">
+            {tasks.map((task) => (
+              <Card key={task.id} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      {getStatusIcon(task.status)}
+                      <div>
+                        <CardTitle className="text-xl">{task.title}</CardTitle>
+                        <p className="text-gray-600 mt-1">{task.description}</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Badge className={`${getPriorityColor(task.priority)} border`}>
+                        {task.priority === "high" ? "Haute" : 
+                         task.priority === "medium" ? "Moyenne" : "Basse"}
+                      </Badge>
+                      <Badge variant="outline">
+                        {task.category === "mandatory" ? "Obligatoire" :
+                         task.category === "professional_development" ? "Développement" : "Spécialisé"}
+                      </Badge>
                     </div>
                   </div>
-                  <Badge className={`${getPriorityColor(task.priority)} border`}>
-                    {task.priority === "high" ? "Haute" : task.priority === "medium" ? "Moyenne" : "Basse"}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="grid md:grid-cols-3 gap-4 mb-4">
-                  <div className="flex items-center gap-2">
-                    <User className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm text-gray-600">Assigné par: {task.assignedBy}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm text-gray-600">Échéance: {task.deadline}</span>
-                  </div>
-                  <div className="text-sm">
-                    <span className="text-gray-600">Statut: </span>
-                    <span className={`font-medium ${
-                      task.status === "completed" ? "text-green-600" :
-                      task.status === "in-progress" ? "text-blue-600" : "text-orange-600"
-                    }`}>
-                      {task.status === "completed" ? "Terminé" :
-                       task.status === "in-progress" ? "En cours" : "En attente"}
-                    </span>
-                  </div>
-                </div>
-                
-                {task.status !== "completed" && (
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm text-gray-600">
-                      <span>Progression</span>
-                      <span>{task.progress}%</span>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid md:grid-cols-3 gap-4 mb-4">
+                    <div className="flex items-center gap-2">
+                      <User className="h-4 w-4 text-gray-500" />
+                      <span className="text-sm text-gray-600">Assigné par: {task.assignedBy}</span>
                     </div>
-                    <Progress value={task.progress} className="h-2" />
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-4 w-4 text-gray-500" />
+                      <span className="text-sm text-gray-600">
+                        Échéance: {new Date(task.deadline).toLocaleDateString('fr-FR')}
+                      </span>
+                    </div>
+                    <div className="text-sm">
+                      <span className="text-gray-600">Statut: </span>
+                      <span className={`font-medium ${
+                        task.status === "completed" ? "text-green-600" :
+                        task.status === "in-progress" ? "text-blue-600" : 
+                        task.status === "overdue" ? "text-red-600" : "text-orange-600"
+                      }`}>
+                        {getStatusLabel(task.status)}
+                      </span>
+                    </div>
                   </div>
-                )}
-                
-                <div className="flex gap-2 mt-4">
+                  
                   {task.status !== "completed" && (
-                    <Button 
-                      onClick={() => navigate("/course/1")}
-                      className="moov-gradient text-white"
-                    >
-                      {task.status === "pending" ? "Commencer" : "Continuer"}
-                    </Button>
+                    <div className="space-y-2 mb-4">
+                      <div className="flex justify-between text-sm text-gray-600">
+                        <span>Progression</span>
+                        <span>{task.progress}%</span>
+                      </div>
+                      <Progress value={task.progress} className="h-2" />
+                    </div>
                   )}
-                  <Button variant="outline">
-                    Voir Détails
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                  
+                  <div className="bg-gray-50 p-3 rounded-lg mb-4">
+                    <p className="text-sm font-medium text-gray-700">Critères de Réussite:</p>
+                    <p className="text-sm text-gray-600">{task.completionCriteria}</p>
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    {task.status !== "completed" && (
+                      <Button 
+                        onClick={() => handleStartTask(task)}
+                        className="moov-gradient text-white"
+                      >
+                        {task.status === "pending" ? "Commencer" : "Continuer"}
+                      </Button>
+                    )}
+                    <Button variant="outline">
+                      Voir Détails
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </main>
     </div>
   );

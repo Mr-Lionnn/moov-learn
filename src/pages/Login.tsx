@@ -2,176 +2,92 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Network, Eye, EyeOff } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
+import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/contexts/AuthContext";
-
-// Sample users with different roles from Republic of Benin
-const SAMPLE_USERS = [
-  { id: 1, email: "adeline.agbodjan@moov.bj", password: "password123", name: "Adeline Agbodjan", role: "admin" as const, department: "IT" },
-  { id: 2, email: "rodrigue.hounkpatin@moov.bj", password: "password123", name: "Rodrigue Hounkpatin", role: "team_chief" as const, department: "Network", teamId: 1 },
-  { id: 3, email: "christelle.adjovi@moov.bj", password: "password123", name: "Christelle Adjovi", role: "team_responsible" as const, department: "Security", teamId: 2 },
-  { id: 4, email: "kossi.dossou@moov.bj", password: "password123", name: "Kossi Dossou", role: "team_member" as const, department: "Network", teamId: 1 },
-  { id: 5, email: "fatima.alassane@moov.bj", password: "password123", name: "Fatima Alassane", role: "team_member" as const, department: "Network", teamId: 1 },
-  { id: 6, email: "aminata.bio@moov.bj", password: "password123", name: "Aminata Bio", role: "assistant" as const, department: "Support" },
-  { id: 7, email: "serge.kpohomou@moov.bj", password: "password123", name: "Serge Kpohomou", role: "employee" as const, department: "Operations" },
-  { id: 8, email: "olivier.tognon@moov.bj", password: "password123", name: "Olivier Tognon", role: "employee" as const, department: "Maintenance" }
-];
+import { useNavigate } from "react-router-dom";
+import TestDataInitializer from "@/components/TestDataInitializer";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
-  const { toast } = useToast();
   const { login } = useAuth();
+  const navigate = useNavigate();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-
-    // Simulate API call
-    setTimeout(() => {
-      const user = SAMPLE_USERS.find(u => u.email === email && u.password === password);
-      
-      if (user) {
-        login(user);
-        toast({
-          title: "Connexion réussie",
-          description: `Bienvenue, ${user.name}!`,
-        });
-        navigate("/");
-      } else {
-        toast({
-          title: "Erreur de connexion",
-          description: "Email ou mot de passe incorrect",
-          variant: "destructive",
-        });
-      }
-      setIsLoading(false);
-    }, 1000);
-  };
-
-  const handleQuickLogin = (user: typeof SAMPLE_USERS[0]) => {
-    login(user);
-    toast({
-      title: "Connexion réussie",
-      description: `Bienvenue, ${user.name}!`,
-    });
-    navigate("/");
-  };
-
-  const getRoleLabel = (role: string) => {
-    const roleLabels = {
-      admin: "Administrateur",
-      team_chief: "Chef d'Équipe",
-      team_responsible: "Responsable d'Équipe",
-      team_member: "Membre d'Équipe",
-      assistant: "Assistant",
-      employee: "Employé"
+    
+    // Simple demo login - in production, this would validate against a backend
+    const mockUser = {
+      id: 1,
+      email: email,
+      name: "Utilisateur Demo",
+      role: "employee" as const,
+      department: "IT"
     };
-    return roleLabels[role as keyof typeof roleLabels] || role;
+    
+    login(mockUser);
+    navigate("/");
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-6">
-        {/* Logo */}
+      <div className="w-full max-w-6xl space-y-8">
         <div className="text-center">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="p-3 bg-blue-600 rounded-xl">
-              <Network className="h-8 w-8 text-white" />
-            </div>
-            <h1 className="text-2xl font-bold text-gray-900">MoovLearn</h1>
-          </div>
-          <p className="text-gray-600">Plateforme de formation interne</p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">Moov-Learn</h1>
+          <p className="text-gray-600">Plateforme d'apprentissage d'entreprise</p>
         </div>
 
-        {/* Login Form */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Connexion</CardTitle>
-            <CardDescription>
-              Connectez-vous à votre compte pour accéder aux formations
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="votre.email@moov.bj"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="password">Mot de passe</Label>
-                <div className="relative">
+        <div className="grid lg:grid-cols-2 gap-8">
+          {/* Login Form */}
+          <Card className="w-full max-w-md mx-auto">
+            <CardHeader>
+              <CardTitle className="text-2xl text-center">Connexion</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleLogin} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="votre@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="password">Mot de passe</Label>
                   <Input
                     id="password"
-                    type={showPassword ? "text" : "password"}
+                    type="password"
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                   />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </Button>
                 </div>
-              </div>
-
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Connexion..." : "Se connecter"}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-
-        {/* Quick Login for Testing */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm">Test rapide - Profils disponibles</CardTitle>
-            <CardDescription className="text-xs">
-              Cliquez sur un profil pour vous connecter rapidement
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              {SAMPLE_USERS.map((user) => (
-                <Button
-                  key={user.id}
-                  variant="outline"
-                  size="sm"
-                  className="w-full justify-start text-left text-xs"
-                  onClick={() => handleQuickLogin(user)}
-                >
-                  <div className="flex flex-col items-start">
-                    <span className="font-medium">{user.name}</span>
-                    <span className="text-gray-500">
-                      {user.email} • {getRoleLabel(user.role)}
-                    </span>
-                  </div>
+                <Button type="submit" className="w-full moov-gradient text-white">
+                  Se connecter
                 </Button>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+              </form>
+            </CardContent>
+          </Card>
+
+          {/* Test Environment */}
+          <div className="space-y-4">
+            <h2 className="text-2xl font-bold text-center">Environnement de Test</h2>
+            <TestDataInitializer />
+          </div>
+        </div>
+
+        <Separator className="my-8" />
+
+        <div className="text-center text-sm text-gray-500">
+          <p>© 2024 Moov-Learn. Plateforme de formation d'entreprise.</p>
+        </div>
       </div>
     </div>
   );
