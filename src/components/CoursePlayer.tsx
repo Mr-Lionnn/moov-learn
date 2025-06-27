@@ -28,7 +28,8 @@ interface CoursePlayerProps {
   onCourseComplete?: () => void;
 }
 
-const CoursePlayer = ({ courseTitle, currentLesson, lessons, onCourseComplete }: CoursePlayerProps) => {
+const CoursePlayer = ({ courseTitle, currentLesson: initialLesson, lessons, onCourseComplete }: CoursePlayerProps) => {
+  const [currentLesson, setCurrentLesson] = useState<Lesson>(initialLesson);
   const [completedLessons, setCompletedLessons] = useState<number[]>([]);
 
   const getLessonIcon = (type: string, completed: boolean) => {
@@ -53,8 +54,23 @@ const CoursePlayer = ({ courseTitle, currentLesson, lessons, onCourseComplete }:
       setCompletedLessons([...completedLessons, currentLesson.id]);
     }
     
-    if (onCourseComplete) {
+    // Auto-navigate to next lesson if available
+    const currentIndex = lessons.findIndex(l => l.id === currentLesson.id);
+    if (currentIndex < lessons.length - 1) {
+      setCurrentLesson(lessons[currentIndex + 1]);
+    } else if (onCourseComplete) {
       onCourseComplete();
+    }
+  };
+
+  const handleLessonClick = (lesson: Lesson) => {
+    setCurrentLesson(lesson);
+  };
+
+  const handleNextLesson = () => {
+    const currentIndex = lessons.findIndex(l => l.id === currentLesson.id);
+    if (currentIndex < lessons.length - 1) {
+      setCurrentLesson(lessons[currentIndex + 1]);
     }
   };
 
@@ -88,7 +104,7 @@ Comprendre TCP/IP est essentiel pour tout professionnel de l'informatique, car i
         <Card>
           <CardHeader>
             <CardTitle className="text-xl flex items-center gap-2">
-              {getLessonIcon(currentLesson.type, false)}
+              {getLessonIcon(currentLesson.type, completedLessons.includes(currentLesson.id))}
               {currentLesson.title}
             </CardTitle>
           </CardHeader>
@@ -175,6 +191,7 @@ Comprendre TCP/IP est essentiel pour tout professionnel de l'informatique, car i
                     className={`p-4 hover:bg-blue-50 cursor-pointer transition-colors ${
                       lesson.id === currentLesson.id ? 'bg-blue-50 border-r-4 border-primary' : ''
                     }`}
+                    onClick={() => handleLessonClick(lesson)}
                   >
                     <div className="flex items-center gap-3">
                       {getLessonIcon(lesson.type, lesson.completed || completedLessons.includes(lesson.id))}
@@ -207,7 +224,11 @@ Comprendre TCP/IP est essentiel pour tout professionnel de l'informatique, car i
         <Card className="mt-4">
           <CardContent className="p-4">
             <div className="space-y-3">
-              <Button className="w-full moov-gradient text-white">
+              <Button 
+                className="w-full moov-gradient text-white"
+                onClick={handleNextLesson}
+                disabled={lessons.findIndex(l => l.id === currentLesson.id) === lessons.length - 1}
+              >
                 Leçon Suivante
               </Button>
               <Button variant="outline" className="w-full">
