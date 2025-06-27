@@ -11,7 +11,7 @@ interface CourseDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
   course: {
-    id: number;
+    id: number | string;
     title: string;
     instructor: string;
     duration: string;
@@ -21,11 +21,16 @@ interface CourseDetailModalProps {
     level: string;
     nextLesson: string;
     estimatedTime: string;
-  };
+  } | null;
 }
 
 const CourseDetailModal = ({ isOpen, onClose, course }: CourseDetailModalProps) => {
   const navigate = useNavigate();
+
+  // Safety check for course data
+  if (!course) {
+    return null;
+  }
 
   const handleContinue = () => {
     navigate(`/course/${course.id}`);

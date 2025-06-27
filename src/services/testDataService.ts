@@ -393,34 +393,76 @@ class TestDataService {
   }
 
   getCoursesForUser(userId: number): any[] {
+    console.log('getCoursesForUser called with userId:', userId);
+    
     const user = this.getUserById(userId);
-    if (!user) return [];
+    if (!user) {
+      console.warn('User not found for ID:', userId);
+      return [];
+    }
 
-    // Transform TestCourse to match the expected format for CourseCard
-    return this.testCourses.map(course => ({
-      id: course.id,
-      title: course.title,
-      instructor: 'Instructeur Expert',
-      duration: course.duration,
-      students: course.enrolledUsers,
-      rating: 4.5,
-      progress: Math.floor(Math.random() * 100), // Random progress for demo
-      image: '/placeholder.svg',
-      category: course.category,
-      level: course.level === 'beginner' ? 'Débutant' : 
-             course.level === 'intermediate' ? 'Intermédiaire' : 'Avancé'
-    }));
+    try {
+      // Transform TestCourse to match the expected format for CourseCard
+      const transformedCourses = this.testCourses.map(course => {
+        // Ensure all required properties exist
+        if (!course || !course.id || !course.title) {
+          console.warn('Invalid course data:', course);
+          return null;
+        }
+
+        return {
+          id: course.id,
+          title: course.title,
+          instructor: 'Instructeur Expert',
+          duration: course.duration || '2h 00min',
+          students: course.enrolledUsers || 0,
+          rating: 4.5,
+          progress: Math.floor(Math.random() * 100), // Random progress for demo
+          image: '/placeholder.svg',
+          category: course.category || 'Formation',
+          level: course.level === 'beginner' ? 'Débutant' : 
+                 course.level === 'intermediate' ? 'Intermédiaire' : 'Avancé'
+        };
+      });
+
+      // Filter out any null values
+      const validCourses = transformedCourses.filter(course => course !== null);
+      console.log('Transformed courses:', validCourses);
+      
+      return validCourses;
+    } catch (error) {
+      console.error('Error transforming courses:', error);
+      return [];
+    }
   }
 
   getTasksForUser(userId: number): TestTask[] {
+    console.log('getTasksForUser called with userId:', userId);
+    
     const user = this.getUserById(userId);
-    if (!user) return [];
+    if (!user) {
+      console.warn('User not found for ID:', userId);
+      return [];
+    }
 
-    return this.testTasks.filter(task => 
-      task.assignedTo.includes('All Employees') ||
-      task.assignedTo.includes(`${user.department} Team`) ||
-      task.assignedTo.includes('Team Leaders')
-    );
+    try {
+      const userTasks = this.testTasks.filter(task => {
+        if (!task || !task.id || !task.title) {
+          console.warn('Invalid task data:', task);
+          return false;
+        }
+        
+        return task.assignedTo.includes('All Employees') ||
+               task.assignedTo.includes(`${user.department} Team`) ||
+               task.assignedTo.includes('Team Leaders');
+      });
+
+      console.log('Filtered tasks for user:', userTasks);
+      return userTasks;
+    } catch (error) {
+      console.error('Error filtering tasks:', error);
+      return [];
+    }
   }
 
   getUserProgress(userId: number): TestProgress[] {
