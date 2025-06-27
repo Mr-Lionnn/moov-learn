@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,11 +13,13 @@ import {
 } from 'lucide-react';
 import { testDataService } from '@/services/testDataService';
 import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const TestDataInitializer = () => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [showTestAccounts, setShowTestAccounts] = useState(false);
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Check if test data is already initialized
@@ -36,8 +37,10 @@ const TestDataInitializer = () => {
   };
 
   const loginAsTestUser = (userId: number) => {
+    console.log('Attempting to login as test user:', userId);
     const testUser = testDataService.getUserById(userId);
     if (testUser) {
+      console.log('Found test user:', testUser);
       login({
         id: testUser.id,
         email: testUser.email,
@@ -46,6 +49,9 @@ const TestDataInitializer = () => {
         department: testUser.department,
         teamId: testUser.teamId
       });
+      navigate('/');
+    } else {
+      console.error('Test user not found:', userId);
     }
   };
 

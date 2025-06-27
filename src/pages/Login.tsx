@@ -18,7 +18,29 @@ const Login = () => {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Simple demo login - in production, this would validate against a backend
+    console.log('Form login attempt with email:', email);
+    
+    // Check if this is a test user email
+    const testUsers = localStorage.getItem('moov_test_users');
+    if (testUsers) {
+      const users = JSON.parse(testUsers);
+      const testUser = users.find((u: any) => u.email === email);
+      if (testUser) {
+        console.log('Found test user:', testUser);
+        login({
+          id: testUser.id,
+          email: testUser.email,
+          name: testUser.name,
+          role: testUser.role,
+          department: testUser.department,
+          teamId: testUser.teamId
+        });
+        navigate("/");
+        return;
+      }
+    }
+    
+    // Fallback to mock user for any other email
     const mockUser = {
       id: 1,
       email: email,
@@ -27,6 +49,7 @@ const Login = () => {
       department: "IT"
     };
     
+    console.log('Using mock user:', mockUser);
     login(mockUser);
     navigate("/");
   };
