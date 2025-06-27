@@ -19,7 +19,7 @@ interface Lesson {
   title: string;
   duration: string;
   completed: boolean;
-  type: "video" | "quiz" | "reading" | "audio";
+  type: "video" | "quiz" | "text" | "audio";
 }
 
 interface CoursePlayerProps {
@@ -40,7 +40,7 @@ const CoursePlayer = ({ courseTitle, currentLesson, lessons, onCourseComplete }:
         return <PlayCircle className="h-4 w-4 text-blue-600" />;
       case "quiz":
         return <Target className="h-4 w-4 text-purple-600" />;
-      case "reading":
+      case "text":
         return <BookOpen className="h-4 w-4 text-orange-600" />;
       case "audio":
         return <Headphones className="h-4 w-4 text-green-600" />;
@@ -65,7 +65,7 @@ const CoursePlayer = ({ courseTitle, currentLesson, lessons, onCourseComplete }:
         return "Vidéo";
       case "quiz":
         return "Quiz";
-      case "reading":
+      case "text":
         return "Lecture";
       case "audio":
         return "Audio";

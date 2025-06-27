@@ -71,7 +71,7 @@ const sampleQuiz: Quiz = {
 };
 
 const LessonContent = ({ lessonId, title, type, content, duration, onComplete }: LessonContentProps) => {
-  const [activeTab, setActiveTab] = useState(type);
+  const [activeTab, setActiveTab] = useState<"video" | "text" | "audio" | "quiz">(type);
   const [completed, setCompleted] = useState(false);
 
   const handleComplete = () => {
@@ -84,6 +84,10 @@ const LessonContent = ({ lessonId, title, type, content, duration, onComplete }:
   const handleQuizComplete = (result: QuizResult) => {
     console.log("Quiz completed:", result);
     handleComplete();
+  };
+
+  const handleTabChange = (value: string) => {
+    setActiveTab(value as "video" | "text" | "audio" | "quiz");
   };
 
   const getLessonIcon = (lessonType: string) => {
@@ -145,7 +149,7 @@ const LessonContent = ({ lessonId, title, type, content, duration, onComplete }:
         </CardHeader>
       </Card>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="video" className="flex items-center gap-2">
             <PlayCircle className="h-4 w-4" />
