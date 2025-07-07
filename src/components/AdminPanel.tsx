@@ -34,9 +34,45 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
 
     console.log("Création du cours:", newCourse);
     
+    // Create course object with unique ID
+    const courseId = `course_${Date.now()}`;
+    const courseData = {
+      id: courseId,
+      title: newCourse.title,
+      description: newCourse.description,
+      instructor: newCourse.instructor || 'Instructeur Expert',
+      duration: newCourse.duration || '2h 00min',
+      category: newCourse.category || 'Formation',
+      level: newCourse.level || 'beginner',
+      contentType: 'mixed' as const,
+      targetAudience: ['All Employees'],
+      learningObjectives: ['Objectif principal de formation'],
+      isMandatory: true,
+      completionRate: 0,
+      enrolledUsers: 0,
+      averageScore: 0,
+      requiresQuiz: newCourse.requiresQuiz,
+      createdBy: user?.name || 'Admin',
+      createdAt: new Date().toISOString(),
+      isActive: true
+    };
+
+    // Save to localStorage
+    try {
+      const existingCourses = JSON.parse(localStorage.getItem('moov_test_courses') || '[]');
+      existingCourses.push(courseData);
+      localStorage.setItem('moov_test_courses', JSON.stringify(existingCourses));
+      
+      console.log('✅ Course saved successfully:', courseData);
+      alert(`Formation "${newCourse.title}" créée avec succès!`);
+    } catch (error) {
+      console.error('Error saving course:', error);
+      alert('Erreur lors de la création de la formation');
+    }
+    
     // If course requires quiz, open quiz creator
     if (newCourse.requiresQuiz) {
-      setSelectedCourseForQuiz(`course_${Date.now()}`);
+      setSelectedCourseForQuiz(courseId);
       setShowQuizCreator(true);
     }
 
@@ -54,12 +90,54 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
 
   const handleQuizSave = (quiz: Quiz) => {
     console.log("Quiz créé:", quiz);
+    
+    // Save quiz to localStorage
+    try {
+      const existingQuizzes = JSON.parse(localStorage.getItem('moov_test_quizzes') || '[]');
+      const quizWithMetadata = {
+        ...quiz,
+        id: quiz.id || `quiz_${Date.now()}`,
+        createdBy: user?.name || 'Admin',
+        createdAt: new Date().toISOString(),
+        isActive: true
+      };
+      existingQuizzes.push(quizWithMetadata);
+      localStorage.setItem('moov_test_quizzes', JSON.stringify(existingQuizzes));
+      
+      console.log('✅ Quiz saved successfully:', quizWithMetadata);
+      alert(`Quiz "${quiz.title}" créé avec succès!`);
+    } catch (error) {
+      console.error('Error saving quiz:', error);
+      alert('Erreur lors de la création du quiz');
+    }
+    
     setShowQuizCreator(false);
     setSelectedCourseForQuiz(null);
   };
 
   const handleModuleSave = (module: LearningModule) => {
     console.log("Module créé:", module);
+    
+    // Save module to localStorage
+    try {
+      const existingModules = JSON.parse(localStorage.getItem('moov_learning_modules') || '[]');
+      const moduleWithId = {
+        ...module,
+        id: module.id || `module_${Date.now()}`,
+        createdBy: user?.name || 'Admin',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      existingModules.push(moduleWithId);
+      localStorage.setItem('moov_learning_modules', JSON.stringify(existingModules));
+      
+      console.log('✅ Module saved successfully:', moduleWithId);
+      alert(`Module "${module.title}" créé avec succès!`);
+    } catch (error) {
+      console.error('Error saving module:', error);
+      alert('Erreur lors de la création du module');
+    }
+    
     setShowModuleCreator(false);
   };
 

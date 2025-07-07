@@ -261,7 +261,15 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
               <Button 
                 variant="ghost" 
                 className="text-gray-600 hover:text-blue-600 text-sm px-2 xl:px-3 bg-blue-50 hover:bg-blue-100 border border-blue-200"
-                onClick={onShowAdminPanel}
+                onClick={() => {
+                  console.log('Créer Formation button clicked, user role:', user?.role);
+                  console.log('onShowAdminPanel function:', onShowAdminPanel);
+                  if (onShowAdminPanel) {
+                    onShowAdminPanel();
+                  } else {
+                    console.error('onShowAdminPanel function is not defined');
+                  }
+                }}
               >
                 <BookOpen className="h-4 w-4 mr-1 xl:mr-2" />
                 <span className="hidden xl:inline">Créer Formation</span>
