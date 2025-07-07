@@ -14,10 +14,14 @@ interface FileViewerModalProps {
     author: string;
     downloads: number;
     date: string;
-  };
+  } | null;
 }
 
 const FileViewerModal = ({ isOpen, onClose, file }: FileViewerModalProps) => {
+  // Return null if file is not provided
+  if (!file) {
+    return null;
+  }
   const handleDownload = () => {
     // Create a more realistic file download
     const fileContent = generateSampleFileContent(file.name, file.type);
