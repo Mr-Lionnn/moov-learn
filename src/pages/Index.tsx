@@ -269,8 +269,8 @@ const Index = () => {
           </section>
         </div>
 
-        {/* Dedicated Tasks Section */}
-        <section className="mt-12">
+        {/* Task Management Section */}
+        <section className="mt-8 sm:mt-10">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
             <div>
               <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Gestion des Tâches</h2>
