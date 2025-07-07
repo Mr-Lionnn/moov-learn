@@ -137,12 +137,12 @@ const Team = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
       <Header />
       
-      <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
+      <main className="container mx-auto px-3 sm:px-4 lg:px-6 py-6 sm:py-8">
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start gap-3 sm:gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Équipe</h1>
-              <p className="text-gray-600">Collaborez et suivez les progrès de l'équipe</p>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Équipe</h1>
+              <p className="text-sm sm:text-base text-gray-600">Collaborez et suivez les progrès de l'équipe</p>
             </div>
             <Button onClick={handleTeamDiscussion} className="moov-gradient text-white">
               <MessageCircle className="h-4 w-4 mr-2" />
@@ -152,7 +152,7 @@ const Team = () => {
         </div>
 
         {/* Team Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
@@ -208,8 +208,8 @@ const Team = () => {
         </div>
 
         {/* Search */}
-        <div className="mb-8">
-          <div className="relative max-w-md">
+        <div className="mb-6 sm:mb-8">
+          <div className="relative max-w-full sm:max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
               placeholder="Rechercher membres, compétences..."
@@ -221,7 +221,7 @@ const Team = () => {
         </div>
 
         {/* Team Members */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
           {filteredMembers.map((member) => (
             <Card key={member.id} className="hover:shadow-lg transition-shadow duration-300">
               <CardHeader className="pb-4">
@@ -259,7 +259,7 @@ const Team = () => {
                 </div>
 
                 {/* Stats */}
-                <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="grid grid-cols-2 gap-2 sm:gap-4 text-sm">
                   <div className="text-center">
                     <p className="text-gray-600">Formations</p>
                     <p className="font-bold text-lg">{member.completedCourses}</p>
@@ -283,7 +283,7 @@ const Team = () => {
                 </div>
 
                 {/* Actions */}
-                <div className="flex gap-2 pt-2 border-t">
+                <div className="flex flex-col sm:flex-row gap-2 pt-2 border-t">
                   <Button 
                     size="sm" 
                     className="flex-1"
@@ -295,9 +295,10 @@ const Team = () => {
                   <Button 
                     variant="outline" 
                     size="sm"
+                    className="flex-1 sm:flex-initial"
                     onClick={() => handleViewProfile(member)}
                   >
-                    Profil
+                    Voir Détails
                   </Button>
                 </div>
 

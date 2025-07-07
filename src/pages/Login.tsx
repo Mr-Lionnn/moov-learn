@@ -58,16 +58,16 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-6xl space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-2 sm:p-4">
+      <div className="w-full max-w-7xl space-y-6 sm:space-y-8">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Moov-Learn</h1>
-          <p className="text-gray-600">Plateforme d'apprentissage d'entreprise</p>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Moov-Learn</h1>
+          <p className="text-sm sm:text-base text-gray-600">Plateforme d'apprentissage d'entreprise</p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
           {/* Login Form */}
-          <Card className="w-full max-w-md mx-auto">
+          <Card className="w-full max-w-md mx-auto order-2 lg:order-1">
             <CardHeader>
               <CardTitle className="text-2xl text-center">Connexion</CardTitle>
             </CardHeader>
@@ -103,27 +103,27 @@ const Login = () => {
           </Card>
 
           {/* Available Test Logins */}
-          <div className="space-y-4">
-            <h2 className="text-2xl font-bold text-center">Comptes de Test Disponibles</h2>
+          <div className="space-y-4 order-1 lg:order-2">
+            <h2 className="text-xl sm:text-2xl font-bold text-center">Comptes de Test Disponibles</h2>
             <Card>
               <CardContent className="p-4">
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   {testDataService.getTestUsers().map((user) => (
-                    <div key={user.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50">
-                      <div className="flex items-center gap-3">
-                        <Avatar className="h-10 w-10">
+                    <div key={user.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 sm:p-4 border rounded-lg hover:bg-gray-50 gap-3 sm:gap-4">
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        <Avatar className="h-10 w-10 sm:h-12 sm:w-12 flex-shrink-0">
                           <AvatarImage src={user.avatar} />
                           <AvatarFallback>
-                            <User className="h-5 w-5" />
+                            <User className="h-4 w-4 sm:h-5 sm:w-5" />
                           </AvatarFallback>
                         </Avatar>
-                        <div>
-                          <h3 className="font-semibold text-sm">{user.name}</h3>
-                          <div className="flex items-center gap-1 text-xs text-gray-600">
-                            <Mail className="h-3 w-3" />
-                            {user.email}
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-sm sm:text-base truncate">{user.name}</h3>
+                          <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600">
+                            <Mail className="h-3 w-3 flex-shrink-0" />
+                            <span className="truncate">{user.email}</span>
                           </div>
-                          <div className="flex items-center gap-2 mt-1">
+                          <div className="flex flex-wrap items-center gap-1 sm:gap-2 mt-1">
                             <Badge className={
                               user.role === 'admin' ? 'bg-red-100 text-red-800' :
                               user.role === 'team_chief' ? 'bg-blue-100 text-blue-800' :
@@ -155,7 +155,7 @@ const Login = () => {
                           });
                           navigate("/");
                         }}
-                        className="moov-gradient text-white"
+                        className="moov-gradient text-white w-full sm:w-auto flex-shrink-0"
                       >
                         Connexion
                       </Button>

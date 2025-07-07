@@ -147,20 +147,20 @@ const Index = () => {
     <div className="min-h-screen moov-gradient-subtle">
       <Header />
       
-      <main className="container mx-auto px-4 py-6">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+      <main className="container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
             Bienvenue, {user?.name || 'Utilisateur'}!
           </h1>
-          <p className="text-gray-600">Suivez votre progression et continuez votre apprentissage</p>
+          <p className="text-sm sm:text-base text-gray-600">Suivez votre progression et continuez votre apprentissage</p>
         </div>
 
         <StatsGrid />
 
-        <div className="grid lg:grid-cols-2 gap-8 mt-8">
+        <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 mt-6 sm:mt-8">
           <section>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Cours de Formation Disponibles</h2>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-2 sm:gap-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Cours de Formation Disponibles</h2>
               <Button variant="outline" onClick={() => navigate("/my-trainings")}>
                 Voir Tous
               </Button>
@@ -186,8 +186,8 @@ const Index = () => {
           </section>
 
           <section>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Tâches d'Apprentissage</h2>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-2 sm:gap-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Tâches d'Apprentissage</h2>
               <Button variant="outline" onClick={() => navigate("/tasks")}>
                 Voir Toutes
               </Button>
@@ -206,15 +206,15 @@ const Index = () => {
                         <div className="flex items-start gap-3">
                           {getStatusIcon(task.status)}
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between mb-2">
-                              <h3 className="font-semibold text-gray-900 truncate">{task.title || 'Tâche sans titre'}</h3>
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-1 sm:gap-2">
+                              <h3 className="font-semibold text-sm sm:text-base text-gray-900 truncate">{task.title || 'Tâche sans titre'}</h3>
                               <Badge className={`${getPriorityColor(task.priority)} border text-xs`}>
                                 {task.priority === "high" ? "Haute" : 
                                  task.priority === "medium" ? "Moyenne" : "Basse"}
                               </Badge>
                             </div>
                             
-                            <p className="text-sm text-gray-600 mb-3">{task.description || 'Aucune description disponible'}</p>
+                            <p className="text-xs sm:text-sm text-gray-600 mb-3 line-clamp-2">{task.description || 'Aucune description disponible'}</p>
                             
                             {task.status !== "completed" && (
                               <div className="space-y-1 mb-3">
@@ -226,7 +226,7 @@ const Index = () => {
                               </div>
                             )}
                             
-                            <div className="grid grid-cols-2 gap-2 text-xs mb-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs mb-3">
                               <div className="flex items-center gap-1">
                                 <CalendarDays className="h-3 w-3" />
                                 <span>Échéance: {task.deadline ? new Date(task.deadline).toLocaleDateString('fr-FR') : 'Non définie'}</span>
@@ -271,10 +271,10 @@ const Index = () => {
 
         {/* Dedicated Tasks Section */}
         <section className="mt-12">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">Gestion des Tâches</h2>
-              <p className="text-gray-600">Suivi détaillé de vos délais, évaluations et modules</p>
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Gestion des Tâches</h2>
+              <p className="text-sm sm:text-base text-gray-600">Suivi détaillé de vos délais, évaluations et modules</p>
             </div>
             <Button onClick={() => navigate("/tasks")} className="moov-gradient text-white">
               <Target className="h-4 w-4 mr-2" />
@@ -282,7 +282,7 @@ const Index = () => {
             </Button>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {/* Time Limits Card */}
             <Card>
               <CardHeader className="pb-3">

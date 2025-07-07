@@ -49,7 +49,7 @@ const CoursePlayer = ({ courseTitle, currentLesson: initialLesson, lessons, onCo
   };
 
   return (
-    <div className="grid lg:grid-cols-3 gap-6">
+    <div className="grid lg:grid-cols-3 gap-4 sm:gap-6">
       {/* Main Content */}
       <div className="lg:col-span-2">
         <LessonContentRenderer
