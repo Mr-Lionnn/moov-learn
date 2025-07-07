@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { User, Mail, Shield, AlertTriangle } from "lucide-react";
 import { emailSchema, passwordSchema, loginRateLimiter, sanitizeText, generateCSRFToken } from "@/utils/security";
 import { useToast } from "@/hooks/use-toast";
+import UserProfilesDisplay from "@/components/UserProfilesDisplay";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -108,6 +109,26 @@ const Login = () => {
     }
   };
 
+  const [showProfiles, setShowProfiles] = useState(false);
+
+  if (showProfiles) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex justify-between items-center mb-6">
+            <Button
+              variant="outline"
+              onClick={() => setShowProfiles(false)}
+            >
+              ← Retour à la connexion
+            </Button>
+          </div>
+          <UserProfilesDisplay />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-2 sm:p-4">
       <div className="w-full max-w-7xl space-y-6 sm:space-y-8">
@@ -175,6 +196,17 @@ const Login = () => {
                 {isLoading ? "Connexion..." : "Se connecter"}
               </Button>
             </form>
+            
+            <Separator className="my-4" />
+            
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => setShowProfiles(true)}
+            >
+              <User className="h-4 w-4 mr-2" />
+              Voir les Profils de Test
+            </Button>
           </CardContent>
         </Card>
 
