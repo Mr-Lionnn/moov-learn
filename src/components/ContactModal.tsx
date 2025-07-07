@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -71,6 +71,9 @@ const ContactModal = ({ isOpen, onClose, member }: ContactModalProps) => {
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Contacter</DialogTitle>
+          <DialogDescription>
+            Envoyez un message à ce membre de l'équipe
+          </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-6">

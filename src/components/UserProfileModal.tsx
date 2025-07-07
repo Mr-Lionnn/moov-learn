@@ -1,5 +1,5 @@
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -50,6 +50,9 @@ const UserProfileModal = ({ isOpen, onClose, member }: UserProfileModalProps) =>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>Profil Utilisateur</DialogTitle>
+          <DialogDescription>
+            Informations détaillées sur ce membre de l'équipe
+          </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-6">
