@@ -4,13 +4,7 @@ import LessonContentRenderer from "./LessonContentRenderer";
 import CourseCurriculum from "./CourseCurriculum";
 import CourseActions from "./CourseActions";
 
-interface Lesson {
-  id: number;
-  title: string;
-  duration: string;
-  completed: boolean;
-  type: "video" | "quiz" | "text" | "audio";
-}
+import { Lesson } from "@/types/lesson";
 
 interface CoursePlayerProps {
   courseTitle: string;
