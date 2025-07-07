@@ -22,7 +22,8 @@ const LessonContentSwitch = ({
 
   const handleQuizComplete = (result: QuizResult) => {
     console.log("Quiz completed with result:", result);
-    setShowRating(true);
+    // Don't show rating immediately - let quiz results show first
+    // Rating will be shown when user clicks "Continue" on quiz results
   };
 
   const handleQuizContinue = () => {
