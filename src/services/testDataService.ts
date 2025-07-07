@@ -53,6 +53,19 @@ export interface TestProgress {
 }
 
 class TestDataService {
+  constructor() {
+    // Auto-initialize test data if not already present
+    this.autoInitialize();
+  }
+
+  private autoInitialize(): void {
+    const testUsers = localStorage.getItem('moov_test_users');
+    if (!testUsers) {
+      this.initializeTestData();
+      console.log('✅ Test data automatically initialized');
+    }
+  }
+
   private testUsers: TestUser[] = [
     {
       id: 1,
