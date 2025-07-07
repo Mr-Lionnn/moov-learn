@@ -7,7 +7,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Send, Phone, Mail, MessageCircle } from "lucide-react";
+import { Send, Phone, Mail, MessageCircle, AlertTriangle } from "lucide-react";
+import { textSchema, sanitizeText, generateCSRFToken } from "@/utils/security";
+import { useToast } from "@/hooks/use-toast";
 
 interface ContactModalProps {
   isOpen: boolean;
@@ -25,21 +27,65 @@ interface ContactModalProps {
 const ContactModal = ({ isOpen, onClose, member }: ContactModalProps) => {
   const [message, setMessage] = useState("");
   const [subject, setSubject] = useState("");
+  const [errors, setErrors] = useState<{ subject?: string; message?: string }>({});
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
   // Return null if member is not provided
   if (!member) {
     return null;
   }
 
-  const handleSendMessage = () => {
-    if (message.trim()) {
-      console.log(`Message sent to ${member.name}:`, { subject, message });
+  const handleSendMessage = async () => {
+    setIsLoading(true);
+    setErrors({});
+
+    // Validate inputs
+    const subjectValidation = textSchema.safeParse(subject);
+    const messageValidation = textSchema.safeParse(message);
+
+    if (!subjectValidation.success || !messageValidation.success || !message.trim()) {
+      setErrors({
+        subject: subjectValidation.error?.issues[0]?.message || (!subject.trim() ? "Sujet requis" : undefined),
+        message: messageValidation.error?.issues[0]?.message || (!message.trim() ? "Message requis" : undefined)
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      // Sanitize inputs
+      const sanitizedSubject = sanitizeText(subject);
+      const sanitizedMessage = sanitizeText(message);
+      
+      console.log(`Message sent to ${member.name}:`, { 
+        subject: sanitizedSubject, 
+        message: sanitizedMessage,
+        timestamp: new Date().toISOString()
+      });
+      
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       // Here you would typically send the message to your backend
       setMessage("");
       setSubject("");
+      setErrors({});
       onClose();
-      // Show success notification
-      alert(`Message envoyé à ${member.name}!`);
+      
+      toast({
+        title: "Message envoyé",
+        description: `Votre message a été envoyé à ${member.name}`,
+      });
+    } catch (error) {
+      console.error('Error sending message:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible d'envoyer le message. Veuillez réessayer.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -94,7 +140,9 @@ const ContactModal = ({ isOpen, onClose, member }: ContactModalProps) => {
             </div>
           </div>
 
-          <div className="space-y-4">
+          <form className="space-y-4">
+            <input type="hidden" name="csrf_token" value={generateCSRFToken()} />
+            
             <div>
               <Label htmlFor="subject">Sujet</Label>
               <Input
@@ -102,7 +150,13 @@ const ContactModal = ({ isOpen, onClose, member }: ContactModalProps) => {
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 placeholder="Objet du message..."
+                className={errors.subject ? "border-red-500" : ""}
+                disabled={isLoading}
+                maxLength={100}
               />
+              {errors.subject && (
+                <p className="text-sm text-red-600 mt-1">{errors.subject}</p>
+              )}
             </div>
             
             <div>
@@ -113,19 +167,30 @@ const ContactModal = ({ isOpen, onClose, member }: ContactModalProps) => {
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Tapez votre message..."
                 rows={4}
+                className={errors.message ? "border-red-500" : ""}
+                disabled={isLoading}
+                maxLength={1000}
               />
+              {errors.message && (
+                <p className="text-sm text-red-600 mt-1">{errors.message}</p>
+              )}
+              <p className="text-xs text-gray-500 mt-1">{message.length}/1000 caractères</p>
             </div>
-          </div>
+          </form>
 
           <div className="flex gap-2">
-            <Button onClick={handleSendMessage} disabled={!message.trim()} className="flex-1">
+            <Button 
+              onClick={handleSendMessage} 
+              disabled={!message.trim() || !subject.trim() || isLoading} 
+              className="flex-1"
+            >
               <Send className="h-4 w-4 mr-2" />
-              Envoyer
+              {isLoading ? "Envoi..." : "Envoyer"}
             </Button>
-            <Button variant="outline" onClick={handleCall}>
+            <Button variant="outline" onClick={handleCall} disabled={isLoading}>
               <Phone className="h-4 w-4" />
             </Button>
-            <Button variant="outline" onClick={handleEmail}>
+            <Button variant="outline" onClick={handleEmail} disabled={isLoading}>
               <Mail className="h-4 w-4" />
             </Button>
           </div>

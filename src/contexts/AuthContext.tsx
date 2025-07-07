@@ -1,5 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { secureStorage, validateSession } from '@/utils/security';
 
 interface User {
   id: number;
@@ -55,29 +56,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   useEffect(() => {
-    // Check if user is stored in localStorage on app load
-    const storedUser = localStorage.getItem('user');
-    const storedNotifications = localStorage.getItem('notifications');
+    // Check if user is stored in secure storage on app load
+    const storedUser = secureStorage.getItem('user');
+    const storedNotifications = secureStorage.getItem('notifications');
+    const sessionData = secureStorage.getItem('session');
     
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    // Validate session before restoring user
+    if (storedUser && sessionData && validateSession(sessionData)) {
+      setUser(storedUser);
+    } else {
+      // Clear invalid session data
+      secureStorage.removeItem('user');
+      secureStorage.removeItem('session');
     }
     
     if (storedNotifications) {
-      setNotifications(JSON.parse(storedNotifications));
+      setNotifications(storedNotifications);
     }
   }, []);
 
   const login = (userData: User) => {
     setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
+    const sessionData = {
+      userId: userData.id,
+      timestamp: Date.now(),
+      userAgent: navigator.userAgent
+    };
+    secureStorage.setItem('user', userData);
+    secureStorage.setItem('session', sessionData);
   };
 
   const logout = () => {
     setUser(null);
     setNotifications([]);
-    localStorage.removeItem('user');
-    localStorage.removeItem('notifications');
+    secureStorage.removeItem('user');
+    secureStorage.removeItem('session');
+    secureStorage.removeItem('notifications');
     localStorage.removeItem('moov_learn_session');
   };
 
@@ -91,7 +105,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     const updatedNotifications = [newNotification, ...notifications];
     setNotifications(updatedNotifications);
-    localStorage.setItem('notifications', JSON.stringify(updatedNotifications));
+    secureStorage.setItem('notifications', updatedNotifications);
   };
 
   const markNotificationRead = (id: string) => {
@@ -99,7 +113,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       notif.id === id ? { ...notif, read: true } : notif
     );
     setNotifications(updatedNotifications);
-    localStorage.setItem('notifications', JSON.stringify(updatedNotifications));
+    secureStorage.setItem('notifications', updatedNotifications);
   };
 
   const setModuleDeadline = (moduleId: string, deadline: string, teamMembers: string[]) => {
