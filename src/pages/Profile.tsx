@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { User, Mail, Shield, ArrowLeft } from "lucide-react";
+import { User, Mail, Shield, ArrowLeft, Users, Settings, BarChart3, FileText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 
@@ -14,6 +14,27 @@ const Profile = () => {
 
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
+  };
+
+  const getRoleDisplayName = (role: string) => {
+    switch (role) {
+      case 'admin':
+        return 'Administrateur';
+      case 'team_chief':
+        return 'Chef d\'Équipe';
+      case 'team_responsible':
+        return 'Responsable d\'Équipe';
+      case 'team_member':
+        return 'Membre d\'Équipe';
+      case 'assistant':
+        return 'Assistant';
+      default:
+        return 'Employé';
+    }
+  };
+
+  const isManagerRole = (role: string) => {
+    return ['admin', 'team_chief', 'team_responsible'].includes(role);
   };
 
   if (!user) {
@@ -52,8 +73,8 @@ const Profile = () => {
                 <div>
                   <h2 className="text-xl font-semibold">{user.name}</h2>
                   <p className="text-gray-600">{user.email}</p>
-                  <Badge variant={user.role === "admin" ? "default" : "secondary"} className="mt-2">
-                    {user.role === "admin" ? "Administrateur" : "Employé"}
+                  <Badge variant={isManagerRole(user.role) ? "default" : "secondary"} className="mt-2">
+                    {getRoleDisplayName(user.role)}
                   </Badge>
                 </div>
               </div>
@@ -80,13 +101,87 @@ const Profile = () => {
                   <div>
                     <p className="font-medium">Rôle</p>
                     <p className="text-gray-600">
-                      {user.role === "admin" ? "Administrateur" : "Employé"}
+                      {getRoleDisplayName(user.role)}
                     </p>
                   </div>
                 </div>
+
+                {user.department && (
+                  <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
+                    <Users className="h-5 w-5 text-gray-500" />
+                    <div>
+                      <p className="font-medium">Département</p>
+                      <p className="text-gray-600">{user.department}</p>
+                    </div>
+                  </div>
+                )}
+
+                {user.teamId && (
+                  <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
+                    <Users className="h-5 w-5 text-gray-500" />
+                    <div>
+                      <p className="font-medium">Équipe</p>
+                      <p className="text-gray-600">Équipe #{user.teamId}</p>
+                    </div>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
+
+          {/* Admin/Manager specific sections */}
+          {isManagerRole(user.role) && (
+            <Card className="mt-6">
+              <CardHeader>
+                <CardTitle>Privilèges de Gestion</CardTitle>
+                <CardDescription>
+                  Fonctionnalités disponibles selon votre rôle
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4">
+                  {user.role === 'admin' && (
+                    <>
+                      <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg">
+                        <Settings className="h-5 w-5 text-blue-600" />
+                        <div>
+                          <p className="font-medium">Administration Système</p>
+                          <p className="text-gray-600">Gestion complète des utilisateurs et du système</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 p-4 bg-green-50 rounded-lg">
+                        <BarChart3 className="h-5 w-5 text-green-600" />
+                        <div>
+                          <p className="font-medium">Analytics Avancés</p>
+                          <p className="text-gray-600">Accès aux statistiques détaillées</p>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                  
+                  {(user.role === 'admin' || user.role === 'team_chief') && (
+                    <div className="flex items-center gap-3 p-4 bg-purple-50 rounded-lg">
+                      <Users className="h-5 w-5 text-purple-600" />
+                      <div>
+                        <p className="font-medium">Gestion d'Équipe</p>
+                        <p className="text-gray-600">Gestion des membres et assignation de tâches</p>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {isManagerRole(user.role) && (
+                    <div className="flex items-center gap-3 p-4 bg-orange-50 rounded-lg">
+                      <FileText className="h-5 w-5 text-orange-600" />
+                      <div>
+                        <p className="font-medium">Gestion des Fichiers</p>
+                        <p className="text-gray-600">Accès et gestion des documents de formation</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>
