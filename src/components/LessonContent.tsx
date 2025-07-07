@@ -210,7 +210,6 @@ const LessonContent = ({ lessonId, title, type, content, duration, onComplete }:
           <QuizPlayer
             quiz={sampleQuiz}
             onComplete={handleQuizComplete}
-            onAbandon={() => setActiveTab("video")}
           />
         </TabsContent>
       </Tabs>

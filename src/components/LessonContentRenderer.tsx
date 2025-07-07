@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +11,8 @@ import {
   Target
 } from "lucide-react";
 import QuizPlayer from "./QuizPlayer";
+import MediaPlayer from "./MediaPlayer";
+import CourseRating, { CourseRatingData } from "./CourseRating";
 import { Quiz, QuizResult } from "@/types/quiz";
 
 interface Lesson {
@@ -24,6 +27,7 @@ interface LessonContentRendererProps {
   currentLesson: Lesson;
   completedLessons: number[];
   onLessonComplete: () => void;
+  courseTitle?: string;
 }
 
 // Sample quiz data for the current lesson
@@ -83,8 +87,10 @@ const sampleQuiz: Quiz = {
 const LessonContentRenderer = ({ 
   currentLesson, 
   completedLessons, 
-  onLessonComplete 
+  onLessonComplete,
+  courseTitle = "Formation"
 }: LessonContentRendererProps) => {
+  const [showRating, setShowRating] = useState(false);
   const getLessonIcon = (type: string, completed: boolean) => {
     if (completed) return <CheckCircle className="h-4 w-4 text-green-600" />;
     
@@ -112,16 +118,21 @@ Comprendre TCP/IP est essentiel pour tout professionnel de l'informatique, car i
 
   const handleQuizComplete = (result: QuizResult) => {
     console.log("Quiz completed with result:", result);
-    // Don't auto-complete lesson - let user see results first
+    // Show rating system after quiz completion
+    setShowRating(true);
   };
 
   const handleQuizContinue = () => {
     console.log("User clicked continue after quiz");
-    onLessonComplete();
+    // Show rating instead of completing immediately
+    setShowRating(true);
   };
 
-  const handleQuizAbandon = () => {
-    console.log("Quiz abandoned");
+  const handleRatingSubmit = (rating: CourseRatingData) => {
+    console.log("Course rating submitted:", rating);
+    // Save rating data (would integrate with backend in real implementation)
+    setShowRating(false);
+    onLessonComplete();
   };
 
   return (
@@ -134,67 +145,54 @@ Comprendre TCP/IP est essentiel pour tout professionnel de l'informatique, car i
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {currentLesson.type === "video" && (
-            <>
-              <div className="aspect-video bg-black rounded-lg relative overflow-hidden">
-                <video
-                  className="w-full h-full object-cover"
-                  controls
-                  poster="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1600&h=900&q=80"
-                >
-                  <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
-                  Votre navigateur ne supporte pas la lecture vidéo.
-                </video>
-              </div>
-              <Button onClick={onLessonComplete} className="moov-gradient text-white w-full">
-                Marquer comme Terminé
-              </Button>
-            </>
-          )}
-          
-          {currentLesson.type === "text" && (
-            <>
-              <div className="prose max-w-none">
-                <div className="text-gray-700 leading-relaxed space-y-4">
-                  {sampleContent.split('\n\n').map((paragraph, index) => (
-                    <p key={index}>{paragraph}</p>
-                  ))}
-                </div>
-              </div>
-              <Button onClick={onLessonComplete} className="moov-gradient text-white w-full">
-                Marquer comme Terminé
-              </Button>
-            </>
-          )}
-          
-          {currentLesson.type === "audio" && (
-            <>
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <div className="flex items-center gap-4 mb-4">
-                  <Headphones className="h-8 w-8 text-primary" />
-                  <div>
-                    <h3 className="font-medium">{currentLesson.title}</h3>
-                    <p className="text-sm text-gray-600">Durée: {currentLesson.duration}</p>
-                  </div>
-                </div>
-                <audio controls className="w-full">
-                  <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" type="audio/wav" />
-                  Votre navigateur ne supporte pas la lecture audio.
-                </audio>
-              </div>
-              <Button onClick={onLessonComplete} className="moov-gradient text-white w-full">
-                Marquer comme Terminé
-              </Button>
-            </>
-          )}
-          
-           {currentLesson.type === "quiz" && (
-            <QuizPlayer
-              quiz={sampleQuiz}
-              onComplete={handleQuizComplete}
-              onContinue={handleQuizContinue}
-              onAbandon={handleQuizAbandon}
+          {showRating ? (
+            <CourseRating
+              courseTitle={courseTitle}
+              onSubmit={handleRatingSubmit}
             />
+          ) : (
+            <>
+              {currentLesson.type === "video" && (
+                <MediaPlayer
+                  type="video"
+                  title={currentLesson.title}
+                  duration={currentLesson.duration}
+                  onComplete={onLessonComplete}
+                />
+              )}
+              
+              {currentLesson.type === "text" && (
+                <>
+                  <div className="prose max-w-none">
+                    <div className="text-gray-700 leading-relaxed space-y-4">
+                      {sampleContent.split('\n\n').map((paragraph, index) => (
+                        <p key={index}>{paragraph}</p>
+                      ))}
+                    </div>
+                  </div>
+                  <Button onClick={onLessonComplete} className="moov-gradient text-white w-full">
+                    Marquer comme Terminé
+                  </Button>
+                </>
+              )}
+              
+              {currentLesson.type === "audio" && (
+                <MediaPlayer
+                  type="audio"
+                  title={currentLesson.title}
+                  duration={currentLesson.duration}
+                  onComplete={onLessonComplete}
+                />
+              )}
+              
+              {currentLesson.type === "quiz" && (
+                <QuizPlayer
+                  quiz={sampleQuiz}
+                  onComplete={handleQuizComplete}
+                  onContinue={handleQuizContinue}
+                />
+              )}
+            </>
           )}
         </div>
       </CardContent>

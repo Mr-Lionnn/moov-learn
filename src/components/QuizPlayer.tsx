@@ -13,10 +13,9 @@ interface QuizPlayerProps {
   quiz: Quiz;
   onComplete?: (result: QuizResult) => void;
   onContinue?: () => void;
-  onAbandon?: () => void;
 }
 
-const QuizPlayer = ({ quiz, onComplete, onContinue, onAbandon }: QuizPlayerProps) => {
+const QuizPlayer = ({ quiz, onComplete, onContinue }: QuizPlayerProps) => {
   const { 
     currentQuiz, 
     quizAttempt, 
@@ -82,12 +81,6 @@ const QuizPlayer = ({ quiz, onComplete, onContinue, onAbandon }: QuizPlayerProps
     startQuiz(quiz);
   };
 
-  const handleAbandonQuiz = () => {
-    abandonQuiz();
-    if (onAbandon) {
-      onAbandon();
-    }
-  };
 
   if (showResult && quizResult) {
     return (
@@ -139,7 +132,6 @@ const QuizPlayer = ({ quiz, onComplete, onContinue, onAbandon }: QuizPlayerProps
           onPrevious={handlePreviousQuestion}
           onNext={handleNextQuestion}
           onSubmit={handleSubmitQuiz}
-          onAbandon={handleAbandonQuiz}
         />
       </CardContent>
     </Card>

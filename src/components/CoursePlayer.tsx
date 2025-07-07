@@ -56,6 +56,7 @@ const CoursePlayer = ({ courseTitle, currentLesson: initialLesson, lessons, onCo
           currentLesson={currentLesson}
           completedLessons={completedLessons}
           onLessonComplete={handleLessonComplete}
+          courseTitle={courseTitle}
         />
       </div>
 
