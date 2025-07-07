@@ -50,7 +50,7 @@ const EnhancedQuizResults = ({ result, onRetry, onContinue }: EnhancedQuizResult
           </p>
         </div>
         
-        <Badge variant={passed ? "default" : "destructive"} className="mt-4">
+        <Badge variant={passed ? "default" : "outline"} className="mt-4">
           {passed ? "Réussi" : "Échec"} - Note de passage: {result.quiz.passingGrade}%
         </Badge>
       </CardHeader>
@@ -83,10 +83,10 @@ const EnhancedQuizResults = ({ result, onRetry, onContinue }: EnhancedQuizResult
                   {!item.isCorrect && (
                     <div className="text-sm">
                       <p className="text-red-600">
-                        Votre réponse: Réponse {item.userAnswer + 1}
+                        Votre réponse: Réponse {item.userAnswer + 1} - {result.quiz.questions.find(q => q.id === item.questionId)?.options[item.userAnswer]}
                       </p>
                       <p className="text-green-600">
-                        Bonne réponse: Réponse {item.correctAnswer + 1}
+                        Bonne réponse: Réponse {item.correctAnswer + 1} - {result.quiz.questions.find(q => q.id === item.questionId)?.options[item.correctAnswer]}
                       </p>
                     </div>
                   )}
