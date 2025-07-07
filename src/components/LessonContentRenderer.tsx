@@ -112,6 +112,11 @@ Comprendre TCP/IP est essentiel pour tout professionnel de l'informatique, car i
 
   const handleQuizComplete = (result: QuizResult) => {
     console.log("Quiz completed with result:", result);
+    // Don't auto-complete lesson - let user see results first
+  };
+
+  const handleQuizContinue = () => {
+    console.log("User clicked continue after quiz");
     onLessonComplete();
   };
 
@@ -183,10 +188,11 @@ Comprendre TCP/IP est essentiel pour tout professionnel de l'informatique, car i
             </>
           )}
           
-          {currentLesson.type === "quiz" && (
+           {currentLesson.type === "quiz" && (
             <QuizPlayer
               quiz={sampleQuiz}
               onComplete={handleQuizComplete}
+              onContinue={handleQuizContinue}
               onAbandon={handleQuizAbandon}
             />
           )}

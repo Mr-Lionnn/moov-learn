@@ -12,10 +12,11 @@ import { progressService } from "@/services/progressService";
 interface QuizPlayerProps {
   quiz: Quiz;
   onComplete?: (result: QuizResult) => void;
+  onContinue?: () => void;
   onAbandon?: () => void;
 }
 
-const QuizPlayer = ({ quiz, onComplete, onAbandon }: QuizPlayerProps) => {
+const QuizPlayer = ({ quiz, onComplete, onContinue, onAbandon }: QuizPlayerProps) => {
   const { 
     currentQuiz, 
     quizAttempt, 
@@ -93,7 +94,7 @@ const QuizPlayer = ({ quiz, onComplete, onAbandon }: QuizPlayerProps) => {
       <EnhancedQuizResults
         result={quizResult}
         onRetry={handleRetryQuiz}
-        onContinue={handleAbandonQuiz}
+        onContinue={onContinue}
       />
     );
   }
