@@ -65,107 +65,40 @@ const Login = () => {
           <p className="text-sm sm:text-base text-gray-600">Plateforme d'apprentissage d'entreprise</p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
-          {/* Login Form */}
-          <Card className="w-full max-w-md mx-auto order-2 lg:order-1">
-            <CardHeader>
-              <CardTitle className="text-2xl text-center">Connexion</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleLogin} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="votre@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password">Mot de passe</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                </div>
-                <Button type="submit" className="w-full moov-gradient text-white">
-                  Se connecter
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-
-          {/* Available Test Logins */}
-          <div className="space-y-4 order-1 lg:order-2">
-            <h2 className="text-xl sm:text-2xl font-bold text-center">Comptes de Test Disponibles</h2>
-            <Card>
-              <CardContent className="p-4">
-                <div className="space-y-3 sm:space-y-4">
-                  {testDataService.getTestUsers().map((user) => (
-                    <div key={user.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 sm:p-4 border rounded-lg hover:bg-gray-50 gap-3 sm:gap-4">
-                      <div className="flex items-center gap-3 flex-1 min-w-0">
-                        <Avatar className="h-10 w-10 sm:h-12 sm:w-12 flex-shrink-0">
-                          <AvatarImage src={user.avatar} />
-                          <AvatarFallback>
-                            <User className="h-4 w-4 sm:h-5 sm:w-5" />
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-sm sm:text-base truncate">{user.name}</h3>
-                          <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-600">
-                            <Mail className="h-3 w-3 flex-shrink-0" />
-                            <span className="truncate">{user.email}</span>
-                          </div>
-                          <div className="flex flex-wrap items-center gap-1 sm:gap-2 mt-1">
-                            <Badge className={
-                              user.role === 'admin' ? 'bg-red-100 text-red-800' :
-                              user.role === 'team_chief' ? 'bg-blue-100 text-blue-800' :
-                              'bg-gray-100 text-gray-800'
-                            }>
-                              <Shield className="h-3 w-3 mr-1" />
-                              {user.role === 'admin' ? 'Admin' : 
-                               user.role === 'team_chief' ? 'Chef Équipe' : 'Employé'}
-                            </Badge>
-                            {user.department && (
-                              <Badge variant="outline" className="text-xs">
-                                {user.department}
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                      <Button
-                        size="sm"
-                        onClick={() => {
-                          console.log('Direct login as test user:', user);
-                          login({
-                            id: user.id,
-                            email: user.email,
-                            name: user.name,
-                            role: user.role,
-                            department: user.department,
-                            teamId: user.teamId
-                          });
-                          navigate("/");
-                        }}
-                        className="moov-gradient text-white w-full sm:w-auto flex-shrink-0"
-                      >
-                        Connexion
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+        <Card className="w-full max-w-md mx-auto">
+          <CardHeader>
+            <CardTitle className="text-2xl text-center">Connexion</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="votre@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Mot de passe</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+              <Button type="submit" className="w-full moov-gradient text-white">
+                Se connecter
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
 
         <Separator className="my-8" />
 
