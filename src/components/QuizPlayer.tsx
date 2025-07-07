@@ -1,22 +1,12 @@
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { 
-  CheckCircle, 
-  Clock, 
-  AlertCircle, 
-  ArrowRight, 
-  ArrowLeft,
-  Award
-} from "lucide-react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useQuizManager } from "@/hooks/useQuizManager";
 import { Quiz, QuizResult } from "@/types/quiz";
 import EnhancedQuizResults from "./EnhancedQuizResults";
+import QuizHeader from "./QuizHeader";
+import QuizQuestion from "./QuizQuestion";
+import QuizNavigation from "./QuizNavigation";
 import { progressService } from "@/services/progressService";
 
 interface QuizPlayerProps {
@@ -125,87 +115,31 @@ const QuizPlayer = ({ quiz, onComplete, onAbandon }: QuizPlayerProps) => {
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-xl">{currentQuiz.title}</CardTitle>
-          <Badge variant="outline" className="flex items-center gap-1">
-            <Clock className="h-3 w-3" />
-            Question {currentQuestionIndex + 1}/{currentQuiz.questions.length}
-          </Badge>
-        </div>
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm text-gray-600">
-            <span>Progression</span>
-            <span>{Math.round(progress)}%</span>
-          </div>
-          <Progress value={progress} className="h-2" />
-        </div>
+        <QuizHeader
+          title={currentQuiz.title}
+          currentQuestionIndex={currentQuestionIndex}
+          totalQuestions={currentQuiz.questions.length}
+          progress={progress}
+        />
       </CardHeader>
       
       <CardContent className="space-y-6">
-        <div className="space-y-4">
-          <div className="flex items-center gap-2 mb-4">
-            <Badge variant="secondary">
-              Question {currentQuestionIndex + 1}
-            </Badge>
-            <Badge variant="outline">
-              {currentQuestion.difficulty === 'easy' ? 'Facile' : 
-               currentQuestion.difficulty === 'medium' ? 'Moyen' : 'Difficile'}
-            </Badge>
-          </div>
-          
-          <h3 className="text-lg font-medium">{currentQuestion.question}</h3>
-          
-          <RadioGroup
-            value={selectedAnswer.toString()}
-            onValueChange={(value) => handleAnswerSelect(parseInt(value))}
-          >
-            {currentQuestion.options.map((option, index) => (
-              <div key={index} className="flex items-center space-x-2">
-                <RadioGroupItem value={index.toString()} id={`option-${index}`} />
-                <Label 
-                  htmlFor={`option-${index}`} 
-                  className="flex-1 cursor-pointer p-3 rounded-lg border hover:bg-gray-50"
-                >
-                  {option}
-                </Label>
-              </div>
-            ))}
-          </RadioGroup>
-        </div>
+        <QuizQuestion
+          question={currentQuestion}
+          questionIndex={currentQuestionIndex}
+          selectedAnswer={selectedAnswer}
+          onAnswerSelect={handleAnswerSelect}
+        />
         
-        <div className="flex justify-between items-center">
-          <Button
-            variant="outline"
-            onClick={handlePreviousQuestion}
-            disabled={currentQuestionIndex === 0}
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Précédent
-          </Button>
-          
-          <Button variant="outline" onClick={handleAbandonQuiz}>
-            Abandonner
-          </Button>
-          
-          {currentQuestionIndex === currentQuiz.questions.length - 1 ? (
-            <Button
-              onClick={handleSubmitQuiz}
-              disabled={selectedAnswer === -1}
-              className="moov-gradient text-white"
-            >
-              Terminer le Quiz
-            </Button>
-          ) : (
-            <Button
-              onClick={handleNextQuestion}
-              disabled={selectedAnswer === -1}
-              className="moov-gradient text-white"
-            >
-              Suivant
-              <ArrowRight className="h-4 w-4 ml-2" />
-            </Button>
-          )}
-        </div>
+        <QuizNavigation
+          currentQuestionIndex={currentQuestionIndex}
+          totalQuestions={currentQuiz.questions.length}
+          selectedAnswer={selectedAnswer}
+          onPrevious={handlePreviousQuestion}
+          onNext={handleNextQuestion}
+          onSubmit={handleSubmitQuiz}
+          onAbandon={handleAbandonQuiz}
+        />
       </CardContent>
     </Card>
   );
