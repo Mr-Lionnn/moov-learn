@@ -27,6 +27,11 @@ interface UserProfileModalProps {
 }
 
 const UserProfileModal = ({ isOpen, onClose, member }: UserProfileModalProps) => {
+  // Return null if member is not provided
+  if (!member) {
+    return null;
+  }
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "En ligne":

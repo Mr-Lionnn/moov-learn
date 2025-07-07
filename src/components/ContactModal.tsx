@@ -26,6 +26,11 @@ const ContactModal = ({ isOpen, onClose, member }: ContactModalProps) => {
   const [message, setMessage] = useState("");
   const [subject, setSubject] = useState("");
 
+  // Return null if member is not provided
+  if (!member) {
+    return null;
+  }
+
   const handleSendMessage = () => {
     if (message.trim()) {
       console.log(`Message sent to ${member.name}:`, { subject, message });
