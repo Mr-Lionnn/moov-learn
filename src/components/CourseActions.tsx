@@ -19,6 +19,26 @@ interface CourseActionsProps {
 const CourseActions = ({ lessons, currentLesson, onNextLesson }: CourseActionsProps) => {
   const isLastLesson = lessons.findIndex(l => l.id === currentLesson.id) === lessons.length - 1;
 
+  const handleDownloadResources = () => {
+    // Simulate file download
+    const link = document.createElement('a');
+    link.href = 'data:text/plain;charset=utf-8,Course Resources - Study Materials and Practice Exercises';
+    link.download = 'course-resources.txt';
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Show success message
+    console.log('Resources downloaded successfully');
+  };
+
+  const handleJoinDiscussion = () => {
+    // Open discussion in new tab (simulate forum)
+    window.open('https://example.com/course-discussion', '_blank');
+    console.log('Joining course discussion');
+  };
+
   return (
     <Card className="mt-4">
       <CardContent className="p-4">
@@ -30,10 +50,10 @@ const CourseActions = ({ lessons, currentLesson, onNextLesson }: CourseActionsPr
           >
             Leçon Suivante
           </Button>
-          <Button variant="outline" className="w-full">
+          <Button variant="outline" className="w-full" onClick={handleDownloadResources}>
             Télécharger les Ressources
           </Button>
-          <Button variant="outline" className="w-full">
+          <Button variant="outline" className="w-full" onClick={handleJoinDiscussion}>
             Rejoindre la Discussion
           </Button>
         </div>

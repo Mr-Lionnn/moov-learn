@@ -19,18 +19,51 @@ interface FileViewerModalProps {
 
 const FileViewerModal = ({ isOpen, onClose, file }: FileViewerModalProps) => {
   const handleDownload = () => {
-    // Simulate file download
+    // Create a more realistic file download
+    const fileContent = generateSampleFileContent(file.name, file.type);
+    const blob = new Blob([fileContent], { type: getContentType(file.type) });
     const link = document.createElement('a');
-    link.href = '#';
+    link.href = URL.createObjectURL(blob);
     link.download = file.name;
+    link.style.display = 'none';
+    document.body.appendChild(link);
     link.click();
-    console.log(`Downloading file: ${file.name}`);
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+    console.log(`Downloaded file: ${file.name}`);
   };
 
   const handleView = () => {
-    // Simulate file viewing in new tab
-    window.open('#', '_blank');
+    // Create preview content and open in new tab
+    const fileContent = generateSampleFileContent(file.name, file.type);
+    const blob = new Blob([fileContent], { type: getContentType(file.type) });
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
     console.log(`Viewing file: ${file.name}`);
+  };
+
+  const generateSampleFileContent = (fileName: string, fileType: string): string => {
+    switch (fileType.toLowerCase()) {
+      case 'pdf':
+        return `Sample PDF content for ${fileName}\n\nThis would be a PDF document with course materials, exercises, and reference information.`;
+      case 'doc':
+      case 'docx':
+        return `Sample Document: ${fileName}\n\nCourse Materials and Notes\n\n1. Introduction\n2. Key Concepts\n3. Practical Examples\n4. Exercises`;
+      case 'txt':
+        return `Text Document: ${fileName}\n\nThis is sample text content that would contain course notes, instructions, or reference materials.`;
+      default:
+        return `Sample content for ${fileName}\n\nThis file contains educational materials related to your course.`;
+    }
+  };
+
+  const getContentType = (fileType: string): string => {
+    switch (fileType.toLowerCase()) {
+      case 'pdf': return 'application/pdf';
+      case 'doc': return 'application/msword';
+      case 'docx': return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+      case 'txt': return 'text/plain';
+      default: return 'text/plain';
+    }
   };
 
   return (

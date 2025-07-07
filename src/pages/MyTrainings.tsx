@@ -7,8 +7,10 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { BookOpen, Clock, Users, Award, Search, Play, CheckCircle, Star, Filter } from "lucide-react";
 import Header from "@/components/Header";
+import { useNavigate } from "react-router-dom";
 
 const MyTrainings = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
 
@@ -104,6 +106,34 @@ const MyTrainings = () => {
       default:
         return "bg-gray-100 text-gray-800";
     }
+  };
+
+  const handleContinueCourse = (trainingId: number) => {
+    navigate(`/course/${trainingId}`);
+  };
+
+  const handleStartCourse = (trainingId: number) => {
+    navigate(`/course/${trainingId}`);
+  };
+
+  const handleReviewCourse = (trainingId: number) => {
+    navigate(`/course/${trainingId}`);
+  };
+
+  const handleViewCertificate = (trainingId: number) => {
+    navigate('/certifications');
+  };
+
+  const handleDownloadCertificate = (trainingTitle: string) => {
+    // Simulate certificate download
+    const link = document.createElement('a');
+    link.href = 'data:text/plain;charset=utf-8,Certificate of Completion\n\n' + trainingTitle + '\n\nAwarded to: Student\nDate: ' + new Date().toLocaleDateString();
+    link.download = `certificate-${trainingTitle.replace(/\s+/g, '-').toLowerCase()}.txt`;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    console.log(`Certificate downloaded for: ${trainingTitle}`);
   };
 
   const stats = {
@@ -309,23 +339,23 @@ const MyTrainings = () => {
                       <div className="flex gap-2">
                         {training.status === "Terminée" ? (
                           <>
-                            <Button variant="outline" size="sm">
+                            <Button variant="outline" size="sm" onClick={() => handleReviewCourse(training.id)}>
                               Revoir
                             </Button>
                             {training.certificate && (
-                              <Button size="sm">
+                              <Button size="sm" onClick={() => handleDownloadCertificate(training.title)}>
                                 <Award className="h-4 w-4 mr-2" />
                                 Certificat
                               </Button>
                             )}
                           </>
                         ) : training.status === "En cours" ? (
-                          <Button size="sm">
+                          <Button size="sm" onClick={() => handleContinueCourse(training.id)}>
                             <Play className="h-4 w-4 mr-2" />
                             Continuer
                           </Button>
                         ) : (
-                          <Button size="sm">
+                          <Button size="sm" onClick={() => handleStartCourse(training.id)}>
                             <Play className="h-4 w-4 mr-2" />
                             Commencer
                           </Button>

@@ -144,7 +144,7 @@ const Team = () => {
               <h1 className="text-3xl font-bold text-gray-900 mb-2">Équipe</h1>
               <p className="text-gray-600">Collaborez et suivez les progrès de l'équipe</p>
             </div>
-            <Button onClick={handleTeamDiscussion}>
+            <Button onClick={handleTeamDiscussion} className="moov-gradient text-white">
               <MessageCircle className="h-4 w-4 mr-2" />
               Discussion Équipe
             </Button>

@@ -161,7 +161,7 @@ const Tasks = () => {
                         {task.status === "pending" ? "Commencer" : "Continuer"}
                       </Button>
                     )}
-                    <Button variant="outline">
+                    <Button variant="outline" onClick={() => navigate(`/course/${task.id}`)}>
                       Voir Détails
                     </Button>
                   </div>

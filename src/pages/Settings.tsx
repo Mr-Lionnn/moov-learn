@@ -18,6 +18,45 @@ const Settings = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [language, setLanguage] = useState("fr");
 
+  const handleChangePhoto = () => {
+    // Simulate photo change
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        console.log('Photo selected:', file.name);
+        // Here you would typically upload the file
+      }
+    };
+    input.click();
+  };
+
+  const handleChangePassword = () => {
+    // Simulate password change modal/page
+    alert('Redirection vers la page de changement de mot de passe');
+    console.log('Opening password change dialog');
+  };
+
+  const handleTwoFactorAuth = () => {
+    // Simulate 2FA setup
+    alert('Configuration de l\'authentification à deux facteurs');
+    console.log('Opening 2FA setup');
+  };
+
+  const handleSaveSettings = () => {
+    // Simulate saving settings
+    const settings = {
+      notifications,
+      emailUpdates,
+      darkMode,
+      language
+    };
+    console.log('Saving settings:', settings);
+    alert('Paramètres sauvegardés avec succès!');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
       <Header />
@@ -61,7 +100,7 @@ const Settings = () => {
                         {userRole === "admin" ? "Administrateur" : "Étudiant"}
                       </Badge>
                     </div>
-                    <Button variant="outline" size="sm" className="w-full sm:w-auto">
+                    <Button variant="outline" size="sm" className="w-full sm:w-auto" onClick={handleChangePhoto}>
                       Changer Photo
                     </Button>
                   </div>
@@ -154,10 +193,10 @@ const Settings = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Button variant="outline" className="w-full justify-start">
+                  <Button variant="outline" className="w-full justify-start" onClick={handleChangePassword}>
                     Changer le Mot de Passe
                   </Button>
-                  <Button variant="outline" className="w-full justify-start">
+                  <Button variant="outline" className="w-full justify-start" onClick={handleTwoFactorAuth}>
                     Authentification à Deux Facteurs
                   </Button>
                 </CardContent>
@@ -233,7 +272,7 @@ const Settings = () => {
               </Card>
 
               {/* Save Button */}
-              <Button className="w-full">
+              <Button className="w-full" onClick={handleSaveSettings}>
                 <Save className="h-4 w-4 mr-2" />
                 Enregistrer les Modifications
               </Button>
