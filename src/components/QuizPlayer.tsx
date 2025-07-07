@@ -67,15 +67,19 @@ const QuizPlayer = ({ quiz, onComplete, onAbandon }: QuizPlayerProps) => {
 
   const handleSubmitQuiz = () => {
     const result = submitQuiz();
+    console.log("Quiz submitted, result:", result);
     if (result) {
       // Save progress
       progressService.saveQuizResult(result);
       
       setQuizResult(result);
       setShowResult(true);
+      console.log("Quiz results set, showResult:", true);
       if (onComplete) {
         onComplete(result);
       }
+    } else {
+      console.error("No quiz result generated");
     }
   };
 
