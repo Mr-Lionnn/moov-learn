@@ -255,15 +255,17 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
                 <span>{user?.role === 'admin' ? 'Employés' : 'Équipe'}</span>
               </Button>
             )}
-            
-            {hasPermission('view_analytics') && (
+
+            {/* Module Creation for Admins and Chiefs */}
+            {(user?.role === 'admin' || user?.role === 'team_chief' || user?.role === 'team_responsible') && (
               <Button 
                 variant="ghost" 
-                className="text-gray-600 hover:text-blue-600 text-sm px-2 xl:px-3"
-                onClick={() => navigate("/analytics")}
+                className="text-gray-600 hover:text-blue-600 text-sm px-2 xl:px-3 bg-blue-50 hover:bg-blue-100 border border-blue-200"
+                onClick={onShowAdminPanel}
               >
-                <BarChart3 className="h-4 w-4 mr-1 xl:mr-2" />
-                <span>Analytiques</span>
+                <BookOpen className="h-4 w-4 mr-1 xl:mr-2" />
+                <span className="hidden xl:inline">Créer Formation</span>
+                <span className="xl:hidden">Créer</span>
               </Button>
             )}
 
@@ -340,6 +342,12 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
                   <User className="mr-2 h-4 w-4" />
                   Profil
                 </DropdownMenuItem>
+                {onShowAdminPanel && (user?.role === "admin" || user?.role === "team_chief" || user?.role === "team_responsible") && (
+                  <DropdownMenuItem onClick={onShowAdminPanel}>
+                    <BookOpen className="mr-2 h-4 w-4" />
+                    Panneau d'Administration
+                  </DropdownMenuItem>
+                )}
                 {onShowAdminPanel && user?.role === "admin" && (
                   <DropdownMenuItem onClick={onShowAdminPanel}>
                     <Users className="mr-2 h-4 w-4" />
@@ -415,6 +423,21 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
                 >
                   <Users className="h-4 w-4 mr-3" />
                   {user?.role === 'admin' ? 'Employés' : 'Équipe'}
+                </Button>
+              )}
+              
+              {/* Module Creation for Mobile */}
+              {(user?.role === 'admin' || user?.role === 'team_chief' || user?.role === 'team_responsible') && (
+                <Button 
+                  variant="ghost" 
+                  className="justify-start text-white bg-blue-600 hover:bg-blue-700 h-10 font-medium"
+                  onClick={() => {
+                    onShowAdminPanel && onShowAdminPanel();
+                    setShowMobileMenu(false);
+                  }}
+                >
+                  <BookOpen className="h-4 w-4 mr-3" />
+                  Créer Formation / Module
                 </Button>
               )}
               
