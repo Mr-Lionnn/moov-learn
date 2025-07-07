@@ -12,8 +12,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { X, Plus, Users, BookOpen, BarChart3, Save, Upload, Clock, AlertTriangle, CheckCircle } from "lucide-react";
 import ModuleTimeLimit from "./ModuleTimeLimit";
 import QuizCreator from "./QuizCreator";
+import ModuleCreator from "./module/ModuleCreator";
 import { useAuth } from "@/contexts/AuthContext";
 import { Quiz } from "@/types/quiz";
+import { LearningModule } from "@/types/module";
 
 interface AdminPanelProps {
   onClose: () => void;
@@ -22,6 +24,7 @@ interface AdminPanelProps {
 const AdminPanel = ({ onClose }: AdminPanelProps) => {
   const { setModuleDeadline, user } = useAuth();
   const [showQuizCreator, setShowQuizCreator] = useState(false);
+  const [showModuleCreator, setShowModuleCreator] = useState(false);
   const [selectedCourseForQuiz, setSelectedCourseForQuiz] = useState<string | null>(null);
   const [newCourse, setNewCourse] = useState({
     title: "",
@@ -79,6 +82,11 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
     console.log("Quiz créé:", quiz);
     setShowQuizCreator(false);
     setSelectedCourseForQuiz(null);
+  };
+
+  const handleModuleSave = (module: LearningModule) => {
+    console.log("Module créé:", module);
+    setShowModuleCreator(false);
   };
 
   const handleSetTimeLimit = (moduleId: string, deadline: string, teamMembers: string[]) => {
@@ -253,10 +261,18 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
                   </div>
 
                   <div className="flex gap-2">
-                    <Button onClick={handleCreateCourse} className="flex-1" disabled={!canUploadContent}>
-                      <Save className="h-4 w-4 mr-2" />
-                      Créer le Cours
-                    </Button>
+                  <Button onClick={handleCreateCourse} className="flex-1" disabled={!canUploadContent}>
+                    <Save className="h-4 w-4 mr-2" />
+                    Créer le Cours
+                  </Button>
+                  <Button 
+                    onClick={() => setShowModuleCreator(true)} 
+                    className="flex-1 moov-gradient text-white" 
+                    disabled={!canUploadContent}
+                  >
+                    <BookOpen className="h-4 w-4 mr-2" />
+                    Module Avancé
+                  </Button>
                     <Button variant="outline" disabled={!canUploadContent}>
                       <Upload className="h-4 w-4 mr-2" />
                       Télécharger du Contenu
@@ -462,6 +478,20 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
             </TabsContent>
           </Tabs>
         </div>
+
+        {/* Module Creator Modal */}
+        {showModuleCreator && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg w-full max-w-7xl max-h-[95vh] overflow-hidden">
+              <div className="h-full overflow-y-auto">
+                <ModuleCreator
+                  onSave={handleModuleSave}
+                  onCancel={() => setShowModuleCreator(false)}
+                />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
