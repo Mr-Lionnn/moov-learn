@@ -105,7 +105,7 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
           <nav className="hidden lg:flex items-center gap-2 xl:gap-4 flex-1 justify-center">
             <Button 
               variant="ghost" 
-              className="text-gray-600 hover:text-blue-600 text-sm px-2 xl:px-3"
+              className="text-white hover:text-white bg-secondary hover:bg-secondary/80 text-sm px-2 xl:px-3"
               onClick={() => navigate("/my-trainings")}
             >
               <BookOpen className="h-4 w-4 mr-1 xl:mr-2" />
@@ -118,7 +118,7 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
               <DropdownMenuTrigger asChild>
                 <Button 
                   variant="ghost" 
-                  className="text-gray-600 hover:text-blue-600 text-sm px-2 xl:px-3"
+                  className="text-white hover:text-white bg-secondary hover:bg-secondary/80 text-sm px-2 xl:px-3"
                 >
                   <Target className="h-4 w-4 mr-1 xl:mr-2" />
                   <span>Gestion</span>
@@ -226,7 +226,7 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
             {canAccessFiles() && (
               <Button 
                 variant="ghost" 
-                className="text-gray-600 hover:text-blue-600 text-sm px-2 xl:px-3"
+                className="text-white hover:text-white bg-secondary hover:bg-secondary/80 text-sm px-2 xl:px-3"
                 onClick={() => navigate("/files")}
               >
                 <FileText className="h-4 w-4 mr-1 xl:mr-2" />
@@ -237,7 +237,7 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
             {hasPermission('assign_tasks') && (
               <Button 
                 variant="ghost" 
-                className="text-gray-600 hover:text-blue-600 text-sm px-2 xl:px-3"
+                className="text-white hover:text-white bg-secondary hover:bg-secondary/80 text-sm px-2 xl:px-3"
                 onClick={() => navigate("/tasks")}
               >
                 <CheckSquare className="h-4 w-4 mr-1 xl:mr-2" />
@@ -248,7 +248,7 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
             {canManageUsers() && (
               <Button 
                 variant="ghost" 
-                className="text-gray-600 hover:text-blue-600 text-sm px-2 xl:px-3" 
+                className="text-white hover:text-white bg-secondary hover:bg-secondary/80 text-sm px-2 xl:px-3" 
                 onClick={() => navigate("/employees")}
               >
                 <Users className="h-4 w-4 mr-1 xl:mr-2" />
@@ -260,7 +260,7 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
             {(user?.role === 'admin' || user?.role === 'team_chief' || user?.role === 'team_responsible') && (
               <Button 
                 variant="ghost" 
-                className="text-gray-600 hover:text-blue-600 text-sm px-2 xl:px-3 bg-blue-50 hover:bg-blue-100 border border-blue-200"
+                className="text-white hover:text-white bg-secondary hover:bg-secondary/80 text-sm px-2 xl:px-3 border border-secondary"
                 onClick={() => {
                   console.log('Créer Formation button clicked, user role:', user?.role);
                   console.log('onShowAdminPanel function:', onShowAdminPanel);
@@ -279,7 +279,7 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
 
             <Button 
               variant="ghost" 
-              className="text-gray-600 hover:text-blue-600 text-sm px-2 xl:px-3"
+              className="text-white hover:text-white bg-secondary hover:bg-secondary/80 text-sm px-2 xl:px-3"
               onClick={() => navigate("/team")}
             >
               <UserCheck className="h-4 w-4 mr-1 xl:mr-2" />
@@ -382,7 +382,7 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
             <nav className="flex flex-col space-y-2">
               <Button 
                 variant="ghost" 
-                className="justify-start text-gray-600 hover:text-blue-600 h-10"
+                className="justify-start text-white bg-secondary hover:bg-secondary/80 h-10"
                 onClick={() => {
                   navigate("/my-trainings");
                   setShowMobileMenu(false);
@@ -395,7 +395,7 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
               {canAccessFiles() && (
                 <Button 
                   variant="ghost" 
-                  className="justify-start text-gray-600 hover:text-blue-600 h-10"
+                  className="justify-start text-white bg-secondary hover:bg-secondary/80 h-10"
                   onClick={() => {
                     navigate("/files");
                     setShowMobileMenu(false);
@@ -409,7 +409,7 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
               {hasPermission('assign_tasks') && (
                 <Button 
                   variant="ghost" 
-                  className="justify-start text-gray-600 hover:text-blue-600 h-10"
+                  className="justify-start text-white bg-secondary hover:bg-secondary/80 h-10"
                   onClick={() => {
                     navigate("/tasks");
                     setShowMobileMenu(false);
@@ -423,7 +423,7 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
               {canManageUsers() && (
                 <Button 
                   variant="ghost" 
-                  className="justify-start text-gray-600 hover:text-blue-600 h-10"
+                  className="justify-start text-white bg-secondary hover:bg-secondary/80 h-10"
                   onClick={() => {
                     navigate("/employees");
                     setShowMobileMenu(false);
@@ -438,7 +438,7 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
               {(user?.role === 'admin' || user?.role === 'team_chief' || user?.role === 'team_responsible') && (
                 <Button 
                   variant="ghost" 
-                  className="justify-start text-white bg-blue-600 hover:bg-blue-700 h-10 font-medium"
+                  className="justify-start text-white bg-secondary hover:bg-secondary/80 h-10 font-medium"
                   onClick={() => {
                     onShowAdminPanel && onShowAdminPanel();
                     setShowMobileMenu(false);
@@ -452,7 +452,7 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
               {hasPermission('view_analytics') && (
                 <Button 
                   variant="ghost" 
-                  className="justify-start text-gray-600 hover:text-blue-600 h-10"
+                  className="justify-start text-white bg-secondary hover:bg-secondary/80 h-10"
                   onClick={() => {
                     navigate("/analytics");
                     setShowMobileMenu(false);
@@ -465,7 +465,7 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
 
               <Button 
                 variant="ghost" 
-                className="justify-start text-gray-600 hover:text-blue-600 h-10"
+                className="justify-start text-white bg-secondary hover:bg-secondary/80 h-10"
                 onClick={() => {
                   navigate("/team");
                   setShowMobileMenu(false);
