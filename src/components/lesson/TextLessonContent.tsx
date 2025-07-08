@@ -15,22 +15,37 @@ Comprendre TCP/IP est essentiel pour tout professionnel de l'informatique, car i
 
 const sampleDocuments = [
   {
+    id: 1,
     name: "Guide TCP/IP Complet.pdf",
     type: "pdf",
     size: "2.3 MB",
-    description: "Manuel détaillé sur les protocoles TCP/IP"
+    description: "Manuel détaillé sur les protocoles TCP/IP",
+    author: "Pierre Durand",
+    downloads: 156,
+    date: "2024-01-15",
+    category: "documentation"
   },
   {
+    id: 2,
     name: "Schémas Réseau.png",
     type: "image",
     size: "854 KB",
-    description: "Diagrammes des architectures réseau"
+    description: "Diagrammes des architectures réseau",
+    author: "Marie Martin",
+    downloads: 89,
+    date: "2024-01-18",
+    category: "diagram"
   },
   {
+    id: 3,
     name: "Configuration Réseau.docx",
-    type: "pdf",
+    type: "docx",
     size: "1.2 MB",
-    description: "Instructions de configuration pratique"
+    description: "Instructions de configuration pratique",
+    author: "Sophie Laurent",
+    downloads: 134,
+    date: "2024-01-20",
+    category: "tutorial"
   }
 ];
 
