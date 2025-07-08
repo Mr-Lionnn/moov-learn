@@ -22,8 +22,8 @@ const RegistrationForm = ({ onClose }: RegistrationFormProps) => {
     confirmPassword: "",
     dateOfBirth: "",
     role: "employee",
-    team: "",
-    site: "",
+    team: "none",
+    site: "none",
     department: ""
   });
   
