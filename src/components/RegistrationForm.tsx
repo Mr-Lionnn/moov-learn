@@ -77,7 +77,7 @@ const RegistrationForm = ({ onClose }: RegistrationFormProps) => {
   ];
 
   const teams = [
-    { value: "", label: "Aucune équipe" },
+    { value: "none", label: "Aucune équipe" },
     { value: "dev", label: "Équipe Développement" },
     { value: "design", label: "Équipe Design" },
     { value: "marketing", label: "Équipe Marketing" },
@@ -86,7 +86,7 @@ const RegistrationForm = ({ onClose }: RegistrationFormProps) => {
   ];
 
   const sites = [
-    { value: "", label: "Aucun site" },
+    { value: "none", label: "Aucun site" },
     { value: "paris", label: "Paris" },
     { value: "lyon", label: "Lyon" },
     { value: "marseille", label: "Marseille" },
