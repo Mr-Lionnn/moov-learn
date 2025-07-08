@@ -26,7 +26,7 @@ const TeamManagementModal = ({ isOpen, onClose }: TeamManagementModalProps) => {
   const { toast } = useToast();
   const [newTeamName, setNewTeamName] = useState("");
   const [newTeamColor, setNewTeamColor] = useState("#3B82F6");
-  const [newTeamDepartment, setNewTeamDepartment] = useState("");
+  const [newTeamDepartment, setNewTeamDepartment] = useState<string | undefined>(undefined);
 
   const [teams, setTeams] = useState<Team[]>([
     { id: "1", name: "Équipe Support Alpha", color: "#3B82F6", memberCount: 3, department: "IT Support" },
@@ -65,7 +65,7 @@ const TeamManagementModal = ({ isOpen, onClose }: TeamManagementModalProps) => {
 
     setTeams([...teams, newTeam]);
     setNewTeamName("");
-    setNewTeamDepartment("");
+    setNewTeamDepartment(undefined);
     
     toast({
       title: "Équipe créée",
