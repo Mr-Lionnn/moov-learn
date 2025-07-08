@@ -83,16 +83,15 @@ const DesktopNavigation = ({
         </Button>
       )}
 
-      {canManageUsers() && (
-        <Button 
-          variant="ghost" 
-          className="text-gray-600 hover:bg-secondary hover:text-white text-sm px-2 xl:px-3" 
-          onClick={() => navigate("/employees")}
-        >
-          <Users className="h-4 w-4 mr-1 xl:mr-2" />
-          <span>{user?.role === 'admin' ? 'Employés' : 'Équipe'}</span>
-        </Button>
-      )}
+      {/* Team/Employee Section - Role-based */}
+      <Button 
+        variant="ghost" 
+        className="text-gray-600 hover:bg-secondary hover:text-white text-sm px-2 xl:px-3"
+        onClick={() => navigate(user?.role === 'admin' ? "/employees" : "/team")}
+      >
+        <Users className="h-4 w-4 mr-1 xl:mr-2" />
+        <span>{user?.role === 'admin' ? 'Employés' : 'Équipe'}</span>
+      </Button>
 
       {/* Module Creation for Admins and Chiefs */}
       {(user?.role === 'admin' || user?.role === 'team_chief' || user?.role === 'team_responsible') && (
@@ -110,15 +109,6 @@ const DesktopNavigation = ({
           <span className="xl:hidden">Créer</span>
         </Button>
       )}
-
-      <Button 
-        variant="ghost" 
-        className="text-gray-600 hover:bg-secondary hover:text-white text-sm px-2 xl:px-3"
-        onClick={() => navigate("/team")}
-      >
-        <UserCheck className="h-4 w-4 mr-1 xl:mr-2" />
-        <span>Équipe</span>
-      </Button>
     </nav>
   );
 };
