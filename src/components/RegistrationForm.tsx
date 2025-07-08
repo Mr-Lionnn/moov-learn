@@ -50,12 +50,30 @@ const RegistrationForm = ({ onClose }: RegistrationFormProps) => {
     }
 
     try {
-      // Simulate registration
+      // Save the new user to localStorage so they can login
+      const newUser = {
+        id: Date.now(),
+        email: regData.email,
+        name: regData.fullName,
+        role: regData.role,
+        department: regData.department,
+        teamId: regData.team !== "none" ? regData.team : undefined,
+        site: regData.site !== "none" ? regData.site : undefined,
+        phone: regData.phone,
+        dateOfBirth: regData.dateOfBirth
+      };
+
+      // Get existing test users or create new array
+      const existingUsers = JSON.parse(localStorage.getItem('moov_test_users') || '[]');
+      existingUsers.push(newUser);
+      localStorage.setItem('moov_test_users', JSON.stringify(existingUsers));
+
+      // Simulate registration delay
       await new Promise(resolve => setTimeout(resolve, 1500));
       
       toast({
         title: "Inscription réussie",
-        description: "Votre compte a été créé avec succès!"
+        description: `Votre compte a été créé avec succès! Vous pouvez maintenant vous connecter avec ${regData.email}`
       });
       
       onClose();
