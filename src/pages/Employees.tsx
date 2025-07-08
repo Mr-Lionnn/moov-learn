@@ -6,12 +6,20 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
-import { Users, Search, Filter, UserPlus, Mail, Phone } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Users, Search, Filter, UserPlus, Mail, Phone, Shield, Settings, Star, ChevronDown } from "lucide-react";
 import Header from "@/components/Header";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 const Employees = () => {
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [departmentFilter, setDepartmentFilter] = useState("all");
+  const [teamFilter, setTeamFilter] = useState("all");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   const employees = [
     {
@@ -27,7 +35,10 @@ const Employees = () => {
       totalHours: 45,
       averageScore: 87,
       lastActivity: "Il y a 2 jours",
-      status: "Actif"
+      status: "Actif",
+      teamId: 1,
+      teamName: "Équipe Support Alpha",
+      teamColor: "bg-blue-500"
     },
     {
       id: 2,
