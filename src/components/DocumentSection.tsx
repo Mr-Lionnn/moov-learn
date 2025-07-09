@@ -78,8 +78,8 @@ const DocumentSection = ({ documents, courseTitle, lessonTitle }: DocumentSectio
             <div className="space-y-4">
               {documents.map((document, index) => (
                 <Card key={document.id || index} className="p-4 bg-gray-50 hover:bg-gray-100 transition-colors">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
                       {getFileIcon(document.type)}
                       <div className="flex-1 min-w-0">
                         <p className="font-medium truncate">{document.name}</p>
@@ -92,17 +92,17 @@ const DocumentSection = ({ documents, courseTitle, lessonTitle }: DocumentSectio
                         )}
                       </div>
                     </div>
-                    <div className="flex gap-1">
+                    <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                       <RoleBasedAccess requiredPermissions={['view_files']}>
                         <Button 
                           variant="outline" 
                           size="sm"
                           onClick={() => handleViewDocument(document)}
-                          className="hover-scale"
+                          className="hover-scale w-full sm:w-auto"
                           title="Voir le document"
                         >
                           <Eye className="h-4 w-4" />
-                          <span className="hidden sm:inline ml-2">Voir</span>
+                          <span className="ml-2">Voir</span>
                         </Button>
                       </RoleBasedAccess>
                       <RoleBasedAccess requiredPermissions={['view_files']}>
@@ -110,23 +110,11 @@ const DocumentSection = ({ documents, courseTitle, lessonTitle }: DocumentSectio
                           variant="outline" 
                           size="sm"
                           onClick={() => handleSaveDocument(document)}
-                          className="hover-scale"
+                          className="hover-scale w-full sm:w-auto"
                           title="Sauvegarder le document"
                         >
                           <Bookmark className="h-4 w-4" />
-                          <span className="hidden sm:inline ml-2">Sauvegarder</span>
-                        </Button>
-                      </RoleBasedAccess>
-                      <RoleBasedAccess requiredPermissions={['download_files', 'view_files']}>
-                        <Button 
-                          variant="default" 
-                          size="sm"
-                          onClick={() => handleDownload(document)}
-                          className="hover-scale"
-                          title="Télécharger le document"
-                        >
-                          <Download className="h-4 w-4" />
-                          <span className="hidden sm:inline ml-2">Télécharger</span>
+                          <span className="ml-2">Sauvegarder</span>
                         </Button>
                       </RoleBasedAccess>
                     </div>
