@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -119,10 +118,15 @@ const LessonContentSwitch = ({
     // Create a mock quiz object that matches the Quiz interface expected by QuizInterface
     const mockQuiz = {
       id: lesson.id,
+      courseId: 'mock-course-id',
       title: `Quiz - ${lesson.title}`,
-      questions: [],
+      description: `Quiz pour la leçon: ${lesson.title}`,
+      passingGrade: 70,
       timeLimit: 30,
-      passingGrade: 70
+      questions: [],
+      createdBy: 'system',
+      createdAt: new Date().toISOString(),
+      isActive: true
     };
 
     return (
