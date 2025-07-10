@@ -1,23 +1,19 @@
-import { useState, useRef } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Keyboard, Mousewheel } from 'swiper/modules';
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+import { useState, useEffect } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import StarRatingDisplay from "@/components/StarRatingDisplay";
+import { Progress } from "@/components/ui/progress";
 import { 
   BookOpen, 
   Clock, 
   Users, 
-  Star, 
-  Play, 
-  CheckCircle, 
+  TrendingUp, 
   Award,
   ChevronLeft,
-  ChevronRight
+  ChevronRight 
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import StarRatingDisplay from "./StarRatingDisplay";
 import { ratingService } from "@/services/ratingService";
 
 // Import Swiper styles
@@ -25,278 +21,227 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
-interface Training {
-  id: number;
+interface Formation {
+  id: string;
   title: string;
-  instructor: string;
+  description: string;
   duration: string;
+  level: "beginner" | "intermediate" | "advanced";
   progress: number;
-  status: string;
-  rating: number;
-  studentsCount: number;
+  instructor: string;
   category: string;
-  level: string;
-  completedLessons: number;
-  totalLessons: number;
-  nextLesson: string | null;
-  estimatedCompletion: string | null;
-  completedDate?: string;
-  certificate?: boolean;
+  completionRate: number;
+  enrolledUsers: number;
+  averageScore: number;
+  isMandatory: boolean;
 }
 
-interface FormationSwiperProps {
-  trainings: Training[];
-}
+const FormationSwiper = ({ onFormationClick }: { onFormationClick: (formation: Formation) => void }) => {
+  const [formations, setFormations] = useState<Formation[]>([]);
 
-const FormationSwiper = ({ trainings }: FormationSwiperProps) => {
-  const navigate = useNavigate();
-  const swiperRef = useRef<any>(null);
-  const [currentSlide, setCurrentSlide] = useState(0);
+  useEffect(() => {
+    // Load formations and update ratings in real-time
+    const loadFormations = () => {
+      const mockFormations: Formation[] = [
+        {
+          id: "tcp-ip",
+          title: "Fondamentaux des Réseaux TCP/IP",
+          description: "Apprenez les bases essentielles du protocole TCP/IP et de l'architecture réseau",
+          duration: "4h 30min",
+          level: "beginner",
+          progress: 45,
+          instructor: "Marie Dubois",
+          category: "Réseaux",
+          completionRate: 87,
+          enrolledUsers: 142,
+          averageScore: 78,
+          isMandatory: true
+        },
+        {
+          id: "security",
+          title: "Sécurité Informatique Avancée",
+          description: "Maîtrisez les concepts avancés de cybersécurité et protection des données",
+          duration: "6h 15min",
+          level: "advanced",
+          progress: 23,
+          instructor: "Jean Martin",
+          category: "Sécurité",
+          completionRate: 72,
+          enrolledUsers: 98,
+          averageScore: 82,
+          isMandatory: false
+        },
+        {
+          id: "linux-admin",
+          title: "Administration Système Linux",
+          description: "Devenez expert en administration de serveurs Linux et gestion système",
+          duration: "8h 00min",
+          level: "intermediate",
+          progress: 67,
+          instructor: "Sophie Laurent",
+          category: "Systèmes",
+          completionRate: 91,
+          enrolledUsers: 156,
+          averageScore: 85,
+          isMandatory: true
+        },
+        {
+          id: "cloud-basics",
+          title: "Introduction au Cloud Computing",
+          description: "Découvrez les fondamentaux du cloud et des services AWS, Azure, GCP",
+          duration: "5h 45min",
+          level: "beginner",
+          progress: 12,
+          instructor: "Pierre Moreau",
+          category: "Cloud",
+          completionRate: 65,
+          enrolledUsers: 89,
+          averageScore: 76,
+          isMandatory: false
+        }
+      ];
+      
+      setFormations(mockFormations);
+    };
 
-  // Get average rating for a training module
-  const getModuleRating = (title: string) => {
-    const averageRating = ratingService.getModuleAverageRating(title);
-    const ratingCount = ratingService.getModuleRatingCount(title);
-    return { averageRating, ratingCount };
-  };
+    loadFormations();
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Terminée":
-        return "bg-green-100 text-green-800";
-      case "En cours":
-        return "bg-blue-100 text-blue-800";
-      case "Non commencée":
-        return "bg-gray-100 text-gray-800";
-      default:
-        return "bg-gray-100 text-gray-800";
+    // Listen for rating updates to refresh formation data
+    const handleRatingUpdate = () => loadFormations();
+    window.addEventListener('ratingUpdated', handleRatingUpdate);
+
+    return () => {
+      window.removeEventListener('ratingUpdated', handleRatingUpdate);
+    };
+  }, []);
+
+  const getLevelColor = (level: string) => {
+    switch (level) {
+      case "beginner": return "bg-green-100 text-green-800 border-green-200";
+      case "intermediate": return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "advanced": return "bg-red-100 text-red-800 border-red-200";
+      default: return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
-  const handleContinueCourse = (trainingId: number) => {
-    navigate(`/course/${trainingId}`);
-  };
-
-  const handleStartCourse = (trainingId: number) => {
-    navigate(`/course/${trainingId}`);
-  };
-
-  const handleReviewCourse = (trainingId: number) => {
-    navigate(`/course/${trainingId}`);
-  };
-
-  const handleDownloadCertificate = (trainingTitle: string) => {
-    const link = document.createElement('a');
-    link.href = 'data:text/plain;charset=utf-8,Certificate of Completion\n\n' + trainingTitle + '\n\nAwarded to: Student\nDate: ' + new Date().toLocaleDateString();
-    link.download = `certificate-${trainingTitle.replace(/\s+/g, '-').toLowerCase()}.txt`;
-    link.style.display = 'none';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const goToPrevious = () => {
-    if (swiperRef.current) {
-      swiperRef.current.slidePrev();
-    }
-  };
-
-  const goToNext = () => {
-    if (swiperRef.current) {
-      swiperRef.current.slideNext();
+  const getLevelText = (level: string) => {
+    switch (level) {
+      case "beginner": return "Débutant";
+      case "intermediate": return "Intermédiaire";
+      case "advanced": return "Avancé";
+      default: return level;
     }
   };
 
   return (
-    <div className="relative">
-      {/* Navigation Header */}
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">
-            Formation {currentSlide + 1} sur {trainings.length}
-          </h2>
-          <p className="text-gray-600">Naviguez avec les flèches ou en glissant</p>
-        </div>
-        
-        {/* Custom Navigation Buttons */}
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={goToPrevious}
-            disabled={currentSlide === 0}
-            className="h-10 w-10"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={goToNext}
-            disabled={currentSlide === trainings.length - 1}
-            className="h-10 w-10"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-
-      {/* Swiper Component */}
+    <div className="formation-swiper-container relative">
       <Swiper
-        modules={[Navigation, Pagination, Keyboard, Mousewheel]}
-        spaceBetween={30}
+        modules={[Navigation, Pagination]}
+        spaceBetween={20}
         slidesPerView={1}
-        keyboard={{
-          enabled: true,
-          onlyInViewport: true,
-        }}
-        mousewheel={{
-          forceToAxis: true,
-          sensitivity: 1,
-          releaseOnEdges: true,
+        navigation={{
+          prevEl: '.swiper-button-prev-custom',
+          nextEl: '.swiper-button-next-custom',
         }}
         pagination={{
           clickable: true,
           bulletClass: 'swiper-pagination-bullet',
-          bulletActiveClass: 'swiper-pagination-bullet-active',
-        }}
-        onSwiper={(swiper) => {
-          swiperRef.current = swiper;
-        }}
-        onSlideChange={(swiper) => {
-          setCurrentSlide(swiper.activeIndex);
+          bulletActiveClass: 'swiper-pagination-bullet-active'
         }}
         breakpoints={{
-          768: {
-            slidesPerView: 1.2,
+          640: {
+            slidesPerView: 1,
             spaceBetween: 20,
           },
-          1024: {
-            slidesPerView: 1.3,
-            spaceBetween: 30,
+          768: {
+            slidesPerView: 2,
+            spaceBetween: 24,
           },
+          1024: {
+            slidesPerView: 2,
+            spaceBetween: 32,
+          },
+          1280: {
+            slidesPerView: 3,
+            spaceBetween: 32,
+          }
         }}
-        className="formation-swiper pb-12"
+        className="pb-12"
       >
-        {trainings.map((training) => (
-          <SwiperSlide key={training.id}>
-            <Card className="hover:shadow-xl transition-all duration-300 h-full">
-              <CardContent className="p-6">
-                <div className="flex flex-col lg:flex-row gap-6 h-full">
-                  {/* Course Image */}
-                  <div className="w-full lg:w-48 h-32 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <BookOpen className="h-12 w-12 text-blue-600" />
+        {formations.map((formation) => (
+          <SwiperSlide key={formation.id}>
+            <Card 
+              className="h-full hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1 border-0 shadow-lg"
+              onClick={() => onFormationClick(formation)}
+            >
+              <CardHeader className="pb-4">
+                <div className="flex justify-between items-start mb-3">
+                  <Badge className={`${getLevelColor(formation.level)} border text-xs font-medium`}>
+                    {getLevelText(formation.level)}
+                  </Badge>
+                  {formation.isMandatory && (
+                    <Badge variant="destructive" className="text-xs">
+                      Obligatoire
+                    </Badge>
+                  )}
+                </div>
+                <CardTitle className="text-lg font-bold text-gray-900 leading-tight mb-2 line-clamp-2">
+                  {formation.title}
+                </CardTitle>
+                <p className="text-sm text-gray-600 line-clamp-3 mb-4">
+                  {formation.description}
+                </p>
+                
+                {/* Star Rating Display */}
+                <div className="mb-4">
+                  <StarRatingDisplay 
+                    moduleId={formation.id}
+                    size="sm"
+                    showValue={true}
+                  />
+                </div>
+              </CardHeader>
+              
+              <CardContent className="pt-0">
+                <div className="space-y-4">
+                  {/* Progress */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gray-600 font-medium">Progression</span>
+                      <span className="font-semibold text-gray-900">{formation.progress}%</span>
+                    </div>
+                    <Progress value={formation.progress} className="h-2" />
                   </div>
 
-                  {/* Course Info */}
-                  <div className="flex-1 space-y-4">
-                    <div className="flex flex-col sm:flex-row justify-between items-start gap-2">
-                      <div>
-                        <h3 className="text-xl font-bold text-gray-900 mb-1">{training.title}</h3>
-                        <p className="text-gray-600 mb-2">Par {training.instructor}</p>
-                        <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500">
-                          <span className="flex items-center gap-1">
-                            <Clock className="h-4 w-4" />
-                            {training.duration}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Users className="h-4 w-4" />
-                            {training.studentsCount} étudiants
-                          </span>
-                           <div className="flex items-center gap-1">
-                             <StarRatingDisplay 
-                               rating={getModuleRating(training.title).averageRating || training.rating}
-                               size="sm" 
-                               showValue={false}
-                             />
-                             <span className="text-xs text-gray-500">
-                               ({getModuleRating(training.title).ratingCount || 0})
-                             </span>
-                           </div>
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-end gap-2">
-                        <Badge className={getStatusColor(training.status)}>
-                          {training.status}
-                        </Badge>
-                        <Badge variant="outline">{training.level}</Badge>
-                      </div>
+                  {/* Stats Grid */}
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <Clock className="h-4 w-4 flex-shrink-0" />
+                      <span className="truncate">{formation.duration}</span>
                     </div>
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <Users className="h-4 w-4 flex-shrink-0" />
+                      <span className="truncate">{formation.enrolledUsers} inscrits</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <TrendingUp className="h-4 w-4 flex-shrink-0" />
+                      <span className="truncate">{formation.completionRate}% réussite</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <Award className="h-4 w-4 flex-shrink-0" />
+                      <span className="truncate">{formation.averageScore}/100</span>
+                    </div>
+                  </div>
 
-                    {/* Progress Section */}
-                    {training.status !== "Non commencée" && (
-                      <div className="space-y-2">
-                        <div className="flex justify-between items-center text-sm">
-                          <span className="text-gray-600">Progression</span>
-                          <span className="font-medium">
-                            {training.completedLessons}/{training.totalLessons} leçons • {training.progress}%
-                          </span>
-                        </div>
-                        <Progress value={training.progress} className="h-2" />
-                      </div>
-                    )}
-
-                    {/* Next Steps */}
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                      <div className="text-sm">
-                        {training.status === "Terminée" ? (
-                          <div className="flex items-center gap-2 text-green-600">
-                            <CheckCircle className="h-4 w-4" />
-                            <span>Terminée {training.completedDate}</span>
-                            {training.certificate && (
-                              <Badge className="bg-yellow-100 text-yellow-800">
-                                <Award className="h-3 w-3 mr-1" />
-                                Certificat
-                              </Badge>
-                            )}
-                          </div>
-                        ) : training.status === "En cours" ? (
-                          <div>
-                            <p className="text-gray-600">
-                              Prochaine leçon: <span className="font-medium">{training.nextLesson}</span>
-                            </p>
-                            <p className="text-gray-500">
-                              Temps estimé pour terminer: {training.estimatedCompletion}
-                            </p>
-                          </div>
-                        ) : (
-                          <div>
-                            <p className="text-gray-600">
-                              Commencer par: <span className="font-medium">{training.nextLesson}</span>
-                            </p>
-                            <p className="text-gray-500">
-                              Temps estimé: {training.estimatedCompletion}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Action Buttons */}
-                      <div className="flex gap-2">
-                        {training.status === "Terminée" ? (
-                          <>
-                            <Button variant="outline" size="sm" onClick={() => handleReviewCourse(training.id)}>
-                              Revoir
-                            </Button>
-                            {training.certificate && (
-                              <Button size="sm" onClick={() => handleDownloadCertificate(training.title)}>
-                                <Award className="h-4 w-4 mr-2" />
-                                Certificat
-                              </Button>
-                            )}
-                          </>
-                        ) : training.status === "En cours" ? (
-                          <Button size="sm" onClick={() => handleContinueCourse(training.id)}>
-                            <Play className="h-4 w-4 mr-2" />
-                            Continuer
-                          </Button>
-                        ) : (
-                          <Button size="sm" onClick={() => handleStartCourse(training.id)}>
-                            <Play className="h-4 w-4 mr-2" />
-                            Commencer
-                          </Button>
-                        )}
-                      </div>
+                  {/* Instructor and Category */}
+                  <div className="pt-3 border-t">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gray-600">
+                        <span className="font-medium">Instructeur:</span> {formation.instructor}
+                      </span>
+                      <Badge variant="outline" className="text-xs">
+                        {formation.category}
+                      </Badge>
                     </div>
                   </div>
                 </div>
@@ -306,27 +251,46 @@ const FormationSwiper = ({ trainings }: FormationSwiperProps) => {
         ))}
       </Swiper>
 
-      {/* Progress Indicators */}
-      <div className="flex justify-center items-center gap-4 mt-6">
-        <div className="flex gap-2">
-          {trainings.map((_, index) => (
-            <div
-              key={index}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                index === currentSlide ? 'bg-blue-600 w-6' : 'bg-gray-300'
-              }`}
-            />
-          ))}
-        </div>
-        <span className="text-sm text-gray-600 ml-4">
-          {currentSlide + 1} / {trainings.length}
-        </span>
-      </div>
+      {/* Custom Navigation Buttons */}
+      <button className="swiper-button-prev-custom absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-lg border flex items-center justify-center hover:bg-gray-50 transition-colors">
+        <ChevronLeft className="h-5 w-5 text-gray-600" />
+      </button>
+      <button className="swiper-button-next-custom absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-lg border flex items-center justify-center hover:bg-gray-50 transition-colors">
+        <ChevronRight className="h-5 w-5 text-gray-600" />
+      </button>
 
-      {/* Keyboard Instructions */}
-      <div className="mt-4 text-center text-sm text-gray-500">
-        <p>Utilisez les flèches ← → ou glissez pour naviguer • Molette souris supportée</p>
-      </div>
+      <style jsx global>{`
+        .formation-swiper-container .swiper-pagination {
+          bottom: 0 !important;
+        }
+        
+        .formation-swiper-container .swiper-pagination-bullet {
+          width: 8px;
+          height: 8px;
+          background: #cbd5e1;
+          opacity: 1;
+          transition: all 0.3s ease;
+        }
+        
+        .formation-swiper-container .swiper-pagination-bullet-active {
+          background: #3b82f6;
+          transform: scale(1.2);
+        }
+        
+        .line-clamp-2 {
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+        
+        .line-clamp-3 {
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+      `}</style>
     </div>
   );
 };

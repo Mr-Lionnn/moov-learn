@@ -1,7 +1,8 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { X, Users, BookOpen, BarChart3, Clock, CheckCircle } from "lucide-react";
+import { X, Users, BookOpen, BarChart3, Clock, CheckCircle, Bell, AlertTriangle, Settings } from "lucide-react";
 import QuizCreator from "./QuizCreator";
 import ModuleCreator from "./module/ModuleCreator";
 import { useAuth } from "@/contexts/AuthContext";
@@ -14,11 +15,15 @@ import QuizManagementTab from "./admin/QuizManagementTab";
 import DeadlineManagementTab from "./admin/DeadlineManagementTab";
 import StudentProgressTab from "./admin/StudentProgressTab";
 import AnalyticsTab from "./admin/AnalyticsTab";
+import TeamManagementModal from "./TeamManagementModal";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 const AdminPanel = ({ onClose }: AdminPanelProps) => {
-  const { setModuleDeadline, user } = useAuth();
+  const { setModuleDeadline, user, notifications } = useAuth();
   const [showQuizCreator, setShowQuizCreator] = useState(false);
   const [showModuleCreator, setShowModuleCreator] = useState(false);
+  const [showTeamManagement, setShowTeamManagement] = useState(false);
   const [selectedCourseForQuiz, setSelectedCourseForQuiz] = useState<string | null>(null);
   
   const {
@@ -28,6 +33,11 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
     questionAnalytics,
     studentProgress
   } = useAdminData();
+
+  // Get actionable notifications
+  const actionableNotifications = notifications.filter(notif => 
+    notif.type === 'deadline' || notif.type === 'warning'
+  ).slice(0, 5);
 
   const handleCreateCourse = () => {
     if (!newCourse.title || !newCourse.description) return;
@@ -150,6 +160,18 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
     setShowQuizCreator(true);
   };
 
+  const handleNotificationClick = (notification: any) => {
+    // Navigate to specific issue based on notification type
+    if (notification.moduleId) {
+      // Navigate to specific module
+      window.location.href = `/course/${notification.moduleId}`;
+    } else if (notification.type === 'deadline') {
+      // Navigate to deadline management
+      // This would be handled by parent component
+      console.log('Navigate to deadline management for:', notification);
+    }
+  };
+
   // Check if user has permission to upload content
   const canUploadContent = user?.role === 'admin' || user?.role === 'team_chief' || user?.role === 'team_responsible';
 
@@ -177,38 +199,148 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg w-full max-w-6xl max-h-[90vh] overflow-hidden">
+      <div className="bg-white rounded-lg w-full max-w-7xl max-h-[90vh] overflow-hidden">
         <div className="flex justify-between items-center p-6 border-b">
-          <h2 className="text-2xl font-bold text-gray-900">Panneau d'Administration</h2>
+          <h2 className="text-2xl font-bold text-gray-900">Administration Unifiée</h2>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="h-5 w-5" />
           </Button>
         </div>
 
         <div className="p-6 overflow-y-auto max-h-[calc(90vh-100px)]">
-          <Tabs defaultValue="courses" className="w-full">
-            <TabsList className="grid w-full grid-cols-5">
+          <Tabs defaultValue="dashboard" className="w-full">
+            <TabsList className="grid w-full grid-cols-7">
+              <TabsTrigger value="dashboard">
+                <Settings className="h-4 w-4 mr-2" />
+                Tableau de Bord
+              </TabsTrigger>
               <TabsTrigger value="courses">
                 <BookOpen className="h-4 w-4 mr-2" />
-                Gestion des Cours
+                Cours
               </TabsTrigger>
               <TabsTrigger value="quizzes">
                 <CheckCircle className="h-4 w-4 mr-2" />
-                Quiz & Évaluations
+                Quiz
               </TabsTrigger>
               <TabsTrigger value="deadlines">
                 <Clock className="h-4 w-4 mr-2" />
-                Délais de Formation
+                Délais
               </TabsTrigger>
               <TabsTrigger value="students">
                 <Users className="h-4 w-4 mr-2" />
-                Progrès des Étudiants
+                Étudiants
               </TabsTrigger>
               <TabsTrigger value="analytics">
                 <BarChart3 className="h-4 w-4 mr-2" />
                 Analytiques
               </TabsTrigger>
+              <TabsTrigger value="notifications">
+                <Bell className="h-4 w-4 mr-2" />
+                Notifications
+                {actionableNotifications.length > 0 && (
+                  <Badge className="ml-1 bg-red-500 text-white text-xs">
+                    {actionableNotifications.length}
+                  </Badge>
+                )}
+              </TabsTrigger>
             </TabsList>
+
+            <TabsContent value="dashboard" className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setShowTeamManagement(true)}>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Users className="h-5 w-5" />
+                      Gestion d'Équipe
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-gray-600">Gérer les équipes et les membres</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <BookOpen className="h-5 w-5" />
+                      Formations Actives
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-2xl font-bold">12</p>
+                    <p className="text-sm text-gray-600">Modules en cours</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <AlertTriangle className="h-5 w-5" />
+                      Alertes Actives
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-2xl font-bold text-red-600">{actionableNotifications.length}</p>
+                    <p className="text-sm text-gray-600">Notifications urgentes</p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Quick Actions */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Actions Rapides</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-wrap gap-3">
+                  <Button onClick={() => setShowModuleCreator(true)}>
+                    Créer un Module
+                  </Button>
+                  <Button onClick={handleCreateQuiz} variant="outline">
+                    Créer un Quiz
+                  </Button>
+                  <Button onClick={() => setShowTeamManagement(true)} variant="outline">
+                    Gérer les Équipes
+                  </Button>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="notifications" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Bell className="h-5 w-5" />
+                    Notifications Actionnables
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {actionableNotifications.length === 0 ? (
+                    <p className="text-gray-500 text-center py-8">Aucune notification urgente</p>
+                  ) : (
+                    actionableNotifications.map((notification) => (
+                      <div
+                        key={notification.id}
+                        className="flex items-start gap-3 p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+                        onClick={() => handleNotificationClick(notification)}
+                      >
+                        <div className={`p-2 rounded-full ${
+                          notification.type === 'deadline' ? 'bg-red-100 text-red-600' : 'bg-yellow-100 text-yellow-600'
+                        }`}>
+                          {notification.type === 'deadline' ? <Clock className="h-4 w-4" /> : <AlertTriangle className="h-4 w-4" />}
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-medium">{notification.title}</h3>
+                          <p className="text-sm text-gray-600 mb-2">{notification.message}</p>
+                          <Badge variant={notification.type === 'deadline' ? 'destructive' : 'default'}>
+                            {notification.type === 'deadline' ? 'Délai' : 'Attention'}
+                          </Badge>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
 
             <TabsContent value="courses" className="space-y-6">
               <CourseCreationTab
@@ -255,6 +387,12 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
             </div>
           </div>
         )}
+
+        {/* Team Management Modal */}
+        <TeamManagementModal
+          isOpen={showTeamManagement}
+          onClose={() => setShowTeamManagement(false)}
+        />
       </div>
     </div>
   );
