@@ -1,291 +1,248 @@
-
-import React, { useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import { Navigation, Pagination } from "swiper/modules";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Clock, Users, Star, Play, Award, ChevronLeft, ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Progress } from "@/components/ui/progress";
+import { 
+  BookOpen, 
+  Clock, 
+  Users, 
+  TrendingUp, 
+  Award,
+  ChevronLeft,
+  ChevronRight 
+} from "lucide-react";
 import StarRatingDisplay from "./StarRatingDisplay";
 import { ratingService } from "@/services/ratingService";
 
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
 interface Formation {
-  id: number;
+  id: string;
   title: string;
-  instructor: string;
-  duration: string;
-  progress: number;
-  status: "completed" | "in-progress" | "not-started";
-  rating: number;
-  studentsCount: number;
-  image: string;
-  category: string;
-  level: "beginner" | "intermediate" | "advanced";
   description: string;
-  nextLesson?: string;
-  completedAt?: string;
-  certificate?: {
-    issued: boolean;
-    date: string;
-  };
+  duration: string;
+  level: "beginner" | "intermediate" | "advanced";
+  progress: number;
+  instructor: string;
+  category: string;
+  completionRate: number;
+  enrolledUsers: number;
+  averageScore: number;
+  isMandatory: boolean;
 }
 
-interface FormationSwiperProps {
-  onFormationClick: (formation: Formation) => void;
-}
-
-const FormationSwiper = ({ onFormationClick }: FormationSwiperProps) => {
-  const navigationPrevRef = useRef<HTMLButtonElement>(null);
-  const navigationNextRef = useRef<HTMLButtonElement>(null);
-  const [swiper, setSwiper] = React.useState<any>(null);
-  const [formations, setFormations] = React.useState<Formation[]>([]);
+const FormationSwiper = ({ onFormationClick }: { onFormationClick: (formation: Formation) => void }) => {
+  const [formations, setFormations] = useState<Formation[]>([]);
 
   useEffect(() => {
+    // Load formations and update ratings in real-time
     const loadFormations = () => {
-      const sampleFormations: Formation[] = [
+      const mockFormations: Formation[] = [
         {
-          id: 1,
-          title: "Introduction aux Réseaux",
-          instructor: "Marie Dubois",
-          duration: "2h 30min",
-          progress: 75,
-          status: "in-progress",
-          rating: 4.5,
-          studentsCount: 128,
-          image: "/placeholder.svg",
-          category: "Réseau",
+          id: "tcp-ip",
+          title: "Fondamentaux des Réseaux TCP/IP",
+          description: "Apprenez les bases essentielles du protocole TCP/IP et de l'architecture réseau",
+          duration: "4h 30min",
           level: "beginner",
-          description: "Apprenez les bases des réseaux informatiques"
+          progress: 45,
+          instructor: "Marie Dubois",
+          category: "Réseaux",
+          completionRate: 87,
+          enrolledUsers: 142,
+          averageScore: 78,
+          isMandatory: true
         },
         {
-          id: 2,
-          title: "Sécurité des Systèmes d'Information",
-          instructor: "Jean-Pierre Leclerc",
-          duration: "3h 15min",
-          progress: 30,
-          status: "in-progress",
-          rating: 4.2,
-          studentsCount: 95,
-          image: "/placeholder.svg",
-          category: "Sécurité",
-          level: "intermediate",
-          description: "Protégez vos systèmes contre les menaces"
-        },
-        {
-          id: 3,
-          title: "Administration Linux",
-          instructor: "Sophie Martin",
-          duration: "2h 45min",
-          progress: 100,
-          status: "completed",
-          rating: 4.8,
-          studentsCount: 155,
-          image: "/placeholder.svg",
-          category: "Système",
+          id: "security",
+          title: "Sécurité Informatique Avancée",
+          description: "Maîtrisez les concepts avancés de cybersécurité et protection des données",
+          duration: "6h 15min",
           level: "advanced",
-          description: "Maîtrisez l'administration des serveurs Linux",
-          completedAt: "2024-03-15",
-          certificate: {
-            issued: true,
-            date: "2024-03-15"
-          }
+          progress: 23,
+          instructor: "Jean Martin",
+          category: "Sécurité",
+          completionRate: 72,
+          enrolledUsers: 98,
+          averageScore: 82,
+          isMandatory: false
         },
         {
-          id: 4,
-          title: "Développement Web Avancé",
-          instructor: "Lucie Garnier",
-          duration: "4h 00min",
-          progress: 0,
-          status: "not-started",
-          rating: 0,
-          studentsCount: 62,
-          image: "/placeholder.svg",
-          category: "Développement",
+          id: "linux-admin",
+          title: "Administration Système Linux",
+          description: "Devenez expert en administration de serveurs Linux et gestion système",
+          duration: "8h 00min",
           level: "intermediate",
-          description: "Créez des applications web performantes"
+          progress: 67,
+          instructor: "Sophie Laurent",
+          category: "Systèmes",
+          completionRate: 91,
+          enrolledUsers: 156,
+          averageScore: 85,
+          isMandatory: true
+        },
+        {
+          id: "cloud-basics",
+          title: "Introduction au Cloud Computing",
+          description: "Découvrez les fondamentaux du cloud et des services AWS, Azure, GCP",
+          duration: "5h 45min",
+          level: "beginner",
+          progress: 12,
+          instructor: "Pierre Moreau",
+          category: "Cloud",
+          completionRate: 65,
+          enrolledUsers: 89,
+          averageScore: 76,
+          isMandatory: false
         }
       ];
-
-      const storedCourses = JSON.parse(localStorage.getItem('moov_test_courses') || '[]');
-      const combinedFormations = [...sampleFormations, ...storedCourses.map((course: any) => ({
-        ...course,
-        progress: Math.floor(Math.random() * 100),
-        status: Math.random() > 0.5 ? "in-progress" : "completed",
-        studentsCount: Math.floor(Math.random() * 200) + 50,
-        image: "/placeholder.svg"
-      }))];
-
-      setFormations(combinedFormations);
+      
+      setFormations(mockFormations);
     };
 
     loadFormations();
-  }, []);
 
-  const handleFormationClick = (formation: Formation) => {
-    console.log("Formation clicked:", formation);
-    onFormationClick(formation);
-  };
+    // Listen for rating updates to refresh formation data
+    const handleRatingUpdate = () => loadFormations();
+    window.addEventListener('ratingUpdated', handleRatingUpdate);
+
+    return () => {
+      window.removeEventListener('ratingUpdated', handleRatingUpdate);
+    };
+  }, []);
 
   const getLevelColor = (level: string) => {
     switch (level) {
-      case "beginner": return "bg-green-100 text-green-800";
-      case "intermediate": return "bg-yellow-100 text-yellow-800";
-      case "advanced": return "bg-red-100 text-red-800";
-      default: return "bg-gray-100 text-gray-800";
+      case "beginner": return "bg-green-100 text-green-800 border-green-200";
+      case "intermediate": return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "advanced": return "bg-red-100 text-red-800 border-red-200";
+      default: return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "completed": return "bg-green-500";
-      case "in-progress": return "bg-blue-500";
-      case "not-started": return "bg-gray-300";
-      default: return "bg-gray-300";
+  const getLevelText = (level: string) => {
+    switch (level) {
+      case "beginner": return "Débutant";
+      case "intermediate": return "Intermédiaire";
+      case "advanced": return "Avancé";
+      default: return level;
     }
   };
 
   return (
-    <div className="relative w-full">
-      <style>
-        {`
-          .formation-swiper .swiper-pagination-bullet {
-            width: 8px;
-            height: 8px;
-            background: rgba(59, 130, 246, 0.5);
-            opacity: 1;
-            margin: 0 4px;
-          }
-          .formation-swiper .swiper-pagination-bullet-active {
-            background: #3b82f6;
-            transform: scale(1.2);
-          }
-          .formation-card {
-            transition: all 0.3s ease;
-          }
-          .formation-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-          }
-        `}
-      </style>
-
-      {/* Custom Navigation Buttons */}
-      <button
-        ref={navigationPrevRef}
-        className="absolute left-2 top-1/2 transform -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2 hover:bg-gray-50 transition-colors"
-        aria-label="Formation précédente"
-      >
-        <ChevronLeft className="h-5 w-5 text-gray-600" />
-      </button>
-
-      <button
-        ref={navigationNextRef}
-        className="absolute right-2 top-1/2 transform -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2 hover:bg-gray-50 transition-colors"
-        aria-label="Formation suivante"
-      >
-        <ChevronRight className="h-5 w-5 text-gray-600" />
-      </button>
-
+    <div className="formation-swiper-container relative">
       <Swiper
-        modules={[Navigation, Pagination, Autoplay]}
-        spaceBetween={16}
+        modules={[Navigation, Pagination]}
+        spaceBetween={20}
         slidesPerView={1}
-        breakpoints={{
-          640: { slidesPerView: 2, spaceBetween: 20 },
-          768: { slidesPerView: 2, spaceBetween: 24 },
-          1024: { slidesPerView: 3, spaceBetween: 32 },
-          1280: { slidesPerView: 4, spaceBetween: 32 },
-        }}
         navigation={{
-          prevEl: navigationPrevRef.current,
-          nextEl: navigationNextRef.current,
+          prevEl: '.swiper-button-prev-custom',
+          nextEl: '.swiper-button-next-custom',
         }}
         pagination={{
           clickable: true,
           bulletClass: 'swiper-pagination-bullet',
-          bulletActiveClass: 'swiper-pagination-bullet-active',
+          bulletActiveClass: 'swiper-pagination-bullet-active'
         }}
-        autoplay={{
-          delay: 5000,
-          disableOnInteraction: false,
-          pauseOnMouseEnter: true,
-        }}
-        onBeforeInit={(swiper) => {
-          if (typeof swiper.params.navigation !== 'boolean' && swiper.params.navigation) {
-            swiper.params.navigation.prevEl = navigationPrevRef.current;
-            swiper.params.navigation.nextEl = navigationNextRef.current;
+        breakpoints={{
+          640: {
+            slidesPerView: 1,
+            spaceBetween: 20,
+          },
+          768: {
+            slidesPerView: 2,
+            spaceBetween: 24,
+          },
+          1024: {
+            slidesPerView: 2,
+            spaceBetween: 32,
+          },
+          1280: {
+            slidesPerView: 3,
+            spaceBetween: 32,
           }
         }}
-        onSwiper={setSwiper}
-        className="formation-swiper pb-12"
+        className="pb-12"
       >
         {formations.map((formation) => (
           <SwiperSlide key={formation.id}>
             <Card 
-              className="formation-card cursor-pointer h-full bg-gradient-to-br from-white to-gray-50 border-0 shadow-md hover:shadow-xl"
-              onClick={() => handleFormationClick(formation)}
+              className="h-full hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1 border-0 shadow-lg"
+              onClick={() => onFormationClick(formation)}
             >
-              <CardHeader className="pb-3">
-                <div className="flex justify-between items-start mb-2">
-                  <Badge className={cn("text-xs font-medium", getLevelColor(formation.level))}>
-                    {formation.level === "beginner" ? "Débutant" : 
-                     formation.level === "intermediate" ? "Intermédiaire" : "Avancé"}
+              <CardHeader className="pb-4">
+                <div className="flex justify-between items-start mb-3">
+                  <Badge className={`${getLevelColor(formation.level)} border text-xs font-medium`}>
+                    {getLevelText(formation.level)}
                   </Badge>
-                  {formation.certificate?.issued && (
-                    <Award className="h-4 w-4 text-yellow-500" />
+                  {formation.isMandatory && (
+                    <Badge variant="destructive" className="text-xs">
+                      Obligatoire
+                    </Badge>
                   )}
                 </div>
-                <CardTitle className="text-lg font-bold text-gray-900 line-clamp-2 min-h-[3.5rem]">
+                <CardTitle className="text-lg font-bold text-gray-900 leading-tight mb-2 line-clamp-2">
                   {formation.title}
                 </CardTitle>
-                <p className="text-sm text-gray-600 mt-1">{formation.instructor}</p>
-              </CardHeader>
-
-              <CardContent className="pt-0">
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between text-sm text-gray-600">
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-4 w-4" />
-                      <span>{formation.duration}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Users className="h-4 w-4" />
-                      <span>{formation.studentsCount}</span>
-                    </div>
-                  </div>
-
+                <p className="text-sm text-gray-600 line-clamp-3 mb-4">
+                  {formation.description}
+                </p>
+                
+                {/* Star Rating Display */}
+                <div className="mb-4">
                   <StarRatingDisplay 
-                    rating={ratingService.getModuleAverageRating(formation.id.toString())} 
-                    size="sm" 
+                    moduleId={formation.id}
+                    size="sm"
+                    showValue={true}
                   />
-
+                </div>
+              </CardHeader>
+              
+              <CardContent className="pt-0">
+                <div className="space-y-4">
+                  {/* Progress */}
                   <div className="space-y-2">
                     <div className="flex justify-between items-center text-sm">
-                      <span className="text-gray-600">Progression</span>
-                      <span className="font-medium text-gray-900">{formation.progress}%</span>
+                      <span className="text-gray-600 font-medium">Progression</span>
+                      <span className="font-semibold text-gray-900">{formation.progress}%</span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className={cn("h-2 rounded-full transition-all duration-300", getStatusColor(formation.status))}
-                        style={{ width: `${formation.progress}%` }}
-                      />
+                    <Progress value={formation.progress} className="h-2" />
+                  </div>
+
+                  {/* Stats Grid */}
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <Clock className="h-4 w-4 flex-shrink-0" />
+                      <span className="truncate">{formation.duration}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <Users className="h-4 w-4 flex-shrink-0" />
+                      <span className="truncate">{formation.enrolledUsers} inscrits</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <TrendingUp className="h-4 w-4 flex-shrink-0" />
+                      <span className="truncate">{formation.completionRate}% réussite</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <Award className="h-4 w-4 flex-shrink-0" />
+                      <span className="truncate">{formation.averageScore}/100</span>
                     </div>
                   </div>
 
-                  <div className="flex justify-between items-center pt-2">
-                    <Badge variant="outline" className="text-xs">
-                      {formation.category}
-                    </Badge>
-                    <Button size="sm" className="h-8 px-3">
-                      <Play className="h-3 w-3 mr-1" />
-                      {formation.status === "completed" ? "Revoir" : 
-                       formation.status === "in-progress" ? "Continuer" : "Commencer"}
-                    </Button>
+                  {/* Instructor and Category */}
+                  <div className="pt-3 border-t">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gray-600">
+                        <span className="font-medium">Instructeur:</span> {formation.instructor}
+                      </span>
+                      <Badge variant="outline" className="text-xs">
+                        {formation.category}
+                      </Badge>
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -293,6 +250,47 @@ const FormationSwiper = ({ onFormationClick }: FormationSwiperProps) => {
           </SwiperSlide>
         ))}
       </Swiper>
+
+      {/* Custom Navigation Buttons */}
+      <button className="swiper-button-prev-custom absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-lg border flex items-center justify-center hover:bg-gray-50 transition-colors">
+        <ChevronLeft className="h-5 w-5 text-gray-600" />
+      </button>
+      <button className="swiper-button-next-custom absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-lg border flex items-center justify-center hover:bg-gray-50 transition-colors">
+        <ChevronRight className="h-5 w-5 text-gray-600" />
+      </button>
+
+      <style jsx global>{`
+        .formation-swiper-container .swiper-pagination {
+          bottom: 0 !important;
+        }
+        
+        .formation-swiper-container .swiper-pagination-bullet {
+          width: 8px;
+          height: 8px;
+          background: #cbd5e1;
+          opacity: 1;
+          transition: all 0.3s ease;
+        }
+        
+        .formation-swiper-container .swiper-pagination-bullet-active {
+          background: #3b82f6;
+          transform: scale(1.2);
+        }
+        
+        .line-clamp-2 {
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+        
+        .line-clamp-3 {
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+      `}</style>
     </div>
   );
 };

@@ -16,9 +16,8 @@ import DeadlineManagementTab from "./admin/DeadlineManagementTab";
 import StudentProgressTab from "./admin/StudentProgressTab";
 import AnalyticsTab from "./admin/AnalyticsTab";
 import TeamManagementModal from "./TeamManagementModal";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import AdminDashboard from "./admin/AdminDashboard";
-import AdminNotifications from "./admin/AdminNotifications";
 
 const AdminPanel = ({ onClose }: AdminPanelProps) => {
   const { setModuleDeadline, user, notifications } = useAuth();
@@ -168,6 +167,7 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
       window.location.href = `/course/${notification.moduleId}`;
     } else if (notification.type === 'deadline') {
       // Navigate to deadline management
+      // This would be handled by parent component
       console.log('Navigate to deadline management for:', notification);
     }
   };
@@ -246,19 +246,100 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
             </TabsList>
 
             <TabsContent value="dashboard" className="space-y-6">
-              <AdminDashboard
-                actionableNotifications={actionableNotifications}
-                onShowTeamManagement={() => setShowTeamManagement(true)}
-                onShowModuleCreator={() => setShowModuleCreator(true)}
-                onCreateQuiz={handleCreateQuiz}
-              />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setShowTeamManagement(true)}>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Users className="h-5 w-5" />
+                      Gestion d'Équipe
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-gray-600">Gérer les équipes et les membres</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <BookOpen className="h-5 w-5" />
+                      Formations Actives
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-2xl font-bold">12</p>
+                    <p className="text-sm text-gray-600">Modules en cours</p>
+                  </CardContent>
+                </Card>
+
+                <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <AlertTriangle className="h-5 w-5" />
+                      Alertes Actives
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-2xl font-bold text-red-600">{actionableNotifications.length}</p>
+                    <p className="text-sm text-gray-600">Notifications urgentes</p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Quick Actions */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Actions Rapides</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-wrap gap-3">
+                  <Button onClick={() => setShowModuleCreator(true)}>
+                    Créer un Module
+                  </Button>
+                  <Button onClick={handleCreateQuiz} variant="outline">
+                    Créer un Quiz
+                  </Button>
+                  <Button onClick={() => setShowTeamManagement(true)} variant="outline">
+                    Gérer les Équipes
+                  </Button>
+                </CardContent>
+              </Card>
             </TabsContent>
 
             <TabsContent value="notifications" className="space-y-6">
-              <AdminNotifications
-                actionableNotifications={actionableNotifications}
-                onNotificationClick={handleNotificationClick}
-              />
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Bell className="h-5 w-5" />
+                    Notifications Actionnables
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {actionableNotifications.length === 0 ? (
+                    <p className="text-gray-500 text-center py-8">Aucune notification urgente</p>
+                  ) : (
+                    actionableNotifications.map((notification) => (
+                      <div
+                        key={notification.id}
+                        className="flex items-start gap-3 p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+                        onClick={() => handleNotificationClick(notification)}
+                      >
+                        <div className={`p-2 rounded-full ${
+                          notification.type === 'deadline' ? 'bg-red-100 text-red-600' : 'bg-yellow-100 text-yellow-600'
+                        }`}>
+                          {notification.type === 'deadline' ? <Clock className="h-4 w-4" /> : <AlertTriangle className="h-4 w-4" />}
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-medium">{notification.title}</h3>
+                          <p className="text-sm text-gray-600 mb-2">{notification.message}</p>
+                          <Badge variant={notification.type === 'deadline' ? 'destructive' : 'default'}>
+                            {notification.type === 'deadline' ? 'Délai' : 'Attention'}
+                          </Badge>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </CardContent>
+              </Card>
             </TabsContent>
 
             <TabsContent value="courses" className="space-y-6">
