@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -55,8 +54,8 @@ const LessonContentSwitch = ({
     }
   };
 
-  const handleQuizComplete = (score: number) => {
-    console.log(`Quiz completed with score: ${score}`);
+  const handleQuizComplete = (result: any) => {
+    console.log(`Quiz completed with result:`, result);
     setQuizCompleted(true);
     setShowQuiz(false);
     setShowRating(true);
@@ -79,8 +78,7 @@ const LessonContentSwitch = ({
     return (
       <CompletionConfirmation 
         moduleTitle={lesson.title}
-        onReturnHome={handleReturnHome}
-        onStartNewTraining={handleStartNewTraining}
+        onClose={() => setShowCompletion(false)}
       />
     );
   }
@@ -107,7 +105,7 @@ const LessonContentSwitch = ({
               <ModuleRating 
                 moduleId={lesson.id} 
                 moduleTitle={lesson.title}
-                onComplete={handleRatingSubmit}
+                onSubmit={handleRatingSubmit}
               />
             </CardContent>
           </Card>
@@ -210,7 +208,13 @@ const LessonContentSwitch = ({
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <LessonContentTabs lesson={lesson} />
+        <LessonContentTabs 
+          lessonId={parseInt(lesson.id)} 
+          title={lesson.title}
+          type={lesson.type}
+          content={lesson.content}
+          duration={lesson.duration?.toString()}
+        />
       </div>
     </div>
   );
