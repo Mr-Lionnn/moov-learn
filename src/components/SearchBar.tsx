@@ -72,24 +72,24 @@ const SearchBar = ({ onSearchResults }: SearchBarProps) => {
           results.push({
             id: course.id,
             title: course.title,
-            instructor: course.instructor || 'Instructeur',
+            instructor: 'Instructeur Expert', // Default instructor name since TestCourse doesn't have instructor field
             category: course.category || 'Formation',
             type: 'course'
           });
         }
       });
 
-      // Search by instructor name
-      const instructors = [...new Set(courses.map(c => c.instructor).filter(Boolean))];
-      instructors.forEach(instructor => {
-        if (instructor && instructor.toLowerCase().includes(query.toLowerCase())) {
-          const instructorCourses = courses.filter(c => c.instructor === instructor);
+      // Search by category (since we don't have instructor names in TestCourse)
+      const categories = [...new Set(courses.map(c => c.category).filter(Boolean))];
+      categories.forEach(category => {
+        if (category && category.toLowerCase().includes(query.toLowerCase())) {
+          const categoryCourses = courses.filter(c => c.category === category);
           results.push({
-            id: `instructor-${instructor}`,
-            title: instructor,
-            instructor: `${instructorCourses.length} cours`,
-            category: 'Formateur',
-            type: 'instructor'
+            id: `category-${category}`,
+            title: category,
+            instructor: `${categoryCourses.length} cours`,
+            category: 'Catégorie',
+            type: 'instructor' // Reusing this type for categories
           });
         }
       });
@@ -132,7 +132,7 @@ const SearchBar = ({ onSearchResults }: SearchBarProps) => {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
-              placeholder="Rechercher formations ou formateurs..."
+              placeholder="Rechercher formations ou catégories..."
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
