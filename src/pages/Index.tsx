@@ -1,9 +1,9 @@
-
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import StatsGrid from "@/components/StatsGrid";
 import CourseCard from "@/components/CourseCard";
 import CourseDetailModal from "@/components/CourseDetailModal";
+import SearchBar from "@/components/SearchBar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,7 +19,8 @@ import {
   Target,
   CalendarDays,
   Timer,
-  BarChart3
+  BarChart3,
+  Search
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { testDataService } from "@/services/testDataService";
@@ -31,9 +32,11 @@ const Index = () => {
   const navigate = useNavigate();
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
   const [courses, setCourses] = useState<any[]>([]);
+  const [filteredCourses, setFilteredCourses] = useState<any[]>([]);
   const [tasks, setTasks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
+  const [searchActive, setSearchActive] = useState(false);
 
   useEffect(() => {
     console.log('Index useEffect triggered, user:', user);
@@ -52,21 +55,34 @@ const Index = () => {
           course.id !== undefined
         );
         
+        // Enhanced courses with additional metadata
+        const enhancedCourses = validCourses.map(course => ({
+          ...course,
+          moduleCount: Math.floor(Math.random() * 8) + 3, // 3-10 modules
+          certificateStatus: Math.random() > 0.3 ? 
+            (['available', 'pending', 'requires_completion'][Math.floor(Math.random() * 3)]) : 
+            'none',
+          certificateUrl: Math.random() > 0.5 ? '#' : undefined
+        }));
+        
         const validTasks = userTasks.filter(task => 
           task && 
           task.title && 
           task.id !== undefined
         );
         
-        setCourses(validCourses);
+        setCourses(enhancedCourses);
+        setFilteredCourses(enhancedCourses);
         setTasks(validTasks);
       } catch (error) {
         console.error('Error loading user data:', error);
         setCourses([]);
+        setFilteredCourses([]);
         setTasks([]);
       }
     } else {
       setCourses([]);
+      setFilteredCourses([]);
       setTasks([]);
     }
     
@@ -98,6 +114,21 @@ const Index = () => {
       navigate(`/course/${task.courseId}`);
     } else {
       navigate("/course/1");
+    }
+  };
+
+  const handleSearchResults = (results: any[]) => {
+    if (results.length > 0) {
+      // Filter courses based on search results
+      const courseResults = results.filter(r => r.type === 'course');
+      const filteredBySearch = courses.filter(course => 
+        courseResults.some(result => result.title.toLowerCase().includes(course.title.toLowerCase()))
+      );
+      setFilteredCourses(filteredBySearch);
+      setSearchActive(true);
+    } else {
+      setFilteredCourses(courses);
+      setSearchActive(false);
     }
   };
 
@@ -157,7 +188,26 @@ const Index = () => {
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
             Bienvenue, {user?.name || 'Utilisateur'}!
           </h1>
-          <p className="text-sm sm:text-base text-gray-600">Suivez votre progression et continuez votre apprentissage</p>
+          <p className="text-sm sm:text-base text-gray-600 mb-4">Suivez votre progression et continuez votre apprentissage</p>
+          
+          {/* Search Bar */}
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+            <div className="w-full sm:w-auto flex-1 max-w-md">
+              <SearchBar onSearchResults={handleSearchResults} />
+            </div>
+            {searchActive && (
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  setFilteredCourses(courses);
+                  setSearchActive(false);
+                }}
+              >
+                Effacer la recherche
+              </Button>
+            )}
+          </div>
         </div>
 
         <StatsGrid />
@@ -165,15 +215,17 @@ const Index = () => {
         <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 mt-6 sm:mt-8">
           <section>
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-2 sm:gap-4">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Cours de Formation Disponibles</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
+                {searchActive ? 'Résultats de recherche' : 'Cours de Formation Disponibles'}
+              </h2>
               <Button variant="outline" onClick={() => navigate("/my-trainings")}>
                 Voir Tous
               </Button>
             </div>
             
             <div className="space-y-4">
-              {courses.length > 0 ? (
-                courses.slice(0, 3).map((course) => (
+              {filteredCourses.length > 0 ? (
+                filteredCourses.slice(0, 3).map((course) => (
                   course && course.id ? (
                     <CourseCard
                       key={course.id}
@@ -184,7 +236,7 @@ const Index = () => {
                 ))
               ) : (
                 <div className="text-center py-8 text-gray-500">
-                  Aucun cours disponible pour le moment
+                  {searchActive ? 'Aucun résultat trouvé' : 'Aucun cours disponible pour le moment'}
                 </div>
               )}
             </div>

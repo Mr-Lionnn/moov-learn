@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +18,15 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showTasksDropdown, setShowTasksDropdown] = useState(false);
 
+  const handleShowAdminPanel = () => {
+    console.log('Header: handleShowAdminPanel called');
+    if (onShowAdminPanel) {
+      onShowAdminPanel();
+    }
+    // Close mobile menu if open
+    setShowMobileMenu(false);
+  };
+
   return (
     <>
       <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
@@ -26,7 +36,7 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
 
           {/* Desktop Navigation */}
           <DesktopNavigation 
-            onShowAdminPanel={onShowAdminPanel}
+            onShowAdminPanel={handleShowAdminPanel}
             showTasksDropdown={showTasksDropdown}
             setShowTasksDropdown={setShowTasksDropdown}
           />
@@ -38,7 +48,11 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
               <Button 
                 variant="ghost" 
                 size="sm"
-                onClick={() => setShowMobileMenu(!showMobileMenu)}
+                onClick={() => {
+                  console.log('Mobile menu toggle clicked, current state:', showMobileMenu);
+                  setShowMobileMenu(!showMobileMenu);
+                }}
+                className="relative z-50"
               >
                 {showMobileMenu ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
               </Button>
@@ -58,16 +72,22 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
             </Button>
 
             {/* User Menu */}
-            <UserMenu onShowAdminPanel={onShowAdminPanel} />
+            <UserMenu onShowAdminPanel={handleShowAdminPanel} />
           </div>
         </div>
 
-        {/* Mobile Navigation Menu */}
-        <MobileNavigation 
-          showMobileMenu={showMobileMenu}
-          setShowMobileMenu={setShowMobileMenu}
-          onShowAdminPanel={onShowAdminPanel}
-        />
+        {/* Mobile Navigation Menu - Fixed positioning and z-index */}
+        <div className={`lg:hidden transition-all duration-300 ease-in-out ${
+          showMobileMenu 
+            ? 'max-h-screen opacity-100' 
+            : 'max-h-0 opacity-0 overflow-hidden'
+        }`}>
+          <MobileNavigation 
+            showMobileMenu={showMobileMenu}
+            setShowMobileMenu={setShowMobileMenu}
+            onShowAdminPanel={handleShowAdminPanel}
+          />
+        </div>
       </header>
 
       {/* Notification Center */}

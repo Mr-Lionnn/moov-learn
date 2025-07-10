@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { 
   BookOpen, 
@@ -5,7 +6,8 @@ import {
   CheckSquare,
   Users, 
   UserCheck, 
-  BarChart3 
+  BarChart3,
+  Settings
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -24,10 +26,21 @@ const MobileNavigation = ({
   const navigate = useNavigate();
   const { user, hasPermission, canManageUsers, canAccessFiles } = useAuth();
 
+  const handleAdminPanelClick = () => {
+    console.log('MobileNavigation: Admin panel button clicked');
+    if (onShowAdminPanel) {
+      console.log('MobileNavigation: Calling onShowAdminPanel');
+      onShowAdminPanel();
+    } else {
+      console.log('MobileNavigation: onShowAdminPanel is undefined');
+    }
+    setShowMobileMenu(false);
+  };
+
   if (!showMobileMenu) return null;
 
   return (
-    <div className="lg:hidden bg-white border-t border-gray-200 px-4 py-4 shadow-lg">
+    <div className="bg-white border-t border-gray-200 px-4 py-4 shadow-lg relative z-40">
       <nav className="flex flex-col space-y-2">
         <Button 
           variant="ghost" 
@@ -82,18 +95,15 @@ const MobileNavigation = ({
           {user?.role === 'admin' ? 'Employés' : 'Équipe'}
         </Button>
         
-        {/* Module Creation for Mobile */}
+        {/* Fixed Module Creation Button for Mobile */}
         {(user?.role === 'admin' || user?.role === 'team_chief' || user?.role === 'team_responsible') && (
           <Button 
-            variant="ghost" 
-            className="justify-start text-white bg-blue-600 hover:bg-blue-700 h-10 font-medium"
-            onClick={() => {
-              onShowAdminPanel && onShowAdminPanel();
-              setShowMobileMenu(false);
-            }}
+            variant="default"
+            className="justify-start bg-blue-600 hover:bg-blue-700 text-white h-10 font-medium"
+            onClick={handleAdminPanelClick}
           >
-            <BookOpen className="h-4 w-4 mr-3" />
-            Créer Formation / Module
+            <Settings className="h-4 w-4 mr-3" />
+            Gérer - Créer Formation
           </Button>
         )}
         
