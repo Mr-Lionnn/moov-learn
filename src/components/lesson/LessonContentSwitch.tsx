@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -115,13 +116,22 @@ const LessonContentSwitch = ({
   }
 
   if (showQuiz && lesson.hasQuiz) {
+    // Create a mock quiz object that matches the Quiz interface expected by QuizInterface
+    const mockQuiz = {
+      id: lesson.id,
+      title: `Quiz - ${lesson.title}`,
+      questions: [],
+      timeLimit: 30,
+      passingGrade: 70
+    };
+
     return (
       <div className="min-h-screen bg-gray-50 p-4">
         <div className="max-w-4xl mx-auto">
           <QuizInterface
-            lesson={lesson}
+            quiz={mockQuiz}
             onComplete={handleQuizComplete}
-            onBack={() => setShowQuiz(false)}
+            onAbandon={() => setShowQuiz(false)}
           />
         </div>
       </div>
@@ -209,11 +219,8 @@ const LessonContentSwitch = ({
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <LessonContentTabs 
-          lessonId={parseInt(lesson.id)} 
-          title={lesson.title}
-          type={lesson.type}
-          content={lesson.content}
-          duration={lesson.duration?.toString()}
+          activeTab={lesson.type}
+          onTabChange={() => {}}
         />
       </div>
     </div>
