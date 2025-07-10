@@ -57,8 +57,7 @@ const LessonContentSwitch = ({
     return (
       <CompletionConfirmation
         moduleTitle={lesson.title}
-        onReturnHome={handleConfirmationComplete}
-        onStartNewTraining={handleConfirmationComplete}
+        onClose={handleConfirmationComplete}
       />
     );
   }

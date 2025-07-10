@@ -250,7 +250,18 @@ const MyTrainings = () => {
 
         {/* Formation Swiper */}
         {filteredTrainings.length > 0 ? (
-          <FormationSwiper trainings={filteredTrainings} />
+          <FormationSwiper 
+            onFormationClick={(formation) => {
+              // Convert formation to training ID for navigation
+              const matchingTraining = filteredTrainings.find(t => 
+                t.title.toLowerCase().includes(formation.title.toLowerCase()) ||
+                formation.title.toLowerCase().includes(t.title.toLowerCase())
+              );
+              if (matchingTraining) {
+                handleContinueCourse(matchingTraining.id);
+              }
+            }}
+          />
         ) : null}
 
         {filteredTrainings.length === 0 && (

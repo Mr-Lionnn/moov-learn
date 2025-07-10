@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
@@ -36,7 +37,12 @@ interface Formation {
   isMandatory: boolean;
 }
 
-const FormationSwiper = ({ onFormationClick }: { onFormationClick: (formation: Formation) => void }) => {
+interface FormationSwiperProps {
+  trainings?: any[];
+  onFormationClick: (formation: Formation) => void;
+}
+
+const FormationSwiper = ({ trainings, onFormationClick }: FormationSwiperProps) => {
   const [formations, setFormations] = useState<Formation[]>([]);
 
   useEffect(() => {
@@ -134,132 +140,134 @@ const FormationSwiper = ({ onFormationClick }: { onFormationClick: (formation: F
   };
 
   return (
-    <div className="formation-swiper-container relative">
-      <Swiper
-        modules={[Navigation, Pagination]}
-        spaceBetween={20}
-        slidesPerView={1}
-        navigation={{
-          prevEl: '.swiper-button-prev-custom',
-          nextEl: '.swiper-button-next-custom',
-        }}
-        pagination={{
-          clickable: true,
-          bulletClass: 'swiper-pagination-bullet',
-          bulletActiveClass: 'swiper-pagination-bullet-active'
-        }}
-        breakpoints={{
-          640: {
-            slidesPerView: 1,
-            spaceBetween: 20,
-          },
-          768: {
-            slidesPerView: 2,
-            spaceBetween: 24,
-          },
-          1024: {
-            slidesPerView: 2,
-            spaceBetween: 32,
-          },
-          1280: {
-            slidesPerView: 3,
-            spaceBetween: 32,
-          }
-        }}
-        className="pb-12"
-      >
-        {formations.map((formation) => (
-          <SwiperSlide key={formation.id}>
-            <Card 
-              className="h-full hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1 border-0 shadow-lg"
-              onClick={() => onFormationClick(formation)}
-            >
-              <CardHeader className="pb-4">
-                <div className="flex justify-between items-start mb-3">
-                  <Badge className={`${getLevelColor(formation.level)} border text-xs font-medium`}>
-                    {getLevelText(formation.level)}
-                  </Badge>
-                  {formation.isMandatory && (
-                    <Badge variant="destructive" className="text-xs">
-                      Obligatoire
+    <>
+      <div className="formation-swiper-container relative">
+        <Swiper
+          modules={[Navigation, Pagination]}
+          spaceBetween={20}
+          slidesPerView={1}
+          navigation={{
+            prevEl: '.swiper-button-prev-custom',
+            nextEl: '.swiper-button-next-custom',
+          }}
+          pagination={{
+            clickable: true,
+            bulletClass: 'swiper-pagination-bullet',
+            bulletActiveClass: 'swiper-pagination-bullet-active'
+          }}
+          breakpoints={{
+            640: {
+              slidesPerView: 1,
+              spaceBetween: 20,
+            },
+            768: {
+              slidesPerView: 2,
+              spaceBetween: 24,
+            },
+            1024: {
+              slidesPerView: 2,
+              spaceBetween: 32,
+            },
+            1280: {
+              slidesPerView: 3,
+              spaceBetween: 32,
+            }
+          }}
+          className="pb-12"
+        >
+          {formations.map((formation) => (
+            <SwiperSlide key={formation.id}>
+              <Card 
+                className="h-full hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1 border-0 shadow-lg"
+                onClick={() => onFormationClick(formation)}
+              >
+                <CardHeader className="pb-4">
+                  <div className="flex justify-between items-start mb-3">
+                    <Badge className={`${getLevelColor(formation.level)} border text-xs font-medium`}>
+                      {getLevelText(formation.level)}
                     </Badge>
-                  )}
-                </div>
-                <CardTitle className="text-lg font-bold text-gray-900 leading-tight mb-2 line-clamp-2">
-                  {formation.title}
-                </CardTitle>
-                <p className="text-sm text-gray-600 line-clamp-3 mb-4">
-                  {formation.description}
-                </p>
-                
-                {/* Star Rating Display */}
-                <div className="mb-4">
-                  <StarRatingDisplay 
-                    moduleId={formation.id}
-                    size="sm"
-                    showValue={true}
-                  />
-                </div>
-              </CardHeader>
-              
-              <CardContent className="pt-0">
-                <div className="space-y-4">
-                  {/* Progress */}
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-gray-600 font-medium">Progression</span>
-                      <span className="font-semibold text-gray-900">{formation.progress}%</span>
-                    </div>
-                    <Progress value={formation.progress} className="h-2" />
-                  </div>
-
-                  {/* Stats Grid */}
-                  <div className="grid grid-cols-2 gap-3 text-sm">
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <Clock className="h-4 w-4 flex-shrink-0" />
-                      <span className="truncate">{formation.duration}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <Users className="h-4 w-4 flex-shrink-0" />
-                      <span className="truncate">{formation.enrolledUsers} inscrits</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <TrendingUp className="h-4 w-4 flex-shrink-0" />
-                      <span className="truncate">{formation.completionRate}% réussite</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <Award className="h-4 w-4 flex-shrink-0" />
-                      <span className="truncate">{formation.averageScore}/100</span>
-                    </div>
-                  </div>
-
-                  {/* Instructor and Category */}
-                  <div className="pt-3 border-t">
-                    <div className="flex justify-between items-center text-sm">
-                      <span className="text-gray-600">
-                        <span className="font-medium">Instructeur:</span> {formation.instructor}
-                      </span>
-                      <Badge variant="outline" className="text-xs">
-                        {formation.category}
+                    {formation.isMandatory && (
+                      <Badge variant="destructive" className="text-xs">
+                        Obligatoire
                       </Badge>
+                    )}
+                  </div>
+                  <CardTitle className="text-lg font-bold text-gray-900 leading-tight mb-2 line-clamp-2">
+                    {formation.title}
+                  </CardTitle>
+                  <p className="text-sm text-gray-600 line-clamp-3 mb-4">
+                    {formation.description}
+                  </p>
+                  
+                  {/* Star Rating Display */}
+                  <div className="mb-4">
+                    <StarRatingDisplay 
+                      moduleId={formation.id}
+                      size="sm"
+                      showValue={true}
+                    />
+                  </div>
+                </CardHeader>
+                
+                <CardContent className="pt-0">
+                  <div className="space-y-4">
+                    {/* Progress */}
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-gray-600 font-medium">Progression</span>
+                        <span className="font-semibold text-gray-900">{formation.progress}%</span>
+                      </div>
+                      <Progress value={formation.progress} className="h-2" />
+                    </div>
+
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <Clock className="h-4 w-4 flex-shrink-0" />
+                        <span className="truncate">{formation.duration}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <Users className="h-4 w-4 flex-shrink-0" />
+                        <span className="truncate">{formation.enrolledUsers} inscrits</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <TrendingUp className="h-4 w-4 flex-shrink-0" />
+                        <span className="truncate">{formation.completionRate}% réussite</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <Award className="h-4 w-4 flex-shrink-0" />
+                        <span className="truncate">{formation.averageScore}/100</span>
+                      </div>
+                    </div>
+
+                    {/* Instructor and Category */}
+                    <div className="pt-3 border-t">
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-gray-600">
+                          <span className="font-medium">Instructeur:</span> {formation.instructor}
+                        </span>
+                        <Badge variant="outline" className="text-xs">
+                          {formation.category}
+                        </Badge>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+                </CardContent>
+              </Card>
+            </SwiperSlide>
+          ))}
+        </Swiper>
 
-      {/* Custom Navigation Buttons */}
-      <button className="swiper-button-prev-custom absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-lg border flex items-center justify-center hover:bg-gray-50 transition-colors">
-        <ChevronLeft className="h-5 w-5 text-gray-600" />
-      </button>
-      <button className="swiper-button-next-custom absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-lg border flex items-center justify-center hover:bg-gray-50 transition-colors">
-        <ChevronRight className="h-5 w-5 text-gray-600" />
-      </button>
+        {/* Custom Navigation Buttons */}
+        <button className="swiper-button-prev-custom absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-lg border flex items-center justify-center hover:bg-gray-50 transition-colors">
+          <ChevronLeft className="h-5 w-5 text-gray-600" />
+        </button>
+        <button className="swiper-button-next-custom absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-lg border flex items-center justify-center hover:bg-gray-50 transition-colors">
+          <ChevronRight className="h-5 w-5 text-gray-600" />
+        </button>
+      </div>
 
-      <style jsx global>{`
+      <style>{`
         .formation-swiper-container .swiper-pagination {
           bottom: 0 !important;
         }
@@ -291,7 +299,7 @@ const FormationSwiper = ({ onFormationClick }: { onFormationClick: (formation: F
           overflow: hidden;
         }
       `}</style>
-    </div>
+    </>
   );
 };
 
