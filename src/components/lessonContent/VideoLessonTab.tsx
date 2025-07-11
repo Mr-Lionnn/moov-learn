@@ -117,31 +117,31 @@ const VideoLessonTab = ({ onComplete }: VideoLessonTabProps) => {
 
   return (
     <div className="space-y-4">
+      {error && (
+        <Alert className="border-red-200 bg-red-50">
+          <AlertDescription className="text-red-700">
+            {error}
+          </AlertDescription>
+        </Alert>
+      )}
+
       <Card>
         <CardContent className="p-0">
-          {error && (
-            <Alert className="m-4 border-red-200 bg-red-50">
-              <AlertDescription className="text-red-700">
-                {error}
-              </AlertDescription>
-            </Alert>
-          )}
-          
-          {isLoading && (
-            <div className="aspect-video bg-gray-900 rounded-lg flex items-center justify-center">
-              <div className="text-white">Chargement de la vidéo...</div>
-            </div>
-          )}
-
           <div className="relative aspect-video bg-black rounded-lg overflow-hidden">
+            {isLoading && (
+              <div className="absolute inset-0 bg-gray-900 flex items-center justify-center z-10">
+                <div className="text-white">Chargement de la vidéo...</div>
+              </div>
+            )}
+            
             <video
               ref={videoRef}
               className="w-full h-full object-cover"
               poster="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1600&h=900&q=80"
               onError={() => setError("Impossible de charger la vidéo")}
+              preload="metadata"
             >
               <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
-              <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.webm" type="video/webm" />
               Votre navigateur ne supporte pas la lecture vidéo.
             </video>
             

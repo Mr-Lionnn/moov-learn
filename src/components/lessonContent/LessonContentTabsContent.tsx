@@ -30,53 +30,69 @@ const LessonContentTabsContent = ({
   const [activeTab, setActiveTab] = useState("video");
 
   return (
-    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-      <TabsList className="grid w-full grid-cols-4">
-        <TabsTrigger value="video" className="flex items-center gap-2">
-          <PlayCircle className="h-4 w-4" />
-          Vidéo
-        </TabsTrigger>
-        <TabsTrigger value="text" className="flex items-center gap-2">
-          <FileText className="h-4 w-4" />
-          Lecture
-        </TabsTrigger>
-        <TabsTrigger value="audio" className="flex items-center gap-2">
-          <Volume2 className="h-4 w-4" />
-          Audio
-        </TabsTrigger>
-        <TabsTrigger value="quiz" className="flex items-center gap-2">
-          <CheckCircle2 className="h-4 w-4" />
-          Quiz
-        </TabsTrigger>
-      </TabsList>
+    <div className="w-full bg-white rounded-lg shadow-sm border">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <div className="border-b bg-gray-50 rounded-t-lg">
+          <TabsList className="w-full h-auto p-1 bg-transparent grid grid-cols-4 gap-1">
+            <TabsTrigger 
+              value="video" 
+              className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm"
+            >
+              <PlayCircle className="h-4 w-4" />
+              Vidéo
+            </TabsTrigger>
+            <TabsTrigger 
+              value="text" 
+              className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm"
+            >
+              <FileText className="h-4 w-4" />
+              Lecture
+            </TabsTrigger>
+            <TabsTrigger 
+              value="audio" 
+              className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm"
+            >
+              <Volume2 className="h-4 w-4" />
+              Audio
+            </TabsTrigger>
+            <TabsTrigger 
+              value="quiz" 
+              className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm"
+            >
+              <CheckCircle2 className="h-4 w-4" />
+              Quiz
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
-      <TabsContent value="video" className="space-y-4">
-        <VideoLessonTab onComplete={onComplete} />
-      </TabsContent>
+        <TabsContent value="video" className="p-6">
+          <VideoLessonTab onComplete={onComplete} />
+        </TabsContent>
 
-      <TabsContent value="text" className="space-y-4">
-        <TextLessonTab
-          title={title}
-          content={content}
-          onComplete={onComplete}
-        />
-      </TabsContent>
+        <TabsContent value="text" className="p-6">
+          <TextLessonTab
+            title={title}
+            content={content}
+            onComplete={onComplete}
+          />
+        </TabsContent>
 
-      <TabsContent value="audio" className="space-y-4">
-        <AudioLessonTab
-          title={title}
-          duration={duration || "18:20"}
-          onComplete={onComplete}
-        />
-      </TabsContent>
+        <TabsContent value="audio" className="p-6">
+          <AudioLessonTab
+            title={title}
+            duration={duration || "18:20"}
+            onComplete={onComplete}
+          />
+        </TabsContent>
 
-      <TabsContent value="quiz" className="space-y-4">
-        <QuizLessonTab
-          title={`Quiz d'Évaluation - ${title}`}
-          onComplete={onQuizComplete}
-        />
-      </TabsContent>
-    </Tabs>
+        <TabsContent value="quiz" className="p-6">
+          <QuizLessonTab
+            title={`Quiz d'Évaluation - ${title}`}
+            onComplete={onQuizComplete}
+          />
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 };
 
