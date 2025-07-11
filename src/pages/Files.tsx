@@ -22,9 +22,11 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
-import FileViewerModal from "@/components/FileViewerModal";
+import DocumentViewer from "@/components/enhanced/DocumentViewer";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { useDocumentManager } from "@/hooks/useDocumentManager";
+import RoleBasedAccess from "@/components/enhanced/RoleBasedAccess";
 
 const Files = () => {
   const navigate = useNavigate();
@@ -32,65 +34,37 @@ const Files = () => {
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFile, setSelectedFile] = useState<any>(null);
-  const [savedDocuments, setSavedDocuments] = useState<any[]>([]);
+  const { 
+    savedDocuments, 
+    saveDocument, 
+    removeSavedDocument, 
+    downloadDocument, 
+    viewDocument, 
+    loadSavedDocuments 
+  } = useDocumentManager();
 
   // Load saved documents from localStorage on component mount
   useEffect(() => {
-    if (user?.id) {
-      const saved = localStorage.getItem(`saved_docs_${user.id}`);
-      if (saved) {
-        setSavedDocuments(JSON.parse(saved));
-      }
-    }
-  }, [user]);
+    loadSavedDocuments();
+  }, [loadSavedDocuments]);
 
-  // Save document function
+  // Handle file actions using the document manager
   const handleSaveDocument = (file: any, moduleId?: string) => {
-    if (!user?.id) {
-      toast({
-        title: "Erreur",
-        description: "Vous devez être connecté pour sauvegarder des documents",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    const savedDoc = {
-      ...file,
-      savedAt: new Date().toISOString(),
-      moduleId: moduleId || "general",
-      userId: user.id
-    };
-
-    const isAlreadySaved = savedDocuments.some(doc => doc.id === file.id);
-    if (isAlreadySaved) {
-      toast({
-        title: "Information",
-        description: "Ce document est déjà sauvegardé",
-      });
-      return;
-    }
-
-    const updatedSaved = [...savedDocuments, savedDoc];
-    setSavedDocuments(updatedSaved);
-    localStorage.setItem(`saved_docs_${user.id}`, JSON.stringify(updatedSaved));
-
-    toast({
-      title: "Document sauvegardé",
-      description: `${file.name} a été ajouté à vos documents sauvegardés`,
-    });
+    saveDocument(file, moduleId);
   };
 
-  // Remove saved document
   const handleRemoveSavedDocument = (fileId: number) => {
-    const updatedSaved = savedDocuments.filter(doc => doc.id !== fileId);
-    setSavedDocuments(updatedSaved);
-    localStorage.setItem(`saved_docs_${user.id}`, JSON.stringify(updatedSaved));
+    removeSavedDocument(fileId);
+  };
 
-    toast({
-      title: "Document retiré",
-      description: "Le document a été retiré de vos documents sauvegardés",
-    });
+  const handleViewFile = (file: any) => {
+    if (viewDocument(file)) {
+      setSelectedFile(file);
+    }
+  };
+
+  const handleDownloadFile = (file: any) => {
+    downloadDocument(file);
   };
 
   const files = [
@@ -189,19 +163,6 @@ const Files = () => {
     }
   };
 
-  const handleViewFile = (file: any) => {
-    setSelectedFile(file);
-  };
-
-  const handleDownloadFile = (file: any) => {
-    console.log(`Downloading: ${file.name}`);
-    // Simulate download
-    const link = document.createElement('a');
-    link.href = '#';
-    link.download = file.name;
-    link.click();
-    alert(`Téléchargement de ${file.name} commencé!`);
-  };
 
   const getCategoryFiles = (category: string) => {
     return filteredFiles.filter(file => 
@@ -649,10 +610,12 @@ const Files = () => {
         )}
       </main>
 
-      <FileViewerModal
+      <DocumentViewer
         isOpen={!!selectedFile}
         onClose={() => setSelectedFile(null)}
         file={selectedFile}
+        onSave={handleSaveDocument}
+        onDownload={handleDownloadFile}
       />
     </div>
   );
