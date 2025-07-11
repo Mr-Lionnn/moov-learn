@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Users, Search, Filter, UserPlus, Mail, Phone, Shield, Settings, Star, ChevronDown } from "lucide-react";
 import Header from "@/components/Header";
+import TeamManagementModal from "@/components/TeamManagementModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 
@@ -19,6 +20,7 @@ const Employees = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [departmentFilter, setDepartmentFilter] = useState("all");
   const [teamFilter, setTeamFilter] = useState("all");
+  const [showTeamManagement, setShowTeamManagement] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   const employees = [
@@ -38,7 +40,7 @@ const Employees = () => {
       status: "Actif",
       teamId: 1,
       teamName: "Équipe Support Alpha",
-      teamColor: "bg-blue-500"
+      teamColor: "#3B82F6"
     },
     {
       id: 2,
@@ -52,6 +54,9 @@ const Employees = () => {
       completedCourses: 2,
       totalHours: 32,
       averageScore: 92,
+      teamId: 2,
+      teamName: "Équipe Infrastructure",
+      teamColor: "#10B981",
       lastActivity: "Il y a 1 jour",
       status: "Actif"
     },
@@ -68,6 +73,9 @@ const Employees = () => {
       totalHours: 68,
       averageScore: 78,
       lastActivity: "Il y a 3 jours",
+      teamId: 3,
+      teamName: "Équipe Sécurité",
+      teamColor: "#F59E0B",
       status: "Actif"
     },
     {
@@ -83,7 +91,10 @@ const Employees = () => {
       totalHours: 24,
       averageScore: 65,
       lastActivity: "Il y a 1 semaine",
-      status: "Inactif"
+      status: "Inactif",
+      teamId: 1,
+      teamName: "Équipe Support Alpha",
+      teamColor: "#3B82F6"
     },
     {
       id: 5,
@@ -98,18 +109,23 @@ const Employees = () => {
       totalHours: 85,
       averageScore: 94,
       lastActivity: "Aujourd'hui",
-      status: "Actif"
+      status: "Actif",
+      teamId: 2,
+      teamName: "Équipe Infrastructure",
+      teamColor: "#10B981"
     }
   ];
 
   const departments = ["all", "IT Support", "Infrastructure", "Sécurité"];
+  const teams = ["all", "Équipe Support Alpha", "Équipe Infrastructure", "Équipe Sécurité"];
 
   const filteredEmployees = employees.filter(employee => {
     const matchesSearch = employee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          employee.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          employee.department.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesDepartment = departmentFilter === "all" || employee.department === departmentFilter;
-    return matchesSearch && matchesDepartment;
+    const matchesTeam = teamFilter === "all" || employee.teamName === teamFilter;
+    return matchesSearch && matchesDepartment && matchesTeam;
   });
 
   const getDepartmentStats = () => {
@@ -135,10 +151,16 @@ const Employees = () => {
               <h1 className="text-3xl font-bold text-gray-900 mb-2">Gestion des Employés</h1>
               <p className="text-gray-600">Suivez les progrès et gérez l'équipe de formation</p>
             </div>
-            <Button>
-              <UserPlus className="h-4 w-4 mr-2" />
-              Ajouter Employé
-            </Button>
+            <div className="flex gap-2">
+              <Button onClick={() => setShowTeamManagement(true)}>
+                <Users className="h-4 w-4 mr-2" />
+                Gérer Équipes
+              </Button>
+              <Button>
+                <UserPlus className="h-4 w-4 mr-2" />
+                Ajouter Employé
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -199,29 +221,49 @@ const Employees = () => {
         </div>
 
         {/* Search and Filter */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-8">
-          <div className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input
-                placeholder="Rechercher employés..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
+        <div className="flex flex-col gap-4 mb-8">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  placeholder="Rechercher employés..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
             </div>
           </div>
-          <div className="flex gap-2">
-            {departments.map((dept) => (
-              <Button
-                key={dept}
-                variant={departmentFilter === dept ? "default" : "outline"}
-                onClick={() => setDepartmentFilter(dept)}
-                size="sm"
-              >
-                {dept === "all" ? "Tous" : dept}
-              </Button>
-            ))}
+          
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex gap-2 flex-wrap">
+              <span className="text-sm font-medium py-2">Département:</span>
+              {departments.map((dept) => (
+                <Button
+                  key={dept}
+                  variant={departmentFilter === dept ? "default" : "outline"}
+                  onClick={() => setDepartmentFilter(dept)}
+                  size="sm"
+                >
+                  {dept === "all" ? "Tous" : dept}
+                </Button>
+              ))}
+            </div>
+            
+            <div className="flex gap-2 flex-wrap">
+              <span className="text-sm font-medium py-2">Équipe:</span>
+              {teams.map((team) => (
+                <Button
+                  key={team}
+                  variant={teamFilter === team ? "default" : "outline"}
+                  onClick={() => setTeamFilter(team)}
+                  size="sm"
+                >
+                  {team === "all" ? "Toutes" : team}
+                </Button>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -240,9 +282,27 @@ const Employees = () => {
                   <div className="flex-1 min-w-0">
                     <CardTitle className="text-lg truncate">{employee.name}</CardTitle>
                     <p className="text-sm text-gray-600 truncate">{employee.position}</p>
-                    <Badge variant={employee.status === "Actif" ? "default" : "secondary"} className="mt-1">
-                      {employee.status}
-                    </Badge>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Badge variant={employee.status === "Actif" ? "default" : "secondary"}>
+                        {employee.status}
+                      </Badge>
+                      {employee.teamName && (
+                        <Badge 
+                          variant="outline" 
+                          className="text-xs"
+                          style={{ 
+                            borderColor: employee.teamColor,
+                            color: employee.teamColor 
+                          }}
+                        >
+                          <div 
+                            className="w-2 h-2 rounded-full mr-1"
+                            style={{ backgroundColor: employee.teamColor }}
+                          />
+                          {employee.teamName}
+                        </Badge>
+                      )}
+                    </div>
                   </div>
                 </div>
               </CardHeader>
@@ -303,6 +363,11 @@ const Employees = () => {
           </div>
         )}
       </main>
+
+      <TeamManagementModal
+        isOpen={showTeamManagement}
+        onClose={() => setShowTeamManagement(false)}
+      />
     </div>
   );
 };

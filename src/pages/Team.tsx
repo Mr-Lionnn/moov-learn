@@ -93,6 +93,15 @@ const Team = () => {
     }
   ];
 
+  // Filter team members based on user's team (if not admin)
+  const getTeamMembers = () => {
+    if (user?.role === 'admin' || user?.role === 'team_chief') {
+      return teamMembers; // Admins can see all team members
+    }
+    // Regular users only see their own team members
+    return teamMembers.filter(member => member.department === user?.department);
+  };
+
   // Get team members based on user role and filter them
   const getFilteredMembers = () => {
     const members = getTeamMembers();
@@ -130,14 +139,6 @@ const Team = () => {
     setSelectedMemberForProfile(member);
   };
 
-  // Filter team members based on user's team (if not admin)
-  const getTeamMembers = () => {
-    if (user?.role === 'admin' || user?.role === 'team_chief') {
-      return teamMembers; // Admins can see all team members
-    }
-    // Regular users only see their own team members
-    return teamMembers.filter(member => member.department === user?.department);
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
