@@ -14,7 +14,7 @@ interface LessonContentTabsProps {
 
 const LessonContentTabs = ({ activeTab, onTabChange }: LessonContentTabsProps) => {
   return (
-    <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
+    <div className="w-full">
       <TabsList className="grid w-full grid-cols-4">
         <TabsTrigger value="video" className="flex items-center gap-2">
           <PlayCircle className="h-4 w-4" />
@@ -33,7 +33,7 @@ const LessonContentTabs = ({ activeTab, onTabChange }: LessonContentTabsProps) =
           Quiz
         </TabsTrigger>
       </TabsList>
-    </Tabs>
+    </div>
   );
 };
 

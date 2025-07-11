@@ -229,11 +229,11 @@ const LessonContentSwitch = ({
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <LessonContentTabs 
-          activeTab={lesson.type}
-          onTabChange={(value) => console.log('Tab changed to:', value)}
-        />
-        <div className="mt-6">
+        <div className="space-y-6">
+          <LessonContentTabs 
+            activeTab={lesson.type}
+            onTabChange={(value) => console.log('Tab changed to:', value)}
+          />
           <LessonContentTabsContent
             title={lesson.title}
             content={lesson.content}

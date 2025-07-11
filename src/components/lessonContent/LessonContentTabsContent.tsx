@@ -1,9 +1,10 @@
-import { TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import VideoLessonTab from "./VideoLessonTab";
 import AudioLessonTab from "./AudioLessonTab";
 import TextLessonTab from "./TextLessonTab";
 import QuizLessonTab from "./QuizLessonTab";
 import { QuizResult } from "@/types/quiz";
+import { useState } from "react";
 
 interface LessonContentTabsContentProps {
   title: string;
@@ -20,8 +21,10 @@ const LessonContentTabsContent = ({
   onComplete, 
   onQuizComplete 
 }: LessonContentTabsContentProps) => {
+  const [activeTab, setActiveTab] = useState("video");
+
   return (
-    <>
+    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
       <TabsContent value="video" className="space-y-4">
         <VideoLessonTab onComplete={onComplete} />
       </TabsContent>
@@ -48,7 +51,7 @@ const LessonContentTabsContent = ({
           onComplete={onQuizComplete}
         />
       </TabsContent>
-    </>
+    </Tabs>
   );
 };
 
