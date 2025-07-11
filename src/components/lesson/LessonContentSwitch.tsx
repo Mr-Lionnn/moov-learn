@@ -64,6 +64,7 @@ const LessonContentSwitch = ({
   };
 
   const handleRatingSubmit = (ratingData: any) => {
+    console.log('Rating submitted:', ratingData);
     setShowRating(false);
     setShowCompletion(true);
   };
@@ -80,7 +81,12 @@ const LessonContentSwitch = ({
     return (
       <CompletionConfirmation 
         moduleTitle={lesson.title}
-        onClose={() => setShowCompletion(false)}
+        completionScore={85} // Could be passed from quiz result
+        userRating={5} // Could be passed from rating component
+        onClose={() => {
+          setShowCompletion(false);
+          onComplete(); // Call the completion handler
+        }}
       />
     );
   }
