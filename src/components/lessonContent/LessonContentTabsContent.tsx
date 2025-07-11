@@ -1,4 +1,10 @@
-import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { 
+  PlayCircle, 
+  FileText, 
+  Volume2,
+  CheckCircle2
+} from "lucide-react";
 import VideoLessonTab from "./VideoLessonTab";
 import AudioLessonTab from "./AudioLessonTab";
 import TextLessonTab from "./TextLessonTab";
@@ -25,6 +31,25 @@ const LessonContentTabsContent = ({
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <TabsList className="grid w-full grid-cols-4">
+        <TabsTrigger value="video" className="flex items-center gap-2">
+          <PlayCircle className="h-4 w-4" />
+          Vidéo
+        </TabsTrigger>
+        <TabsTrigger value="text" className="flex items-center gap-2">
+          <FileText className="h-4 w-4" />
+          Lecture
+        </TabsTrigger>
+        <TabsTrigger value="audio" className="flex items-center gap-2">
+          <Volume2 className="h-4 w-4" />
+          Audio
+        </TabsTrigger>
+        <TabsTrigger value="quiz" className="flex items-center gap-2">
+          <CheckCircle2 className="h-4 w-4" />
+          Quiz
+        </TabsTrigger>
+      </TabsList>
+
       <TabsContent value="video" className="space-y-4">
         <VideoLessonTab onComplete={onComplete} />
       </TabsContent>

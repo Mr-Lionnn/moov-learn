@@ -229,19 +229,13 @@ const LessonContentSwitch = ({
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="space-y-6">
-          <LessonContentTabs 
-            activeTab={lesson.type}
-            onTabChange={(value) => console.log('Tab changed to:', value)}
-          />
-          <LessonContentTabsContent
-            title={lesson.title}
-            content={lesson.content}
-            duration={lesson.duration?.toString()}
-            onComplete={handleLessonComplete}
-            onQuizComplete={handleQuizComplete}
-          />
-        </div>
+        <LessonContentTabsContent
+          title={lesson.title}
+          content={lesson.content}
+          duration={lesson.duration?.toString()}
+          onComplete={handleLessonComplete}
+          onQuizComplete={handleQuizComplete}
+        />
       </div>
     </div>
   );
