@@ -132,14 +132,11 @@ const Team = () => {
       );
     }
 
-    // Regular team members can see all team members in their department/team
-    // This ensures visibility for all non-admin users
+    // Regular team members can see their own team
     return allTeamMembers.filter(member => 
       member.department === user.department || 
       member.teamId === user.teamId ||
-      member.id === user.id ||
-      // Additional fallback: if user doesn't have specific team info, show at least some members
-      (!user.teamId && !user.department && member.teamId <= 3)
+      member.id === user.id
     );
   };
 

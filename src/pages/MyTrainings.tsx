@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { 
   BookOpen, 
   PlayCircle, 
@@ -13,16 +12,13 @@ import {
   CheckCircle,
   ArrowRight,
   Trophy,
-  Target,
-  Search,
-  Filter
+  Target
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import FormationSwiper from "@/components/FormationSwiper";
-import Header from "@/components/Header";
 
 interface Formation {
   id: number;
@@ -49,8 +45,6 @@ const MyTrainings = () => {
   const [selectedFormation, setSelectedFormation] = useState<Formation | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [showAdminPanel, setShowAdminPanel] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -67,39 +61,15 @@ const MyTrainings = () => {
   };
 
   return (
-    <div className="min-h-screen moov-gradient-subtle">
-      {/* Main Navigation Header */}
-      <Header onShowAdminPanel={() => setShowAdminPanel(true)} />
-
-      {/* Page Header Section */}
-      <div className="bg-white border-b">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+      {/* Header Section */}
+      <header className="bg-white border-b">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <h1 className="text-3xl font-bold text-gray-900">
-              Mes Formations
-            </h1>
-            
-            {/* Search Bar */}
-            <div className="relative w-full sm:w-96">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input
-                type="text"
-                placeholder="Rechercher des formations..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2 w-full"
-              />
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="absolute right-2 top-1/2 transform -translate-y-1/2"
-              >
-                <Filter className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Mes Formations
+          </h1>
         </div>
-      </div>
+      </header>
 
       {/* Hero Section */}
       <section className="py-12 px-4 sm:px-6 lg:px-8">

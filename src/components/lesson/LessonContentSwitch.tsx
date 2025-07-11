@@ -16,12 +16,10 @@ import {
   Target
 } from "lucide-react";
 import LessonContentTabs from "../lessonContent/LessonContentTabs";
-import LessonContentTabsContent from "../lessonContent/LessonContentTabsContent";
 import QuizInterface from "../QuizInterface";
 import ModuleRating from "../ModuleRating";
 import CompletionConfirmation from "../CompletionConfirmation";
 import { LessonContent } from "@/types/lessonContent";
-import { QuizResult } from "@/types/quiz";
 
 interface LessonContentSwitchProps {
   lesson: LessonContent;
@@ -57,15 +55,14 @@ const LessonContentSwitch = ({
     }
   };
 
-  const handleQuizComplete = (result: QuizResult) => {
-    console.log(`Quiz completed with score: ${result.percentage}`);
+  const handleQuizComplete = (score: number) => {
+    console.log(`Quiz completed with score: ${score}`);
     setQuizCompleted(true);
     setShowQuiz(false);
     setShowRating(true);
   };
 
-  const handleRatingSubmit = (ratingData: any) => {
-    console.log('Rating submitted:', ratingData);
+  const handleRatingSubmit = () => {
     setShowRating(false);
     setShowCompletion(true);
   };
@@ -82,12 +79,8 @@ const LessonContentSwitch = ({
     return (
       <CompletionConfirmation 
         moduleTitle={lesson.title}
-        completionScore={85} // Could be passed from quiz result
-        userRating={5} // Could be passed from rating component
-        onClose={() => {
-          setShowCompletion(false);
-          onComplete(); // Call the completion handler
-        }}
+        onReturnHome={handleReturnHome}
+        onStartNewTraining={handleStartNewTraining}
       />
     );
   }
@@ -114,8 +107,7 @@ const LessonContentSwitch = ({
               <ModuleRating 
                 moduleId={lesson.id} 
                 moduleTitle={lesson.title}
-                onSubmit={handleRatingSubmit}
-                onClose={() => setShowRating(false)}
+                onComplete={handleRatingSubmit}
               />
             </CardContent>
           </Card>
@@ -129,20 +121,9 @@ const LessonContentSwitch = ({
       <div className="min-h-screen bg-gray-50 p-4">
         <div className="max-w-4xl mx-auto">
           <QuizInterface
-            quiz={{ 
-              id: lesson.id,
-              courseId: lesson.id,
-              title: lesson.title,
-              description: lesson.description || '',
-              passingGrade: 70,
-              timeLimit: 30,
-              questions: [],
-              createdBy: 'system',
-              createdAt: new Date().toISOString(),
-              isActive: true
-            }}
+            lesson={lesson}
             onComplete={handleQuizComplete}
-            onAbandon={() => setShowQuiz(false)}
+            onBack={() => setShowQuiz(false)}
           />
         </div>
       </div>
@@ -229,13 +210,7 @@ const LessonContentSwitch = ({
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <LessonContentTabsContent
-          title={lesson.title}
-          content={lesson.content}
-          duration={lesson.duration?.toString()}
-          onComplete={handleLessonComplete}
-          onQuizComplete={handleQuizComplete}
-        />
+        <LessonContentTabs lesson={lesson} />
       </div>
     </div>
   );
