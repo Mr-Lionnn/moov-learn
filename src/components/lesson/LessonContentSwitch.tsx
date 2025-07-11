@@ -16,6 +16,7 @@ import {
   Target
 } from "lucide-react";
 import LessonContentTabs from "../lessonContent/LessonContentTabs";
+import LessonContentTabsContent from "../lessonContent/LessonContentTabsContent";
 import QuizInterface from "../QuizInterface";
 import ModuleRating from "../ModuleRating";
 import CompletionConfirmation from "../CompletionConfirmation";
@@ -232,6 +233,15 @@ const LessonContentSwitch = ({
           activeTab={lesson.type}
           onTabChange={(value) => console.log('Tab changed to:', value)}
         />
+        <div className="mt-6">
+          <LessonContentTabsContent
+            title={lesson.title}
+            content={lesson.content}
+            duration={lesson.duration?.toString()}
+            onComplete={handleLessonComplete}
+            onQuizComplete={handleQuizComplete}
+          />
+        </div>
       </div>
     </div>
   );

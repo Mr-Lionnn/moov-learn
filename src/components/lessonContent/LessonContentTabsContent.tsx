@@ -1,9 +1,8 @@
 import { TabsContent } from "@/components/ui/tabs";
-import LessonTextContent from "@/components/LessonTextContent";
-import LessonAudioContent from "@/components/LessonAudioContent";
-import QuizPlayer from "@/components/QuizPlayer";
 import VideoLessonTab from "./VideoLessonTab";
-import { networkingQuiz } from "@/data/networkingQuiz";
+import AudioLessonTab from "./AudioLessonTab";
+import TextLessonTab from "./TextLessonTab";
+import QuizLessonTab from "./QuizLessonTab";
 import { QuizResult } from "@/types/quiz";
 
 interface LessonContentTabsContentProps {
@@ -27,26 +26,25 @@ const LessonContentTabsContent = ({
         <VideoLessonTab onComplete={onComplete} />
       </TabsContent>
 
-      <TabsContent value="text">
-        <LessonTextContent
+      <TabsContent value="text" className="space-y-4">
+        <TextLessonTab
           title={title}
-          content={content || "Contenu de la leçon en cours de chargement..."}
-          progress={0}
+          content={content}
           onComplete={onComplete}
         />
       </TabsContent>
 
-      <TabsContent value="audio">
-        <LessonAudioContent
+      <TabsContent value="audio" className="space-y-4">
+        <AudioLessonTab
           title={title}
-          duration={duration || "15:30"}
+          duration={duration || "18:20"}
           onComplete={onComplete}
         />
       </TabsContent>
 
-      <TabsContent value="quiz">
-        <QuizPlayer
-          quiz={networkingQuiz}
+      <TabsContent value="quiz" className="space-y-4">
+        <QuizLessonTab
+          title={`Quiz d'Évaluation - ${title}`}
           onComplete={onQuizComplete}
         />
       </TabsContent>
