@@ -39,7 +39,7 @@ const DesktopNavigation = ({
         <span className="xl:hidden">Formations</span>
       </Button>
 
-      {/* Task Management Dropdown */}
+      {/* Unified Management Dropdown */}
       <DropdownMenu open={showTasksDropdown} onOpenChange={setShowTasksDropdown}>
         <DropdownMenuTrigger asChild>
           <Button 
@@ -47,7 +47,7 @@ const DesktopNavigation = ({
             className="text-gray-600 hover:bg-secondary hover:text-white text-sm px-2 xl:px-3"
           >
             <Target className="h-4 w-4 mr-1 xl:mr-2" />
-            <span>Gestion</span>
+            <span>Gestion & Tâches</span>
             <ChevronDown className="h-3 w-3 ml-1" />
           </Button>
         </DropdownMenuTrigger>
@@ -69,17 +69,6 @@ const DesktopNavigation = ({
         >
           <FileText className="h-4 w-4 mr-1 xl:mr-2" />
           <span>Fichiers</span>
-        </Button>
-      )}
-
-      {hasPermission('assign_tasks') && (
-        <Button 
-          variant="ghost" 
-          className="text-gray-600 hover:bg-secondary hover:text-white text-sm px-2 xl:px-3"
-          onClick={() => navigate("/tasks")}
-        >
-          <CheckSquare className="h-4 w-4 mr-1 xl:mr-2" />
-          <span>Tâches</span>
         </Button>
       )}
 

@@ -1,266 +1,191 @@
-
-import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+import React, { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { BookOpen, Clock, Users, Award, Search, Play, CheckCircle, Star, Filter } from "lucide-react";
-import Header from "@/components/Header";
-import FormationSwiper from "@/components/FormationSwiper";
+import { 
+  BookOpen, 
+  PlayCircle, 
+  FileText, 
+  Users, 
+  Clock, 
+  Star,
+  CheckCircle,
+  ArrowRight,
+  Trophy,
+  Target,
+  Search,
+  Filter
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+import { Skeleton } from "@/components/ui/skeleton";
+import FormationSwiper from "@/components/FormationSwiper";
+import Header from "@/components/Header";
+
+interface Formation {
+  id: number;
+  title: string;
+  instructor: string;
+  duration: string;
+  progress: number;
+  status: "completed" | "in-progress" | "not-started";
+  rating: number;
+  studentsCount: number;
+  image: string;
+  category: string;
+  level: "beginner" | "intermediate" | "advanced";
+  description: string;
+  nextLesson?: string;
+  completedAt?: string;
+  certificate?: {
+    issued: boolean;
+    date: string;
+  };
+}
 
 const MyTrainings = () => {
-  const navigate = useNavigate();
+  const [selectedFormation, setSelectedFormation] = useState<Formation | null>(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterStatus, setFilterStatus] = useState("all");
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { toast } = useToast();
 
-  const trainings = [
-    {
-      id: 1,
-      title: "Fondamentaux des Réseaux TCP/IP",
-      instructor: "Marie Dubois",
-      duration: "8 heures",
-      progress: 75,
-      status: "En cours",
-      rating: 4.9,
-      studentsCount: 45,
-      image: "/placeholder.svg",
-      category: "Réseaux",
-      level: "Débutant",
-      completedLessons: 6,
-      totalLessons: 8,
-      nextLesson: "Routage Statique",
-      estimatedCompletion: "2 jours"
-    },
-    {
-      id: 2,
-      title: "Configuration des Switches Cisco",
-      instructor: "Pierre Martin",
-      duration: "12 heures",
-      progress: 40,
-      status: "En cours",
-      rating: 4.8,
-      studentsCount: 32,
-      image: "/placeholder.svg",
-      category: "Infrastructure",
-      level: "Intermédiaire",
-      completedLessons: 4,
-      totalLessons: 10,
-      nextLesson: "VLAN Configuration",
-      estimatedCompletion: "5 jours"
-    },
-    {
-      id: 3,
-      title: "Sécurité Réseau et Pare-feu",
-      instructor: "Sophie Laurent",
-      duration: "15 heures",
-      progress: 100,
-      status: "Terminée",
-      rating: 4.9,
-      studentsCount: 28,
-      image: "/placeholder.svg",
-      category: "Sécurité",
-      level: "Avancé",
-      completedLessons: 12,
-      totalLessons: 12,
-      nextLesson: null,
-      estimatedCompletion: null,
-      completedDate: "Il y a 1 semaine",
-      certificate: true
-    },
-    {
-      id: 4,
-      title: "Protocoles de Routage Dynamique",
-      instructor: "Thomas Durand",
-      duration: "10 heures",
-      progress: 0,
-      status: "Non commencée",
-      rating: 4.7,
-      studentsCount: 38,
-      image: "/placeholder.svg",
-      category: "Réseaux",
-      level: "Intermédiaire",
-      completedLessons: 0,
-      totalLessons: 8,
-      nextLesson: "Introduction aux Protocoles",
-      estimatedCompletion: "4 jours"
-    }
-  ];
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+  }, []);
 
-  const filteredTrainings = trainings.filter(training => {
-    const matchesSearch = training.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         training.instructor.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         training.category.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesFilter = filterStatus === "all" || training.status.toLowerCase().includes(filterStatus.toLowerCase());
-    return matchesSearch && matchesFilter;
-  });
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Terminée":
-        return "bg-green-100 text-green-800";
-      case "En cours":
-        return "bg-blue-100 text-blue-800";
-      case "Non commencée":
-        return "bg-gray-100 text-gray-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  const handleContinueCourse = (trainingId: number) => {
-    navigate(`/course/${trainingId}`);
-  };
-
-  const handleStartCourse = (trainingId: number) => {
-    navigate(`/course/${trainingId}`);
-  };
-
-  const handleReviewCourse = (trainingId: number) => {
-    navigate(`/course/${trainingId}`);
-  };
-
-  const handleViewCertificate = (trainingId: number) => {
-    navigate('/certifications');
-  };
-
-  const handleDownloadCertificate = (trainingTitle: string) => {
-    // Simulate certificate download
-    const link = document.createElement('a');
-    link.href = 'data:text/plain;charset=utf-8,Certificate of Completion\n\n' + trainingTitle + '\n\nAwarded to: Student\nDate: ' + new Date().toLocaleDateString();
-    link.download = `certificate-${trainingTitle.replace(/\s+/g, '-').toLowerCase()}.txt`;
-    link.style.display = 'none';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    console.log(`Certificate downloaded for: ${trainingTitle}`);
-  };
-
-  const stats = {
-    total: trainings.length,
-    completed: trainings.filter(t => t.status === "Terminée").length,
-    inProgress: trainings.filter(t => t.status === "En cours").length,
-    totalHours: trainings.reduce((acc, t) => acc + parseInt(t.duration), 0)
+  const handleFormationClick = (formation: Formation) => {
+    setSelectedFormation(formation);
+    setShowDetailModal(true);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
-      <Header />
-      
-      <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Mes Formations</h1>
-          <p className="text-gray-600">Suivez vos progrès et continuez votre apprentissage</p>
-        </div>
+    <div className="min-h-screen moov-gradient-subtle">
+      {/* Main Navigation Header */}
+      <Header onShowAdminPanel={() => setShowAdminPanel(true)} />
 
-        {/* Stats Overview */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-blue-100">
-                  <BookOpen className="h-5 w-5 text-blue-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
-                  <p className="text-xs text-gray-600">Total</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-green-100">
-                  <CheckCircle className="h-5 w-5 text-green-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">{stats.completed}</p>
-                  <p className="text-xs text-gray-600">Terminées</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-yellow-100">
-                  <Play className="h-5 w-5 text-yellow-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">{stats.inProgress}</p>
-                  <p className="text-xs text-gray-600">En cours</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-purple-100">
-                  <Clock className="h-5 w-5 text-purple-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">{stats.totalHours}h</p>
-                  <p className="text-xs text-gray-600">Total</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Search and Filter */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-8">
-          <div className="flex-1">
-            <div className="relative">
+      {/* Page Header Section */}
+      <div className="bg-white border-b">
+        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <h1 className="text-3xl font-bold text-gray-900">
+              Mes Formations
+            </h1>
+            
+            {/* Search Bar */}
+            <div className="relative w-full sm:w-96">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
-                placeholder="Rechercher formations..."
+                type="text"
+                placeholder="Rechercher des formations..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
+                className="pl-10 pr-4 py-2 w-full"
               />
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="absolute right-2 top-1/2 transform -translate-y-1/2"
+              >
+                <Filter className="h-4 w-4" />
+              </Button>
             </div>
           </div>
-          <div className="flex gap-2">
-            <Button
-              variant={filterStatus === "all" ? "default" : "outline"}
-              onClick={() => setFilterStatus("all")}
-              size="sm"
-            >
-              Toutes
-            </Button>
-            <Button
-              variant={filterStatus === "cours" ? "default" : "outline"}
-              onClick={() => setFilterStatus("cours")}
-              size="sm"
-            >
-              En cours
-            </Button>
-            <Button
-              variant={filterStatus === "terminée" ? "default" : "outline"}
-              onClick={() => setFilterStatus("terminée")}
-              size="sm"
-            >
-              Terminées
-            </Button>
+        </div>
+      </div>
+
+      {/* Hero Section */}
+      <section className="py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+            <div className="px-4 py-5 sm:px-6">
+              <h3 className="text-lg font-medium text-gray-900">
+                Bienvenue, {user?.name || "Utilisateur"}!
+              </h3>
+              <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                Suivez votre parcours de formation personnalisé.
+              </p>
+            </div>
+            <div className="border-t border-gray-200">
+              <dl>
+                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500">
+                    Formations en cours
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    3
+                  </dd>
+                </div>
+                <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500">
+                    Formations terminées
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    1
+                  </dd>
+                </div>
+                <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt className="text-sm font-medium text-gray-500">
+                    Prochain objectif
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                    Compléter le module "Sécurité des Réseaux"
+                  </dd>
+                </div>
+              </dl>
+            </div>
           </div>
         </div>
+      </section>
 
-        {/* Formation Swiper */}
-        {filteredTrainings.length > 0 ? (
-          <FormationSwiper trainings={filteredTrainings} />
-        ) : null}
-
-        {filteredTrainings.length === 0 && (
-          <div className="text-center py-12">
-            <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Aucune formation trouvée</h3>
-            <p className="text-gray-600">Essayez de modifier vos critères de recherche</p>
+      {/* Formations Swiper Section */}
+      <section className="py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Formations Recommandées
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Découvrez nos formations expertement conçues pour développer vos compétences en réseaux et technologies.
+            </p>
           </div>
-        )}
-      </main>
+          
+          <FormationSwiper onFormationClick={handleFormationClick} />
+        </div>
+      </section>
+
+      {/* Detail Modal */}
+      {showDetailModal && selectedFormation && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50">
+          <div className="flex items-center justify-center min-h-screen p-4">
+            <div className="bg-white rounded-lg max-w-3xl w-full shadow-xl">
+              <div className="p-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                  {selectedFormation.title}
+                </h2>
+                <p className="text-gray-700 mb-6">
+                  {selectedFormation.description}
+                </p>
+                <div className="flex justify-between items-center">
+                  <Button onClick={() => setShowDetailModal(false)}>
+                    Fermer
+                  </Button>
+                  <Button>
+                    Commencer la formation
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

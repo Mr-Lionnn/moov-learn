@@ -25,6 +25,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { testDataService } from "@/services/testDataService";
 import { useNavigate } from "react-router-dom";
 import AdminPanel from "@/components/AdminPanel";
+import DashboardSearch from "@/components/search/DashboardSearch";
 
 const Index = () => {
   const { user } = useAuth();
@@ -158,6 +159,20 @@ const Index = () => {
             Bienvenue, {user?.name || 'Utilisateur'}!
           </h1>
           <p className="text-sm sm:text-base text-gray-600">Suivez votre progression et continuez votre apprentissage</p>
+        </div>
+
+        {/* Dashboard Search */}
+        <div className="mb-8">
+          <DashboardSearch 
+            onResultClick={(result) => {
+              if (result.type === 'course') {
+                navigate(`/course/${result.id}`);
+              } else if (result.type === 'instructor') {
+                // Navigate to instructor profile or courses
+                navigate("/my-trainings");
+              }
+            }}
+          />
         </div>
 
         <StatsGrid />
