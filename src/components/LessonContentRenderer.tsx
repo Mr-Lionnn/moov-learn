@@ -1,3 +1,4 @@
+
 import { Card, CardContent } from "@/components/ui/card";
 import LessonHeader from "./lesson/LessonHeader";
 import LessonContentSwitch from "./lesson/LessonContentSwitch";
@@ -20,9 +21,20 @@ const LessonContentRenderer = ({
       <CardContent>
         <div className="space-y-4">
           <LessonContentSwitch
-            lesson={currentLesson}
-            courseTitle={courseTitle}
-            onLessonComplete={onLessonComplete}
+            lesson={{
+              id: currentLesson.id.toString(),
+              title: currentLesson.title,
+              type: currentLesson.type,
+              duration: parseInt(currentLesson.duration),
+              hasQuiz: currentLesson.type === "quiz"
+            }}
+            onComplete={onLessonComplete}
+            onNext={() => {}}
+            onPrevious={() => {}}
+            hasNext={false}
+            hasPrevious={false}
+            currentLessonIndex={0}
+            totalLessons={1}
           />
         </div>
       </CardContent>
