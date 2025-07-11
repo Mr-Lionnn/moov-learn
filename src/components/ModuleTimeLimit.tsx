@@ -16,9 +16,9 @@ interface ModuleTimeLimitProps {
 const ModuleTimeLimit = ({ onTimeLimit }: ModuleTimeLimitProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [selectedModule, setSelectedModule] = useState<string | undefined>(undefined);
+  const [selectedModule, setSelectedModule] = useState("");
   const [deadline, setDeadline] = useState("");
-  const [selectedTeam, setSelectedTeam] = useState<string | undefined>(undefined);
+  const [selectedTeam, setSelectedTeam] = useState("");
 
   const modules = [
     { id: "tcp-ip", name: "Fondamentaux des Réseaux TCP/IP" },
@@ -54,9 +54,9 @@ const ModuleTimeLimit = ({ onTimeLimit }: ModuleTimeLimitProps) => {
     });
 
     // Reset form
-    setSelectedModule(undefined);
+    setSelectedModule("");
     setDeadline("");
-    setSelectedTeam(undefined);
+    setSelectedTeam("");
   };
 
   // Only show to authorized roles

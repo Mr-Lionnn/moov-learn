@@ -33,6 +33,11 @@ const CourseActions = ({ lessons, currentLesson, onNextLesson }: CourseActionsPr
     console.log('Resources downloaded successfully');
   };
 
+  const handleJoinDiscussion = () => {
+    // Open discussion in new tab (simulate forum)
+    window.open('https://example.com/course-discussion', '_blank');
+    console.log('Joining course discussion');
+  };
 
   return (
     <Card className="mt-4">
@@ -47,6 +52,9 @@ const CourseActions = ({ lessons, currentLesson, onNextLesson }: CourseActionsPr
           </Button>
           <Button variant="outline" className="w-full" onClick={handleDownloadResources}>
             Télécharger les Ressources
+          </Button>
+          <Button variant="outline" className="w-full" onClick={handleJoinDiscussion}>
+            Rejoindre la Discussion
           </Button>
         </div>
       </CardContent>

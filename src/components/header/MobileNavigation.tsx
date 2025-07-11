@@ -69,18 +69,19 @@ const MobileNavigation = ({
           </Button>
         )}
 
-        {/* Team/Employee Section - Role-based */}
-        <Button 
-          variant="ghost" 
-          className="justify-start text-gray-600 hover:bg-secondary hover:text-white h-10"
-          onClick={() => {
-            navigate(user?.role === 'admin' ? "/employees" : "/team");
-            setShowMobileMenu(false);
-          }}
-        >
-          <Users className="h-4 w-4 mr-3" />
-          {user?.role === 'admin' ? 'Employés' : 'Équipe'}
-        </Button>
+        {canManageUsers() && (
+          <Button 
+            variant="ghost" 
+            className="justify-start text-gray-600 hover:bg-secondary hover:text-white h-10"
+            onClick={() => {
+              navigate("/employees");
+              setShowMobileMenu(false);
+            }}
+          >
+            <Users className="h-4 w-4 mr-3" />
+            {user?.role === 'admin' ? 'Employés' : 'Équipe'}
+          </Button>
+        )}
         
         {/* Module Creation for Mobile */}
         {(user?.role === 'admin' || user?.role === 'team_chief' || user?.role === 'team_responsible') && (
@@ -110,6 +111,18 @@ const MobileNavigation = ({
             Analytiques
           </Button>
         )}
+
+        <Button 
+          variant="ghost" 
+          className="justify-start text-gray-600 hover:bg-secondary hover:text-white h-10"
+          onClick={() => {
+            navigate("/team");
+            setShowMobileMenu(false);
+          }}
+        >
+          <UserCheck className="h-4 w-4 mr-3" />
+          Équipe
+        </Button>
       </nav>
     </div>
   );

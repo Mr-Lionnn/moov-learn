@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import DocumentSection from "@/components/DocumentSection";
 
 interface TextLessonContentProps {
   onComplete: () => void;
@@ -13,42 +12,6 @@ Le protocole TCP/IP (Transmission Control Protocol/Internet Protocol) est une su
 
 Comprendre TCP/IP est essentiel pour tout professionnel de l'informatique, car il sous-tend pratiquement tous les aspects de la connectivité réseau moderne, des sites web aux applications mobiles.`;
 
-const sampleDocuments = [
-  {
-    id: 1,
-    name: "Guide TCP/IP Complet.pdf",
-    type: "pdf",
-    size: "2.3 MB",
-    description: "Manuel détaillé sur les protocoles TCP/IP",
-    author: "Pierre Durand",
-    downloads: 156,
-    date: "2024-01-15",
-    category: "documentation"
-  },
-  {
-    id: 2,
-    name: "Schémas Réseau.png",
-    type: "image",
-    size: "854 KB",
-    description: "Diagrammes des architectures réseau",
-    author: "Marie Martin",
-    downloads: 89,
-    date: "2024-01-18",
-    category: "diagram"
-  },
-  {
-    id: 3,
-    name: "Configuration Réseau.docx",
-    type: "docx",
-    size: "1.2 MB",
-    description: "Instructions de configuration pratique",
-    author: "Sophie Laurent",
-    downloads: 134,
-    date: "2024-01-20",
-    category: "tutorial"
-  }
-];
-
 const TextLessonContent = ({ onComplete }: TextLessonContentProps) => {
   return (
     <>
@@ -59,15 +22,8 @@ const TextLessonContent = ({ onComplete }: TextLessonContentProps) => {
           ))}
         </div>
       </div>
-      
-      <DocumentSection 
-        documents={sampleDocuments}
-        courseTitle="Formation Réseau"
-        lessonTitle="Introduction aux Réseaux TCP/IP"
-      />
-      
-      <Button onClick={onComplete} className="moov-gradient text-white w-full mt-6">
-        Terminer le Module
+      <Button onClick={onComplete} className="moov-gradient text-white w-full">
+        Marquer comme Terminé
       </Button>
     </>
   );

@@ -1,29 +1,26 @@
-
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
-import { Users, Search, Calendar, Award, BookOpen, Clock, TrendingUp } from "lucide-react";
+import { Users, Search, MessageCircle, Calendar, Award, BookOpen, Clock, TrendingUp } from "lucide-react";
 import Header from "@/components/Header";
+import ContactModal from "@/components/ContactModal";
 import UserProfileModal from "@/components/UserProfileModal";
-import { useAuth } from "@/contexts/AuthContext";
 
 const Team = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedMemberForContact, setSelectedMemberForContact] = useState<any>(null);
   const [selectedMemberForProfile, setSelectedMemberForProfile] = useState<any>(null);
-  const [filteredMembers, setFilteredMembers] = useState<any[]>([]);
-  const { user } = useAuth();
 
-  const allTeamMembers = [
+  const teamMembers = [
     {
       id: 1,
       name: "Marie Martin",
       role: "Technicien Réseau Senior",
       department: "IT Support",
-      teamId: 1,
       avatar: "/placeholder.svg",
       status: "En ligne",
       currentCourse: "Configuration VLAN",
@@ -39,7 +36,6 @@ const Team = () => {
       name: "Pierre Durand",
       role: "Ingénieur Système",
       department: "Infrastructure",
-      teamId: 2,
       avatar: "/placeholder.svg",
       status: "Occupé",
       currentCourse: "Routage OSPF",
@@ -55,7 +51,6 @@ const Team = () => {
       name: "Sophie Laurent",
       role: "Analyste Sécurité",
       department: "Sécurité",
-      teamId: 3,
       avatar: "/placeholder.svg",
       status: "En ligne",
       currentCourse: "Pare-feu Next-Gen",
@@ -71,7 +66,6 @@ const Team = () => {
       name: "Thomas Moreau",
       role: "Technicien Junior",
       department: "IT Support",
-      teamId: 1,
       avatar: "/placeholder.svg",
       status: "Absent",
       currentCourse: "Fondamentaux TCP/IP",
@@ -87,7 +81,6 @@ const Team = () => {
       name: "Julie Petit",
       role: "Architecte Réseau",
       department: "Infrastructure",
-      teamId: 2,
       avatar: "/placeholder.svg",
       status: "En ligne",
       currentCourse: "SDN et Virtualisation",
@@ -97,66 +90,15 @@ const Team = () => {
       certifications: 6,
       lastActivity: "Il y a 30min",
       expertise: ["SDN", "Virtualisation", "Cloud"]
-    },
-    {
-      id: 6,
-      name: "Antoine Bernard",
-      role: "Chef d'Équipe IT",
-      department: "IT Support",
-      teamId: 1,
-      avatar: "/placeholder.svg",
-      status: "En ligne",
-      currentCourse: "Gestion d'Équipe",
-      progress: 60,
-      completedCourses: 18,
-      totalHours: 210,
-      certifications: 5,
-      lastActivity: "Il y a 1h",
-      expertise: ["Management", "Support", "Formation"]
     }
   ];
 
-  // Filter team members based on user's role and permissions
-  const getVisibleMembers = () => {
-    if (!user) return [];
-
-    // Admin and team chiefs can see everyone
-    if (user.role === 'admin' || user.role === 'team_chief') {
-      return allTeamMembers;
-    }
-
-    // Team responsible can see their team members
-    if (user.role === 'team_responsible') {
-      return allTeamMembers.filter(member => 
-        member.department === user.department || member.teamId === user.teamId
-      );
-    }
-
-    // Regular team members can see their own team
-    return allTeamMembers.filter(member => 
-      member.department === user.department || 
-      member.teamId === user.teamId ||
-      member.id === user.id
-    );
-  };
-
-  // Filter members based on search query
-  const applySearchFilter = (members: any[]) => {
-    if (!searchQuery.trim()) return members;
-    
-    return members.filter(member =>
-      member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.expertise.some((skill: string) => skill.toLowerCase().includes(searchQuery.toLowerCase()))
-    );
-  };
-
-  useEffect(() => {
-    const visibleMembers = getVisibleMembers();
-    const searchFiltered = applySearchFilter(visibleMembers);
-    setFilteredMembers(searchFiltered);
-  }, [user, searchQuery]);
+  const filteredMembers = teamMembers.filter(member =>
+    member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    member.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    member.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    member.expertise.some(skill => skill.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -171,32 +113,24 @@ const Team = () => {
     }
   };
 
-  const visibleMembers = getVisibleMembers();
   const teamStats = {
-    totalMembers: visibleMembers.length,
-    onlineMembers: visibleMembers.filter(m => m.status === "En ligne").length,
-    avgProgress: visibleMembers.length > 0 
-      ? Math.round(visibleMembers.reduce((acc, m) => acc + m.progress, 0) / visibleMembers.length)
-      : 0,
-    totalCertifications: visibleMembers.reduce((acc, m) => acc + m.certifications, 0)
+    totalMembers: teamMembers.length,
+    onlineMembers: teamMembers.filter(m => m.status === "En ligne").length,
+    avgProgress: Math.round(teamMembers.reduce((acc, m) => acc + m.progress, 0) / teamMembers.length),
+    totalCertifications: teamMembers.reduce((acc, m) => acc + m.certifications, 0)
+  };
+
+  const handleContactMember = (member: any) => {
+    setSelectedMemberForContact(member);
   };
 
   const handleViewProfile = (member: any) => {
     setSelectedMemberForProfile(member);
   };
 
-  const getPageTitle = () => {
-    if (user?.role === 'admin' || user?.role === 'team_chief') {
-      return 'Gestion d\'Équipe';
-    }
-    return 'Mon Équipe';
-  };
-
-  const getPageDescription = () => {
-    if (user?.role === 'admin' || user?.role === 'team_chief') {
-      return 'Gérez les équipes et suivez les progrès de formation';
-    }
-    return 'Consultez les informations de votre équipe';
+  const handleTeamDiscussion = () => {
+    console.log("Opening team discussion...");
+    alert("Discussion d'équipe ouverte!");
   };
 
   return (
@@ -207,18 +141,13 @@ const Team = () => {
         <div className="mb-6 sm:mb-8">
           <div className="flex flex-col sm:flex-row justify-between items-start gap-3 sm:gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-                {getPageTitle()}
-              </h1>
-              <p className="text-sm sm:text-base text-gray-600">
-                {getPageDescription()}
-              </p>
-              {filteredMembers.length === 0 && searchQuery && (
-                <p className="text-sm text-orange-600 mt-2">
-                  Aucun membre trouvé pour "{searchQuery}"
-                </p>
-              )}
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Équipe</h1>
+              <p className="text-sm sm:text-base text-gray-600">Collaborez et suivez les progrès de l'équipe</p>
             </div>
+            <Button onClick={handleTeamDiscussion} className="moov-gradient text-white">
+              <MessageCircle className="h-4 w-4 mr-2" />
+              Discussion Équipe
+            </Button>
           </div>
         </div>
 
@@ -354,14 +283,22 @@ const Team = () => {
                 </div>
 
                 {/* Actions */}
-                <div className="flex justify-center pt-2 border-t">
+                <div className="flex flex-col sm:flex-row gap-2 pt-2 border-t">
+                  <Button 
+                    size="sm" 
+                    className="flex-1"
+                    onClick={() => handleContactMember(member)}
+                  >
+                    <MessageCircle className="h-4 w-4 mr-2" />
+                    Contacter
+                  </Button>
                   <Button 
                     variant="outline" 
                     size="sm"
+                    className="flex-1 sm:flex-initial"
                     onClick={() => handleViewProfile(member)}
                   >
-                    <Users className="h-4 w-4 mr-2" />
-                    Voir Profil
+                    Voir Détails
                   </Button>
                 </div>
 
@@ -373,34 +310,22 @@ const Team = () => {
           ))}
         </div>
 
-        {filteredMembers.length === 0 && !searchQuery && (
+        {filteredMembers.length === 0 && (
           <div className="text-center py-12">
             <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              {user?.role === 'admin' || user?.role === 'team_chief' 
-                ? 'Aucune équipe configurée' 
-                : 'Aucun membre d\'équipe visible'
-              }
-            </h3>
-            <p className="text-gray-600">
-              {user?.role === 'admin' || user?.role === 'team_chief' 
-                ? 'Configurez des équipes pour voir les membres'
-                : 'Contactez votre administrateur pour accéder aux informations d\'équipe'
-              }
-            </p>
-          </div>
-        )}
-
-        {filteredMembers.length === 0 && searchQuery && (
-          <div className="text-center py-12">
-            <Search className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun membre trouvé</h3>
             <p className="text-gray-600">Essayez de modifier vos critères de recherche</p>
           </div>
         )}
       </main>
 
-      {/* User Profile Modal */}
+      {/* Modals */}
+      <ContactModal
+        isOpen={!!selectedMemberForContact}
+        onClose={() => setSelectedMemberForContact(null)}
+        member={selectedMemberForContact}
+      />
+
       <UserProfileModal
         isOpen={!!selectedMemberForProfile}
         onClose={() => setSelectedMemberForProfile(null)}

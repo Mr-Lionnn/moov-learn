@@ -10,11 +10,10 @@ import { useNavigate } from "react-router-dom";
 import { testDataService } from "@/services/testDataService";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { User, Mail, Shield, AlertTriangle, UserPlus, Building, Users, MapPin } from "lucide-react";
+import { User, Mail, Shield, AlertTriangle } from "lucide-react";
 import { emailSchema, passwordSchema, loginRateLimiter, sanitizeText, generateCSRFToken } from "@/utils/security";
 import { useToast } from "@/hooks/use-toast";
 import UserProfilesDisplay from "@/components/UserProfilesDisplay";
-import RegistrationForm from "@/components/RegistrationForm";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -111,7 +110,6 @@ const Login = () => {
   };
 
   const [showProfiles, setShowProfiles] = useState(false);
-  const [showRegistration, setShowRegistration] = useState(false);
 
   if (showProfiles) {
     return (
@@ -129,10 +127,6 @@ const Login = () => {
         </div>
       </div>
     );
-  }
-
-  if (showRegistration) {
-    return <RegistrationForm onClose={() => setShowRegistration(false)} />;
   }
 
   return (
@@ -205,25 +199,14 @@ const Login = () => {
             
             <Separator className="my-4" />
             
-            <div className="space-y-2">
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={() => setShowProfiles(true)}
-              >
-                <User className="h-4 w-4 mr-2" />
-                Voir les Profils de Test
-              </Button>
-              
-              <Button
-                variant="default"
-                className="w-full moov-gradient text-white"
-                onClick={() => setShowRegistration(true)}
-              >
-                <UserPlus className="h-4 w-4 mr-2" />
-                Créer un Compte
-              </Button>
-            </div>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => setShowProfiles(true)}
+            >
+              <User className="h-4 w-4 mr-2" />
+              Voir les Profils de Test
+            </Button>
           </CardContent>
         </Card>
 

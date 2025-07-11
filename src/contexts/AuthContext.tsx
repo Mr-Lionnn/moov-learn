@@ -6,7 +6,7 @@ interface User {
   id: number;
   email: string;
   name: string;
-  role: 'admin' | 'team_chief' | 'team_responsible' | 'team_member' | 'assistant' | 'employee' | 'instructor';
+  role: 'admin' | 'team_chief' | 'team_responsible' | 'team_member' | 'assistant' | 'employee';
   department?: string;
   teamId?: number;
 }
@@ -43,13 +43,12 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Define role permissions
 const rolePermissions = {
-  admin: ['manage_users', 'manage_files', 'assign_tasks', 'view_analytics', 'manage_system', 'create_content', 'grade_assessments', 'view_files', 'download_files'],
-  team_chief: ['manage_team', 'assign_tasks', 'view_files', 'view_analytics', 'manage_employees', 'download_files'],
-  team_responsible: ['assign_tasks', 'view_files', 'manage_team_members', 'download_files'],
-  team_member: ['view_files', 'upload_files', 'view_tasks', 'download_files'],
-  assistant: ['view_files', 'edit_limited', 'support_tasks', 'download_files'],
-  employee: ['view_files', 'download_files'],
-  instructor: ['create_content', 'grade_assessments', 'view_analytics', 'view_files', 'download_files', 'manage_students']
+  admin: ['manage_users', 'manage_files', 'assign_tasks', 'view_analytics', 'manage_system'],
+  team_chief: ['manage_team', 'assign_tasks', 'view_files', 'view_analytics', 'manage_employees'],
+  team_responsible: ['assign_tasks', 'view_files', 'manage_team_members'],
+  team_member: ['view_files', 'upload_files', 'view_tasks'],
+  assistant: ['view_files', 'edit_limited', 'support_tasks'],
+  employee: ['view_files', 'download_files']
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {

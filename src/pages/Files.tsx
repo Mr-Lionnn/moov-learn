@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -14,58 +14,16 @@ import {
   FileVideo, 
   FileAudio,
   File,
-  ArrowLeft,
-  Save,
-  Bookmark,
-  Calendar,
-  FolderOpen
+  ArrowLeft
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
-import DocumentViewer from "@/components/enhanced/DocumentViewer";
-import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/hooks/use-toast";
-import { useDocumentManager } from "@/hooks/useDocumentManager";
-import RoleBasedAccess from "@/components/enhanced/RoleBasedAccess";
+import FileViewerModal from "@/components/FileViewerModal";
 
 const Files = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFile, setSelectedFile] = useState<any>(null);
-  const { 
-    savedDocuments, 
-    saveDocument, 
-    removeSavedDocument, 
-    downloadDocument, 
-    viewDocument, 
-    loadSavedDocuments 
-  } = useDocumentManager();
-
-  // Load saved documents from localStorage on component mount
-  useEffect(() => {
-    loadSavedDocuments();
-  }, [loadSavedDocuments]);
-
-  // Handle file actions using the document manager
-  const handleSaveDocument = (file: any, moduleId?: string) => {
-    saveDocument(file, moduleId);
-  };
-
-  const handleRemoveSavedDocument = (fileId: number) => {
-    removeSavedDocument(fileId);
-  };
-
-  const handleViewFile = (file: any) => {
-    if (viewDocument(file)) {
-      setSelectedFile(file);
-    }
-  };
-
-  const handleDownloadFile = (file: any) => {
-    downloadDocument(file);
-  };
 
   const files = [
     {
@@ -163,6 +121,19 @@ const Files = () => {
     }
   };
 
+  const handleViewFile = (file: any) => {
+    setSelectedFile(file);
+  };
+
+  const handleDownloadFile = (file: any) => {
+    console.log(`Downloading: ${file.name}`);
+    // Simulate download
+    const link = document.createElement('a');
+    link.href = '#';
+    link.download = file.name;
+    link.click();
+    alert(`Téléchargement de ${file.name} commencé!`);
+  };
 
   const getCategoryFiles = (category: string) => {
     return filteredFiles.filter(file => 
@@ -206,12 +177,8 @@ const Files = () => {
         </div>
 
         <Tabs defaultValue="tous" className="w-full">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="tous">Tous</TabsTrigger>
-            <TabsTrigger value="saved">
-              <Bookmark className="h-4 w-4 mr-1" />
-              Sauvegardés ({savedDocuments.length})
-            </TabsTrigger>
             <TabsTrigger value="template">Templates</TabsTrigger>
             <TabsTrigger value="documentation">Documentation</TabsTrigger>
             <TabsTrigger value="formation">Formations</TabsTrigger>
@@ -244,7 +211,7 @@ const Files = () => {
                         <p>Créé le: {new Date(file.date).toLocaleDateString('fr-FR')}</p>
                       </div>
                       
-                      <div className="flex gap-1">
+                      <div className="flex gap-2">
                         <Button 
                           size="sm" 
                           variant="outline" 
@@ -261,15 +228,6 @@ const Files = () => {
                         >
                           <Download className="h-3 w-3 mr-1" />
                           Télécharger
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="secondary"
-                          onClick={() => handleSaveDocument(file)}
-                          className="px-2"
-                          title="Sauvegarder"
-                        >
-                          <Save className="h-3 w-3" />
                         </Button>
                       </div>
                     </div>
@@ -305,7 +263,7 @@ const Files = () => {
                         <p>Créé le: {new Date(file.date).toLocaleDateString('fr-FR')}</p>
                       </div>
                       
-                      <div className="flex gap-1">
+                      <div className="flex gap-2">
                         <Button 
                           size="sm" 
                           variant="outline" 
@@ -322,15 +280,6 @@ const Files = () => {
                         >
                           <Download className="h-3 w-3 mr-1" />
                           Télécharger
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="secondary"
-                          onClick={() => handleSaveDocument(file)}
-                          className="px-2"
-                          title="Sauvegarder"
-                        >
-                          <Save className="h-3 w-3" />
                         </Button>
                       </div>
                     </div>
@@ -366,7 +315,7 @@ const Files = () => {
                         <p>Créé le: {new Date(file.date).toLocaleDateString('fr-FR')}</p>
                       </div>
                       
-                      <div className="flex gap-1">
+                      <div className="flex gap-2">
                         <Button 
                           size="sm" 
                           variant="outline" 
@@ -383,15 +332,6 @@ const Files = () => {
                         >
                           <Download className="h-3 w-3 mr-1" />
                           Télécharger
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="secondary"
-                          onClick={() => handleSaveDocument(file)}
-                          className="px-2"
-                          title="Sauvegarder"
-                        >
-                          <Save className="h-3 w-3" />
                         </Button>
                       </div>
                     </div>
@@ -427,7 +367,7 @@ const Files = () => {
                         <p>Créé le: {new Date(file.date).toLocaleDateString('fr-FR')}</p>
                       </div>
                       
-                      <div className="flex gap-1">
+                      <div className="flex gap-2">
                         <Button 
                           size="sm" 
                           variant="outline" 
@@ -444,15 +384,6 @@ const Files = () => {
                         >
                           <Download className="h-3 w-3 mr-1" />
                           Télécharger
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="secondary"
-                          onClick={() => handleSaveDocument(file)}
-                          className="px-2"
-                          title="Sauvegarder"
-                        >
-                          <Save className="h-3 w-3" />
                         </Button>
                       </div>
                     </div>
@@ -488,7 +419,7 @@ const Files = () => {
                         <p>Créé le: {new Date(file.date).toLocaleDateString('fr-FR')}</p>
                       </div>
                       
-                      <div className="flex gap-1">
+                      <div className="flex gap-2">
                         <Button 
                           size="sm" 
                           variant="outline" 
@@ -506,98 +437,12 @@ const Files = () => {
                           <Download className="h-3 w-3 mr-1" />
                           Télécharger
                         </Button>
-                        <Button 
-                          size="sm" 
-                          variant="secondary"
-                          onClick={() => handleSaveDocument(file)}
-                          className="px-2"
-                          title="Sauvegarder"
-                        >
-                          <Save className="h-3 w-3" />
-                        </Button>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
               ))}
             </div>
-          </TabsContent>
-
-          <TabsContent value="saved" className="mt-6">
-            <div className="mb-4">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Mes Documents Sauvegardés</h3>
-              <p className="text-sm text-gray-600">Documents que vous avez sauvegardés pendant vos formations</p>
-            </div>
-            
-            {savedDocuments.length > 0 ? (
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {savedDocuments.filter(doc => 
-                  doc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                  doc.moduleId.toLowerCase().includes(searchQuery.toLowerCase())
-                ).map((doc) => (
-                  <Card key={`saved-${doc.id}`} className="hover:shadow-lg transition-shadow border-l-4 border-blue-500">
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start gap-3">
-                        {getFileIcon(doc.name)}
-                        <div className="flex-1 min-w-0">
-                          <CardTitle className="text-sm truncate">{doc.name}</CardTitle>
-                          <div className="flex items-center gap-2 mt-1">
-                            <Badge className={`${getTypeColor(doc.type)} border text-xs`}>
-                              {doc.type}
-                            </Badge>
-                            <span className="text-xs text-gray-500">{doc.size}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                      <div className="space-y-3">
-                        <div className="text-xs text-gray-600">
-                          <p>Module: {doc.moduleId === "general" ? "Général" : doc.moduleId}</p>
-                          <p>Sauvegardé le: {new Date(doc.savedAt).toLocaleDateString('fr-FR')}</p>
-                          <p>Par: {doc.author}</p>
-                        </div>
-                        
-                        <div className="flex gap-1">
-                          <Button 
-                            size="sm" 
-                            variant="outline" 
-                            className="flex-1"
-                            onClick={() => handleViewFile(doc)}
-                          >
-                            <Eye className="h-3 w-3 mr-1" />
-                            Voir
-                          </Button>
-                          <Button 
-                            size="sm" 
-                            className="flex-1"
-                            onClick={() => handleDownloadFile(doc)}
-                          >
-                            <Download className="h-3 w-3 mr-1" />
-                            Télécharger
-                          </Button>
-                          <Button 
-                            size="sm" 
-                            variant="destructive"
-                            onClick={() => handleRemoveSavedDocument(doc.id)}
-                            className="px-2"
-                            title="Retirer de mes documents"
-                          >
-                            <ArrowLeft className="h-3 w-3 rotate-45" />
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-12">
-                <Bookmark className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun document sauvegardé</h3>
-                <p className="text-gray-600">Commencez à sauvegarder des documents pendant vos formations</p>
-              </div>
-            )}
           </TabsContent>
         </Tabs>
 
@@ -610,12 +455,10 @@ const Files = () => {
         )}
       </main>
 
-      <DocumentViewer
+      <FileViewerModal
         isOpen={!!selectedFile}
         onClose={() => setSelectedFile(null)}
         file={selectedFile}
-        onSave={handleSaveDocument}
-        onDownload={handleDownloadFile}
       />
     </div>
   );
