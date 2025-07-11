@@ -67,7 +67,7 @@ const TextLessonContent = ({ onComplete }: TextLessonContentProps) => {
       />
       
       <Button onClick={onComplete} className="moov-gradient text-white w-full mt-6">
-        Marquer comme Terminé
+        Terminer le Module
       </Button>
     </>
   );

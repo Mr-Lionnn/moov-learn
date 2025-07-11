@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import StarRatingDisplay from "@/components/StarRatingDisplay";
 import { 
   BookOpen, 
   Clock, 
@@ -17,6 +18,7 @@ import {
   ChevronRight
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { ratingService } from "@/services/ratingService";
 
 // Import Swiper styles
 import 'swiper/css';
@@ -50,6 +52,13 @@ const FormationSwiper = ({ trainings }: FormationSwiperProps) => {
   const navigate = useNavigate();
   const swiperRef = useRef<any>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Get average rating for a training module
+  const getModuleRating = (title: string) => {
+    const averageRating = ratingService.getModuleAverageRating(title);
+    const ratingCount = ratingService.getModuleRatingCount(title);
+    return { averageRating, ratingCount };
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -194,10 +203,16 @@ const FormationSwiper = ({ trainings }: FormationSwiperProps) => {
                             <Users className="h-4 w-4" />
                             {training.studentsCount} étudiants
                           </span>
-                          <span className="flex items-center gap-1">
-                            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                            {training.rating}
-                          </span>
+                           <div className="flex items-center gap-1">
+                             <StarRatingDisplay 
+                               rating={getModuleRating(training.title).averageRating || training.rating}
+                               size="sm" 
+                               showValue={false}
+                             />
+                             <span className="text-xs text-gray-500">
+                               ({getModuleRating(training.title).ratingCount || 0})
+                             </span>
+                           </div>
                         </div>
                       </div>
                       <div className="flex flex-col items-end gap-2">

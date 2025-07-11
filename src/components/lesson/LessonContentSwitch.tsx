@@ -2,10 +2,13 @@ import { useState } from "react";
 import MediaPlayer from "@/components/MediaPlayer";
 import TextLessonContent from "./TextLessonContent";
 import QuizPlayer from "@/components/QuizPlayer";
-import CourseRating, { CourseRatingData } from "@/components/CourseRating";
+import ModuleRating, { ModuleRatingData } from "@/components/ModuleRating";
+import CompletionConfirmation from "@/components/CompletionConfirmation";
 import { sampleQuiz } from "@/data/sampleQuiz";
 import { Lesson } from "@/types/lesson";
 import { QuizResult } from "@/types/quiz";
+import { ratingService } from "@/services/ratingService";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface LessonContentSwitchProps {
   lesson: Lesson;
@@ -18,7 +21,9 @@ const LessonContentSwitch = ({
   courseTitle, 
   onLessonComplete 
 }: LessonContentSwitchProps) => {
+  const { user } = useAuth();
   const [showRating, setShowRating] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   const handleQuizComplete = (result: QuizResult) => {
     console.log("Quiz completed with result:", result);
@@ -31,16 +36,37 @@ const LessonContentSwitch = ({
     setShowRating(true);
   };
 
-  const handleRatingSubmit = (rating: CourseRatingData) => {
-    console.log("Course rating submitted:", rating);
+  const handleRatingSubmit = (rating: ModuleRatingData) => {
+    console.log("Module rating submitted:", rating);
+    
+    // Save rating to localStorage
+    if (user) {
+      ratingService.saveRating(rating, user.id.toString());
+    }
+    
     setShowRating(false);
+    setShowConfirmation(true);
+  };
+
+  const handleConfirmationComplete = () => {
+    setShowConfirmation(false);
     onLessonComplete();
   };
 
+  if (showConfirmation) {
+    return (
+      <CompletionConfirmation
+        moduleTitle={lesson.title}
+        onReturnHome={handleConfirmationComplete}
+        onStartNewTraining={handleConfirmationComplete}
+      />
+    );
+  }
+
   if (showRating) {
     return (
-      <CourseRating
-        courseTitle={courseTitle}
+      <ModuleRating
+        moduleTitle={lesson.title}
         onSubmit={handleRatingSubmit}
       />
     );
@@ -53,7 +79,7 @@ const LessonContentSwitch = ({
           type="video"
           title={lesson.title}
           duration={lesson.duration}
-          onComplete={onLessonComplete}
+          onComplete={() => setShowRating(true)}
         />
       );
     
@@ -63,12 +89,12 @@ const LessonContentSwitch = ({
           type="audio"
           title={lesson.title}
           duration={lesson.duration}
-          onComplete={onLessonComplete}
+          onComplete={() => setShowRating(true)}
         />
       );
     
     case "text":
-      return <TextLessonContent onComplete={onLessonComplete} />;
+      return <TextLessonContent onComplete={() => setShowRating(true)} />;
     
     case "quiz":
       return (
