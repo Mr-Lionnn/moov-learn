@@ -5,15 +5,15 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
-import { Users, Search, MessageCircle, Calendar, Award, BookOpen, Clock, TrendingUp } from "lucide-react";
+import { Users, Search, Calendar, Award, BookOpen, Clock, TrendingUp } from "lucide-react";
 import Header from "@/components/Header";
-import ContactModal from "@/components/ContactModal";
 import UserProfileModal from "@/components/UserProfileModal";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Team = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedMemberForContact, setSelectedMemberForContact] = useState<any>(null);
   const [selectedMemberForProfile, setSelectedMemberForProfile] = useState<any>(null);
+  const { user } = useAuth();
 
   const teamMembers = [
     {
@@ -93,12 +93,18 @@ const Team = () => {
     }
   ];
 
-  const filteredMembers = teamMembers.filter(member =>
-    member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    member.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    member.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    member.expertise.some(skill => skill.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  // Get team members based on user role and filter them
+  const getFilteredMembers = () => {
+    const members = getTeamMembers();
+    return members.filter(member =>
+      member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.expertise.some(skill => skill.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+  };
+
+  const filteredMembers = getFilteredMembers();
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -120,17 +126,17 @@ const Team = () => {
     totalCertifications: teamMembers.reduce((acc, m) => acc + m.certifications, 0)
   };
 
-  const handleContactMember = (member: any) => {
-    setSelectedMemberForContact(member);
-  };
-
   const handleViewProfile = (member: any) => {
     setSelectedMemberForProfile(member);
   };
 
-  const handleTeamDiscussion = () => {
-    console.log("Opening team discussion...");
-    alert("Discussion d'équipe ouverte!");
+  // Filter team members based on user's team (if not admin)
+  const getTeamMembers = () => {
+    if (user?.role === 'admin' || user?.role === 'team_chief') {
+      return teamMembers; // Admins can see all team members
+    }
+    // Regular users only see their own team members
+    return teamMembers.filter(member => member.department === user?.department);
   };
 
   return (
@@ -141,13 +147,16 @@ const Team = () => {
         <div className="mb-6 sm:mb-8">
           <div className="flex flex-col sm:flex-row justify-between items-start gap-3 sm:gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Équipe</h1>
-              <p className="text-sm sm:text-base text-gray-600">Collaborez et suivez les progrès de l'équipe</p>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+                {user?.role === 'admin' || user?.role === 'team_chief' ? 'Gestion d\'Équipe' : 'Mon Équipe'}
+              </h1>
+              <p className="text-sm sm:text-base text-gray-600">
+                {user?.role === 'admin' || user?.role === 'team_chief' 
+                  ? 'Gérez les équipes et suivez les progrès de formation'
+                  : 'Consultez les informations de votre équipe'
+                }
+              </p>
             </div>
-            <Button onClick={handleTeamDiscussion} className="moov-gradient text-white">
-              <MessageCircle className="h-4 w-4 mr-2" />
-              Discussion Équipe
-            </Button>
           </div>
         </div>
 
@@ -283,22 +292,14 @@ const Team = () => {
                 </div>
 
                 {/* Actions */}
-                <div className="flex flex-col sm:flex-row gap-2 pt-2 border-t">
-                  <Button 
-                    size="sm" 
-                    className="flex-1"
-                    onClick={() => handleContactMember(member)}
-                  >
-                    <MessageCircle className="h-4 w-4 mr-2" />
-                    Contacter
-                  </Button>
+                <div className="flex justify-center pt-2 border-t">
                   <Button 
                     variant="outline" 
                     size="sm"
-                    className="flex-1 sm:flex-initial"
                     onClick={() => handleViewProfile(member)}
                   >
-                    Voir Détails
+                    <Users className="h-4 w-4 mr-2" />
+                    Voir Profil
                   </Button>
                 </div>
 
@@ -319,13 +320,7 @@ const Team = () => {
         )}
       </main>
 
-      {/* Modals */}
-      <ContactModal
-        isOpen={!!selectedMemberForContact}
-        onClose={() => setSelectedMemberForContact(null)}
-        member={selectedMemberForContact}
-      />
-
+      {/* User Profile Modal */}
       <UserProfileModal
         isOpen={!!selectedMemberForProfile}
         onClose={() => setSelectedMemberForProfile(null)}
