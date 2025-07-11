@@ -38,7 +38,7 @@
     --ring: 214 80% 47%;
 
     --radius: 0.5rem;
-
+    
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 214 80% 47%;
@@ -139,4 +139,23 @@
 
 .btn-moov-secondary {
   @apply border-2 border-blue-500 text-blue-500 font-medium px-6 py-3 rounded-lg hover:bg-blue-500 hover:text-white transition-all duration-300;
+}
+
+/* Swiper Custom Styles */
+.formation-swiper .swiper-pagination {
+  position: relative !important;
+  margin-top: 1rem;
+}
+
+.formation-swiper .swiper-pagination-bullet {
+  width: 12px;
+  height: 12px;
+  background: rgba(156, 163, 175, 0.5);
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+.formation-swiper .swiper-pagination-bullet-active {
+  background: hsl(var(--primary));
+  transform: scale(1.2);
 }

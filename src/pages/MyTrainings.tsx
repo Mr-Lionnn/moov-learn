@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { BookOpen, Clock, Users, Award, Search, Play, CheckCircle, Star, Filter } from "lucide-react";
 import Header from "@/components/Header";
+import FormationSwiper from "@/components/FormationSwiper";
 import { useNavigate } from "react-router-dom";
 
 const MyTrainings = () => {
@@ -247,127 +248,10 @@ const MyTrainings = () => {
           </div>
         </div>
 
-        {/* Training Cards */}
-        <div className="grid gap-6">
-          {filteredTrainings.map((training) => (
-            <Card key={training.id} className="hover:shadow-lg transition-shadow duration-300">
-              <CardContent className="p-6">
-                <div className="flex flex-col lg:flex-row gap-6">
-                  {/* Course Image */}
-                  <div className="w-full lg:w-48 h-32 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <BookOpen className="h-12 w-12 text-blue-600" />
-                  </div>
-
-                  {/* Course Info */}
-                  <div className="flex-1 space-y-4">
-                    <div className="flex flex-col sm:flex-row justify-between items-start gap-2">
-                      <div>
-                        <h3 className="text-xl font-bold text-gray-900 mb-1">{training.title}</h3>
-                        <p className="text-gray-600 mb-2">Par {training.instructor}</p>
-                        <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500">
-                          <span className="flex items-center gap-1">
-                            <Clock className="h-4 w-4" />
-                            {training.duration}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Users className="h-4 w-4" />
-                            {training.studentsCount} étudiants
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                            {training.rating}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-end gap-2">
-                        <Badge className={getStatusColor(training.status)}>
-                          {training.status}
-                        </Badge>
-                        <Badge variant="outline">{training.level}</Badge>
-                      </div>
-                    </div>
-
-                    {/* Progress Section */}
-                    {training.status !== "Non commencée" && (
-                      <div className="space-y-2">
-                        <div className="flex justify-between items-center text-sm">
-                          <span className="text-gray-600">Progression</span>
-                          <span className="font-medium">
-                            {training.completedLessons}/{training.totalLessons} leçons • {training.progress}%
-                          </span>
-                        </div>
-                        <Progress value={training.progress} className="h-2" />
-                      </div>
-                    )}
-
-                    {/* Next Steps */}
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                      <div className="text-sm">
-                        {training.status === "Terminée" ? (
-                          <div className="flex items-center gap-2 text-green-600">
-                            <CheckCircle className="h-4 w-4" />
-                            <span>Terminée {training.completedDate}</span>
-                            {training.certificate && (
-                              <Badge className="bg-yellow-100 text-yellow-800">
-                                <Award className="h-3 w-3 mr-1" />
-                                Certificat
-                              </Badge>
-                            )}
-                          </div>
-                        ) : training.status === "En cours" ? (
-                          <div>
-                            <p className="text-gray-600">
-                              Prochaine leçon: <span className="font-medium">{training.nextLesson}</span>
-                            </p>
-                            <p className="text-gray-500">
-                              Temps estimé pour terminer: {training.estimatedCompletion}
-                            </p>
-                          </div>
-                        ) : (
-                          <div>
-                            <p className="text-gray-600">
-                              Commencer par: <span className="font-medium">{training.nextLesson}</span>
-                            </p>
-                            <p className="text-gray-500">
-                              Temps estimé: {training.estimatedCompletion}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Action Buttons */}
-                      <div className="flex gap-2">
-                        {training.status === "Terminée" ? (
-                          <>
-                            <Button variant="outline" size="sm" onClick={() => handleReviewCourse(training.id)}>
-                              Revoir
-                            </Button>
-                            {training.certificate && (
-                              <Button size="sm" onClick={() => handleDownloadCertificate(training.title)}>
-                                <Award className="h-4 w-4 mr-2" />
-                                Certificat
-                              </Button>
-                            )}
-                          </>
-                        ) : training.status === "En cours" ? (
-                          <Button size="sm" onClick={() => handleContinueCourse(training.id)}>
-                            <Play className="h-4 w-4 mr-2" />
-                            Continuer
-                          </Button>
-                        ) : (
-                          <Button size="sm" onClick={() => handleStartCourse(training.id)}>
-                            <Play className="h-4 w-4 mr-2" />
-                            Commencer
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        {/* Formation Swiper */}
+        {filteredTrainings.length > 0 ? (
+          <FormationSwiper trainings={filteredTrainings} />
+        ) : null}
 
         {filteredTrainings.length === 0 && (
           <div className="text-center py-12">

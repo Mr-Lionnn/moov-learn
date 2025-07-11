@@ -8,14 +8,14 @@ import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Bell, Shield, User, Globe, Moon, Sun, Save } from "lucide-react";
+import { Bell, Shield, User, Globe, Save } from "lucide-react";
 import Header from "@/components/Header";
 
 const Settings = () => {
   const [userRole] = useState<"student" | "admin">("admin");
   const [notifications, setNotifications] = useState(true);
   const [emailUpdates, setEmailUpdates] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  
   const [language, setLanguage] = useState("fr");
 
   const handleChangePhoto = () => {
@@ -50,7 +50,6 @@ const Settings = () => {
     const settings = {
       notifications,
       emailUpdates,
-      darkMode,
       language
     };
     console.log('Saving settings:', settings);
@@ -227,18 +226,6 @@ const Settings = () => {
                     </select>
                   </div>
                   
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1 flex-1 pr-4">
-                      <Label className="text-sm font-medium">Mode Sombre</Label>
-                      <p className="text-xs text-gray-500">
-                        Basculer vers le thème sombre
-                      </p>
-                    </div>
-                    <Switch 
-                      checked={darkMode} 
-                      onCheckedChange={setDarkMode}
-                    />
-                  </div>
                 </CardContent>
               </Card>
 
