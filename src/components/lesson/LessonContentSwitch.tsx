@@ -20,6 +20,7 @@ import QuizInterface from "../QuizInterface";
 import ModuleRating from "../ModuleRating";
 import CompletionConfirmation from "../CompletionConfirmation";
 import { LessonContent } from "@/types/lessonContent";
+import { QuizResult } from "@/types/quiz";
 
 interface LessonContentSwitchProps {
   lesson: LessonContent;
@@ -55,14 +56,14 @@ const LessonContentSwitch = ({
     }
   };
 
-  const handleQuizComplete = (score: number) => {
-    console.log(`Quiz completed with score: ${score}`);
+  const handleQuizComplete = (result: QuizResult) => {
+    console.log(`Quiz completed with score: ${result.percentage}`);
     setQuizCompleted(true);
     setShowQuiz(false);
     setShowRating(true);
   };
 
-  const handleRatingSubmit = () => {
+  const handleRatingSubmit = (ratingData: any) => {
     setShowRating(false);
     setShowCompletion(true);
   };
@@ -79,8 +80,7 @@ const LessonContentSwitch = ({
     return (
       <CompletionConfirmation 
         moduleTitle={lesson.title}
-        onReturnHome={handleReturnHome}
-        onStartNewTraining={handleStartNewTraining}
+        onClose={() => setShowCompletion(false)}
       />
     );
   }
@@ -107,7 +107,8 @@ const LessonContentSwitch = ({
               <ModuleRating 
                 moduleId={lesson.id} 
                 moduleTitle={lesson.title}
-                onComplete={handleRatingSubmit}
+                onSubmit={handleRatingSubmit}
+                onClose={() => setShowRating(false)}
               />
             </CardContent>
           </Card>
@@ -121,9 +122,20 @@ const LessonContentSwitch = ({
       <div className="min-h-screen bg-gray-50 p-4">
         <div className="max-w-4xl mx-auto">
           <QuizInterface
-            lesson={lesson}
+            quiz={{ 
+              id: lesson.id,
+              courseId: lesson.id,
+              title: lesson.title,
+              description: lesson.description || '',
+              passingGrade: 70,
+              timeLimit: 30,
+              questions: [],
+              createdBy: 'system',
+              createdAt: new Date().toISOString(),
+              isActive: true
+            }}
             onComplete={handleQuizComplete}
-            onBack={() => setShowQuiz(false)}
+            onAbandon={() => setShowQuiz(false)}
           />
         </div>
       </div>
@@ -210,7 +222,10 @@ const LessonContentSwitch = ({
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <LessonContentTabs lesson={lesson} />
+        <LessonContentTabs 
+          activeTab={lesson.type}
+          onTabChange={(value) => console.log('Tab changed to:', value)}
+        />
       </div>
     </div>
   );

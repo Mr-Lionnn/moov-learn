@@ -20,9 +20,22 @@ const LessonContentRenderer = ({
       <CardContent>
         <div className="space-y-4">
           <LessonContentSwitch
-            lesson={currentLesson}
-            courseTitle={courseTitle}
-            onLessonComplete={onLessonComplete}
+            lesson={{
+              id: currentLesson.id.toString(),
+              title: currentLesson.title,
+              type: currentLesson.type,
+              content: '',
+              duration: parseInt(currentLesson.duration || '0'),
+              hasQuiz: currentLesson.type === 'quiz',
+              description: currentLesson.title
+            }}
+            onComplete={onLessonComplete}
+            onNext={() => console.log('Next lesson')}
+            onPrevious={() => console.log('Previous lesson')}
+            hasNext={false}
+            hasPrevious={false}
+            currentLessonIndex={0}
+            totalLessons={1}
           />
         </div>
       </CardContent>

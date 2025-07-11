@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Clock, Users, Star, Play, Award, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { StarRatingDisplay } from "./StarRatingDisplay";
+import StarRatingDisplay from "./StarRatingDisplay";
 import { ratingService } from "@/services/ratingService";
 
 import "swiper/css";
@@ -259,7 +259,7 @@ const FormationSwiper = ({ onFormationClick }: FormationSwiperProps) => {
                   </div>
 
                   <StarRatingDisplay 
-                    rating={ratingService.getAverageRating(formation.id.toString())} 
+                    rating={ratingService.getModuleAverageRating(formation.id.toString())} 
                     size="sm" 
                   />
 
