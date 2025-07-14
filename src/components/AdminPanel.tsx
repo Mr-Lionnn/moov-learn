@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { X, Users, BookOpen, BarChart3, Clock, CheckCircle } from "lucide-react";
+import { X, Users, BookOpen, BarChart3, Clock, CheckCircle, CheckSquare } from "lucide-react";
 import QuizCreator from "./QuizCreator";
 import ModuleCreator from "./module/ModuleCreator";
 import { useAuth } from "@/contexts/AuthContext";
@@ -14,6 +14,7 @@ import QuizManagementTab from "./admin/QuizManagementTab";
 import DeadlineManagementTab from "./admin/DeadlineManagementTab";
 import StudentProgressTab from "./admin/StudentProgressTab";
 import AnalyticsTab from "./admin/AnalyticsTab";
+import TaskManagementTab from "./admin/TaskManagementTab";
 
 const AdminPanel = ({ onClose }: AdminPanelProps) => {
   const { setModuleDeadline, user } = useAuth();
@@ -186,8 +187,12 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
         </div>
 
         <div className="p-6 overflow-y-auto max-h-[calc(90vh-100px)]">
-          <Tabs defaultValue="courses" className="w-full">
-            <TabsList className="grid w-full grid-cols-5">
+          <Tabs defaultValue="tasks" className="w-full">
+            <TabsList className="grid w-full grid-cols-6">
+              <TabsTrigger value="tasks">
+                <CheckSquare className="h-4 w-4 mr-2" />
+                Gestion des Tâches
+              </TabsTrigger>
               <TabsTrigger value="courses">
                 <BookOpen className="h-4 w-4 mr-2" />
                 Gestion des Cours
@@ -209,6 +214,10 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
                 Analytiques
               </TabsTrigger>
             </TabsList>
+
+            <TabsContent value="tasks" className="space-y-6">
+              <TaskManagementTab />
+            </TabsContent>
 
             <TabsContent value="courses" className="space-y-6">
               <CourseCreationTab

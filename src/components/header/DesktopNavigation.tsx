@@ -2,27 +2,18 @@ import { Button } from "@/components/ui/button";
 import { 
   BookOpen, 
   FileText,
-  CheckSquare,
   Users, 
-  UserCheck, 
-  Target,
-  ChevronDown
+  Target
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import TaskManagementDropdown from "./TaskManagementDropdown";
 
 interface DesktopNavigationProps {
   onShowAdminPanel?: () => void;
-  showTasksDropdown: boolean;
-  setShowTasksDropdown: (show: boolean) => void;
 }
 
 const DesktopNavigation = ({ 
-  onShowAdminPanel, 
-  showTasksDropdown, 
-  setShowTasksDropdown 
+  onShowAdminPanel
 }: DesktopNavigationProps) => {
   const navigate = useNavigate();
   const { user, hasPermission, canManageUsers, canAccessFiles } = useAuth();
@@ -39,28 +30,6 @@ const DesktopNavigation = ({
         <span className="xl:hidden">Formations</span>
       </Button>
 
-      {/* Task Management Dropdown */}
-      <DropdownMenu open={showTasksDropdown} onOpenChange={setShowTasksDropdown}>
-        <DropdownMenuTrigger asChild>
-          <Button 
-            variant="ghost" 
-            className="text-gray-600 hover:bg-secondary hover:text-white text-sm px-2 xl:px-3"
-          >
-            <Target className="h-4 w-4 mr-1 xl:mr-2" />
-            <span>Gestion</span>
-            <ChevronDown className="h-3 w-3 ml-1" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" className="w-80 p-0">
-          <TaskManagementDropdown 
-            onNavigate={(path) => {
-              navigate(path);
-              setShowTasksDropdown(false);
-            }}
-          />
-        </DropdownMenuContent>
-      </DropdownMenu>
-      
       {canAccessFiles() && (
         <Button 
           variant="ghost" 
@@ -72,14 +41,19 @@ const DesktopNavigation = ({
         </Button>
       )}
 
-      {hasPermission('assign_tasks') && (
+      {/* Unified Administration Button - replaces both Gestion and Tâches */}
+      {(hasPermission('assign_tasks') || user?.role === 'admin' || user?.role === 'team_chief' || user?.role === 'team_responsible') && (
         <Button 
           variant="ghost" 
           className="text-gray-600 hover:bg-secondary hover:text-white text-sm px-2 xl:px-3"
-          onClick={() => navigate("/tasks")}
+          onClick={() => {
+            if (onShowAdminPanel) {
+              onShowAdminPanel();
+            }
+          }}
         >
-          <CheckSquare className="h-4 w-4 mr-1 xl:mr-2" />
-          <span>Tâches</span>
+          <Target className="h-4 w-4 mr-1 xl:mr-2" />
+          <span>Administration</span>
         </Button>
       )}
 

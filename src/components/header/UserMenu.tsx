@@ -92,13 +92,7 @@ const UserMenu = ({ onShowAdminPanel }: UserMenuProps) => {
         {onShowAdminPanel && (user?.role === "admin" || user?.role === "team_chief" || user?.role === "team_responsible") && (
           <DropdownMenuItem onClick={onShowAdminPanel}>
             <BookOpen className="mr-2 h-4 w-4" />
-            Panneau d'Administration
-          </DropdownMenuItem>
-        )}
-        {onShowAdminPanel && user?.role === "admin" && (
-          <DropdownMenuItem onClick={onShowAdminPanel}>
-            <Users className="mr-2 h-4 w-4" />
-            Gestion des Employés
+            Administration
           </DropdownMenuItem>
         )}
         <DropdownMenuItem onClick={() => navigate("/settings")}>

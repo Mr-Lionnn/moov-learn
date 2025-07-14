@@ -55,17 +55,18 @@ const MobileNavigation = ({
           </Button>
         )}
 
-        {hasPermission('assign_tasks') && (
+        {/* Unified Administration Button - replaces both Tâches and admin access */}
+        {(hasPermission('assign_tasks') || user?.role === 'admin' || user?.role === 'team_chief' || user?.role === 'team_responsible') && (
           <Button 
             variant="ghost" 
             className="justify-start text-gray-600 hover:bg-secondary hover:text-white h-10"
             onClick={() => {
-              navigate("/tasks");
+              onShowAdminPanel && onShowAdminPanel();
               setShowMobileMenu(false);
             }}
           >
             <CheckSquare className="h-4 w-4 mr-3" />
-            Tâches
+            Administration
           </Button>
         )}
 
@@ -81,21 +82,6 @@ const MobileNavigation = ({
           <Users className="h-4 w-4 mr-3" />
           {user?.role === 'admin' ? 'Employés' : 'Équipe'}
         </Button>
-        
-        {/* Module Creation for Mobile */}
-        {(user?.role === 'admin' || user?.role === 'team_chief' || user?.role === 'team_responsible') && (
-          <Button 
-            variant="ghost" 
-            className="justify-start text-white bg-blue-600 hover:bg-blue-700 h-10 font-medium"
-            onClick={() => {
-              onShowAdminPanel && onShowAdminPanel();
-              setShowMobileMenu(false);
-            }}
-          >
-            <BookOpen className="h-4 w-4 mr-3" />
-            Créer Formation / Module
-          </Button>
-        )}
         
         {hasPermission('view_analytics') && (
           <Button 

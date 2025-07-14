@@ -15,7 +15,6 @@ interface HeaderProps {
 const Header = ({ onShowAdminPanel }: HeaderProps) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const [showTasksDropdown, setShowTasksDropdown] = useState(false);
 
   return (
     <>
@@ -25,11 +24,7 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
           <HeaderLogo />
 
           {/* Desktop Navigation */}
-          <DesktopNavigation 
-            onShowAdminPanel={onShowAdminPanel}
-            showTasksDropdown={showTasksDropdown}
-            setShowTasksDropdown={setShowTasksDropdown}
-          />
+          <DesktopNavigation onShowAdminPanel={onShowAdminPanel} />
 
           {/* User Actions */}
           <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
