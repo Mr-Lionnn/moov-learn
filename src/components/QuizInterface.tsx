@@ -154,12 +154,10 @@ const QuizInterface = ({ quiz, onComplete, onAbandon }: QuizInterfaceProps) => {
             <Badge variant="secondary" className="mb-2">
               Question {currentQuestionIndex + 1}
             </Badge>
-            {currentQuestion?.difficulty && (
-              <Badge variant="outline" className="ml-2">
-                {currentQuestion.difficulty === 'easy' ? 'Facile' : 
-                 currentQuestion.difficulty === 'medium' ? 'Moyen' : 'Difficile'}
-              </Badge>
-            )}
+            <Badge variant="outline" className="ml-2">
+              {currentQuestion.difficulty === 'easy' ? 'Facile' : 
+               currentQuestion.difficulty === 'medium' ? 'Moyen' : 'Difficile'}
+            </Badge>
           </div>
 
           <h3 className="text-lg font-semibold mb-6">
