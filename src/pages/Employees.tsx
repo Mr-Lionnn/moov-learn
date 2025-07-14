@@ -13,6 +13,7 @@ import Header from "@/components/Header";
 import TeamManagementModal from "@/components/TeamManagementModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import AdminPanel from "@/components/AdminPanel";
 
 const Employees = () => {
   const { user } = useAuth();
@@ -22,6 +23,7 @@ const Employees = () => {
   const [teamFilter, setTeamFilter] = useState("all");
   const [showTeamManagement, setShowTeamManagement] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
 
   const employees = [
     {
@@ -142,7 +144,7 @@ const Employees = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
-      <Header />
+      <Header onShowAdminPanel={() => setShowAdminPanel(true)} />
       
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
@@ -368,6 +370,10 @@ const Employees = () => {
         isOpen={showTeamManagement}
         onClose={() => setShowTeamManagement(false)}
       />
+
+      {showAdminPanel && (
+        <AdminPanel onClose={() => setShowAdminPanel(false)} />
+      )}
     </div>
   );
 };

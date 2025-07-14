@@ -9,11 +9,13 @@ import { BookOpen, Clock, Users, Award, Search, Play, CheckCircle, Star, Filter 
 import Header from "@/components/Header";
 import FormationSwiper from "@/components/FormationSwiper";
 import { useNavigate } from "react-router-dom";
+import AdminPanel from "@/components/AdminPanel";
 
 const MyTrainings = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
 
   const trainings = [
     {
@@ -146,7 +148,7 @@ const MyTrainings = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
-      <Header />
+      <Header onShowAdminPanel={() => setShowAdminPanel(true)} />
       
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
@@ -261,6 +263,10 @@ const MyTrainings = () => {
           </div>
         )}
       </main>
+
+      {showAdminPanel && (
+        <AdminPanel onClose={() => setShowAdminPanel(false)} />
+      )}
     </div>
   );
 };
