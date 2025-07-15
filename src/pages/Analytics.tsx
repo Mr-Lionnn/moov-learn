@@ -2,9 +2,13 @@
 import Header from "@/components/Header";
 import AnalyticsDashboard from "@/components/AnalyticsDashboard";
 import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Analytics = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   
   // Map English roles to French display names
   const getRoleDisplayName = (role: string) => {
@@ -26,6 +30,15 @@ const Analytics = () => {
     <div className="min-h-screen moov-gradient-subtle">
       <Header />
       <div className="container mx-auto px-4 py-8">
+        <Button 
+          variant="ghost" 
+          onClick={() => navigate("/")}
+          className="mb-4"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Retour au Tableau de Bord
+        </Button>
+        
         <AnalyticsDashboard userRole={userRole} userId={userId} />
       </div>
     </div>

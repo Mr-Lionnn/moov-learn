@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Input } from "@/components/ui/input";
 import { 
   BookOpen, 
   Clock, 
@@ -19,7 +20,8 @@ import {
   Target,
   CalendarDays,
   Timer,
-  BarChart3
+  BarChart3,
+  Search
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { testDataService } from "@/services/testDataService";
@@ -34,6 +36,7 @@ const Index = () => {
   const [tasks, setTasks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     console.log('Index useEffect triggered, user:', user);
@@ -162,7 +165,20 @@ const Index = () => {
 
         <StatsGrid />
 
-        <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 mt-6 sm:mt-8">
+        {/* Search Bar */}
+        <div className="max-w-2xl mx-auto mb-6 sm:mb-8">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Input
+              placeholder="Rechercher formations, modules, créateurs..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 text-center"
+            />
+          </div>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-6 sm:gap-8">
           <section>
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-2 sm:gap-4">
               <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Cours de Formation Disponibles</h2>
@@ -173,18 +189,26 @@ const Index = () => {
             
             <div className="space-y-4">
               {courses.length > 0 ? (
-                courses.slice(0, 3).map((course) => (
-                  course && course.id ? (
-                    <CourseCard
-                      key={course.id}
-                      course={course}
-                      onClick={() => handleCourseClick(course)}
-                    />
-                  ) : null
-                ))
+                courses
+                  .filter(course => 
+                    !searchQuery || 
+                    course.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    course.instructor?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    course.description?.toLowerCase().includes(searchQuery.toLowerCase())
+                  )
+                  .slice(0, 3)
+                  .map((course) => (
+                    course && course.id ? (
+                      <CourseCard
+                        key={course.id}
+                        course={course}
+                        onClick={() => handleCourseClick(course)}
+                      />
+                    ) : null
+                  ))
               ) : (
                 <div className="text-center py-8 text-gray-500">
-                  Aucun cours disponible pour le moment
+                  {searchQuery ? "Aucun cours trouvé pour cette recherche" : "Aucun cours disponible pour le moment"}
                 </div>
               )}
             </div>
@@ -200,74 +224,82 @@ const Index = () => {
             
             <div className="space-y-4">
               {tasks.length > 0 ? (
-                tasks.slice(0, 4).map((task) => (
-                  task && task.id ? (
-                    <Card 
-                      key={task.id} 
-                      className="hover:shadow-md transition-shadow cursor-pointer"
-                      onClick={() => handleTaskClick(task)}
-                    >
-                      <CardContent className="p-4">
-                        <div className="flex items-start gap-3">
-                          {getStatusIcon(task.status)}
-                          <div className="flex-1 min-w-0">
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-1 sm:gap-2">
-                              <h3 className="font-semibold text-sm sm:text-base text-gray-900 truncate">{task.title || 'Tâche sans titre'}</h3>
-                              <Badge className={`${getPriorityColor(task.priority)} border text-xs`}>
-                                {task.priority === "high" ? "Haute" : 
-                                 task.priority === "medium" ? "Moyenne" : "Basse"}
-                              </Badge>
-                            </div>
-                            
-                            <p className="text-xs sm:text-sm text-gray-600 mb-3 line-clamp-2">{task.description || 'Aucune description disponible'}</p>
-                            
-                            {task.status !== "completed" && (
-                              <div className="space-y-1 mb-3">
-                                <div className="flex justify-between text-xs text-gray-500">
-                                  <span>Progression</span>
-                                  <span>{task.progress || 0}%</span>
-                                </div>
-                                <Progress value={task.progress || 0} className="h-1.5" />
+                tasks
+                  .filter(task => 
+                    !searchQuery || 
+                    task.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    task.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    task.category?.toLowerCase().includes(searchQuery.toLowerCase())
+                  )
+                  .slice(0, 4)
+                  .map((task) => (
+                    task && task.id ? (
+                      <Card 
+                        key={task.id} 
+                        className="hover:shadow-md transition-shadow cursor-pointer"
+                        onClick={() => handleTaskClick(task)}
+                      >
+                        <CardContent className="p-4">
+                          <div className="flex items-start gap-3">
+                            {getStatusIcon(task.status)}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-1 sm:gap-2">
+                                <h3 className="font-semibold text-sm sm:text-base text-gray-900 truncate">{task.title || 'Tâche sans titre'}</h3>
+                                <Badge className={`${getPriorityColor(task.priority)} border text-xs`}>
+                                  {task.priority === "high" ? "Haute" : 
+                                   task.priority === "medium" ? "Moyenne" : "Basse"}
+                                </Badge>
                               </div>
-                            )}
-                            
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs mb-3">
-                              <div className="flex items-center gap-1">
-                                <CalendarDays className="h-3 w-3" />
-                                <span>Échéance: {task.deadline ? new Date(task.deadline).toLocaleDateString('fr-FR') : 'Non définie'}</span>
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <Timer className="h-3 w-3" />
-                                <span className={getUrgencyLevel(task.deadline).color}>
-                                  {getUrgencyLevel(task.deadline).text}
-                                </span>
-                              </div>
-                            </div>
-                            
-                            <div className="flex items-center justify-between text-xs text-gray-500">
-                              <span className={`
-                                ${task.status === "completed" ? "text-green-600" :
-                                  task.status === "in-progress" ? "text-blue-600" : 
-                                  task.status === "overdue" ? "text-red-600" : "text-orange-600"}
-                              `}>
-                                {task.category === "mandatory" ? "Obligatoire" : "Optionnel"}
-                              </span>
-                              {task.evaluation && (
-                                <div className="flex items-center gap-1">
-                                  <BarChart3 className="h-3 w-3" />
-                                  <span>Note: {task.evaluation}/100</span>
+                              
+                              <p className="text-xs sm:text-sm text-gray-600 mb-3 line-clamp-2">{task.description || 'Aucune description disponible'}</p>
+                              
+                              {task.status !== "completed" && (
+                                <div className="space-y-1 mb-3">
+                                  <div className="flex justify-between text-xs text-gray-500">
+                                    <span>Progression</span>
+                                    <span>{task.progress || 0}%</span>
+                                  </div>
+                                  <Progress value={task.progress || 0} className="h-1.5" />
                                 </div>
                               )}
+                              
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs mb-3">
+                                <div className="flex items-center gap-1">
+                                  <CalendarDays className="h-3 w-3" />
+                                  <span>Échéance: {task.deadline ? new Date(task.deadline).toLocaleDateString('fr-FR') : 'Non définie'}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <Timer className="h-3 w-3" />
+                                  <span className={getUrgencyLevel(task.deadline).color}>
+                                    {getUrgencyLevel(task.deadline).text}
+                                  </span>
+                                </div>
+                              </div>
+                              
+                              <div className="flex items-center justify-between text-xs text-gray-500">
+                                <span className={`
+                                  ${task.status === "completed" ? "text-green-600" :
+                                    task.status === "in-progress" ? "text-blue-600" : 
+                                    task.status === "overdue" ? "text-red-600" : "text-orange-600"}
+                                `}>
+                                  {task.category === "mandatory" ? "Obligatoire" : "Optionnel"}
+                                </span>
+                                {task.evaluation && (
+                                  <div className="flex items-center gap-1">
+                                    <BarChart3 className="h-3 w-3" />
+                                    <span>Note: {task.evaluation}/100</span>
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ) : null
-                ))
+                        </CardContent>
+                      </Card>
+                    ) : null
+                  ))
               ) : (
                 <div className="text-center py-8 text-gray-500">
-                  Aucune tâche assignée pour le moment
+                  {searchQuery ? "Aucune tâche trouvée pour cette recherche" : "Aucune tâche assignée pour le moment"}
                 </div>
               )}
             </div>

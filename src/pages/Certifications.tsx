@@ -4,10 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Award, Download, Share2, Calendar, CheckCircle } from "lucide-react";
+import { Award, Download, Share2, Calendar, CheckCircle, ArrowLeft } from "lucide-react";
 import Header from "@/components/Header";
+import { useNavigate } from "react-router-dom";
 
 const Certifications = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
 
   const certifications = [
@@ -75,6 +77,15 @@ const Certifications = () => {
       
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate("/")}
+            className="mb-4"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Retour au Tableau de Bord
+          </Button>
+          
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Mes Certifications</h1>
           <p className="text-gray-600">Gérez et partagez vos certifications professionnelles</p>
         </div>

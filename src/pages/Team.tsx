@@ -5,13 +5,15 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
-import { Users, Search, Calendar, Award, BookOpen, Clock, TrendingUp } from "lucide-react";
+import { Users, Search, Calendar, Award, BookOpen, Clock, TrendingUp, ArrowLeft } from "lucide-react";
 import Header from "@/components/Header";
 import UserProfileModal from "@/components/UserProfileModal";
 import { useAuth } from "@/contexts/AuthContext";
 import AdminPanel from "@/components/AdminPanel";
+import { useNavigate } from "react-router-dom";
 
 const Team = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedMemberForProfile, setSelectedMemberForProfile] = useState<any>(null);
   const { user } = useAuth();
@@ -155,6 +157,15 @@ const Team = () => {
       
       <main className="container mx-auto px-3 sm:px-4 lg:px-6 py-6 sm:py-8">
         <div className="mb-6 sm:mb-8">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate("/")}
+            className="mb-4"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Retour au Tableau de Bord
+          </Button>
+          
           <div className="flex flex-col sm:flex-row justify-between items-start gap-3 sm:gap-4">
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">

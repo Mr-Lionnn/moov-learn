@@ -8,14 +8,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, Search, Filter, UserPlus, Mail, Phone, Shield, Settings, Star, ChevronDown } from "lucide-react";
+import { Users, Search, Filter, UserPlus, Mail, Phone, Shield, Settings, Star, ChevronDown, ArrowLeft } from "lucide-react";
 import Header from "@/components/Header";
 import TeamManagementModal from "@/components/TeamManagementModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import AdminPanel from "@/components/AdminPanel";
+import { useNavigate } from "react-router-dom";
 
 const Employees = () => {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
@@ -148,6 +150,15 @@ const Employees = () => {
       
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate("/")}
+            className="mb-4"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Retour au Tableau de Bord
+          </Button>
+          
           <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">Gestion des Employés</h1>

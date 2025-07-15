@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { BookOpen, Clock, Users, Award, Search, Play, CheckCircle, Star, Filter } from "lucide-react";
+import { BookOpen, Clock, Users, Award, Search, Play, CheckCircle, Star, Filter, ArrowLeft } from "lucide-react";
 import Header from "@/components/Header";
 import FormationSwiper from "@/components/FormationSwiper";
 import { useNavigate } from "react-router-dom";
@@ -152,6 +152,15 @@ const MyTrainings = () => {
       
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate("/")}
+            className="mb-4"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Retour au Tableau de Bord
+          </Button>
+          
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Mes Formations</h1>
           <p className="text-gray-600">Suivez vos progrès et continuez votre apprentissage</p>
         </div>
