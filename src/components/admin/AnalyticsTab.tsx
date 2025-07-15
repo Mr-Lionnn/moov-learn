@@ -8,7 +8,7 @@ const AnalyticsTab = () => {
           <CardContent className="p-4">
             <div className="text-center">
               <p className="text-2xl font-bold text-blue-600">1,250</p>
-              <p className="text-sm text-gray-600">Étudiants Actifs</p>
+              <p className="text-sm text-gray-600">Employés Actifs</p>
             </div>
           </CardContent>
         </Card>
