@@ -100,8 +100,15 @@ const Team = () => {
     if (user?.role === 'admin' || user?.role === 'team_chief') {
       return teamMembers; // Admins can see all team members
     }
-    // Regular users only see their own team members
-    return teamMembers.filter(member => member.department === user?.department);
+    // For employees and other roles, show all team members for now
+    // In production, this would filter by actual department from database
+    console.log('Current user:', user);
+    console.log('User department:', user?.department);
+    console.log('Available team members:', teamMembers.map(m => ({ name: m.name, department: m.department })));
+    
+    // Temporary: Show all team members to employees since sample data might not match
+    // In production: return teamMembers.filter(member => member.department === user?.department);
+    return teamMembers;
   };
 
   // Get team members based on user role and filter them

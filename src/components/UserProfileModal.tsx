@@ -47,36 +47,38 @@ const UserProfileModal = ({ isOpen, onClose, member }: UserProfileModalProps) =>
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl max-h-[95vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Profil Utilisateur</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-lg sm:text-xl">Profil Utilisateur</DialogTitle>
+          <DialogDescription className="text-sm">
             Informations détaillées sur ce membre de l'équipe
           </DialogDescription>
         </DialogHeader>
         
-        <div className="space-y-6">
-          <div className="flex items-center gap-6">
+        <div className="space-y-4 sm:space-y-6">
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
             <div className="relative">
-              <Avatar className="h-20 w-20">
+              <Avatar className="h-16 w-16 sm:h-20 sm:w-20">
                 <AvatarImage src={member.avatar} />
-                <AvatarFallback className="text-lg">
+                <AvatarFallback className="text-sm sm:text-lg">
                   {member.name.split(' ').map(n => n[0]).join('')}
                 </AvatarFallback>
               </Avatar>
-              <div className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-2 border-white ${getStatusColor(member.status)}`}></div>
+              <div className={`absolute -bottom-1 -right-1 w-4 h-4 sm:w-6 sm:h-6 rounded-full border-2 border-white ${getStatusColor(member.status)}`}></div>
             </div>
-            <div className="flex-1">
-              <h2 className="text-2xl font-bold">{member.name}</h2>
-              <p className="text-gray-600 text-lg">{member.role}</p>
-              <Badge variant="outline" className="mt-1">{member.department}</Badge>
-              <Badge className="ml-2" variant={member.status === "En ligne" ? "default" : "secondary"}>
-                {member.status}
-              </Badge>
+            <div className="flex-1 text-center sm:text-left">
+              <h2 className="text-xl sm:text-2xl font-bold">{member.name}</h2>
+              <p className="text-gray-600 text-base sm:text-lg">{member.role}</p>
+              <div className="flex flex-wrap justify-center sm:justify-start gap-2 mt-2">
+                <Badge variant="outline">{member.department}</Badge>
+                <Badge variant={member.status === "En ligne" ? "default" : "secondary"}>
+                  {member.status}
+                </Badge>
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <Card>
               <CardContent className="p-4 text-center">
                 <BookOpen className="h-6 w-6 mx-auto mb-2 text-blue-600" />
@@ -131,12 +133,12 @@ const UserProfileModal = ({ isOpen, onClose, member }: UserProfileModalProps) =>
             </div>
           </div>
 
-          <div className="flex gap-3 pt-4 border-t">
+          <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t">
             <Button className="flex-1">
               <MessageCircle className="h-4 w-4 mr-2" />
               Envoyer un message
             </Button>
-            <Button variant="outline">
+            <Button variant="outline" className="flex-1 sm:flex-none">
               Voir l'historique
             </Button>
           </div>

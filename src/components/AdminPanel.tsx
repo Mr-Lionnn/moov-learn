@@ -156,15 +156,15 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
 
   if (showQuizCreator && selectedCourseForQuiz) {
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-lg w-full max-w-6xl max-h-[90vh] overflow-hidden">
-          <div className="flex justify-between items-center p-6 border-b">
-            <h2 className="text-2xl font-bold text-gray-900">Créer un Quiz pour le Cours</h2>
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+        <div className="bg-white rounded-lg w-full max-w-6xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden">
+          <div className="flex justify-between items-center p-3 sm:p-6 border-b">
+            <h2 className="text-lg sm:text-2xl font-bold text-gray-900">Créer un Quiz pour le Cours</h2>
             <Button variant="ghost" size="icon" onClick={() => setShowQuizCreator(false)}>
-              <X className="h-5 w-5" />
+              <X className="h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
           </div>
-          <div className="p-6 overflow-y-auto max-h-[calc(90vh-100px)]">
+          <div className="p-3 sm:p-6 overflow-y-auto max-h-[calc(95vh-80px)] sm:max-h-[calc(90vh-100px)]">
             <QuizCreator
               courseId={selectedCourseForQuiz}
               onSave={handleQuizSave}
@@ -177,41 +177,46 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg w-full max-w-6xl max-h-[90vh] overflow-hidden">
-        <div className="flex justify-between items-center p-6 border-b">
-          <h2 className="text-2xl font-bold text-gray-900">Panneau d'Administration</h2>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+      <div className="bg-white rounded-lg w-full max-w-6xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden">
+        <div className="flex justify-between items-center p-3 sm:p-6 border-b">
+          <h2 className="text-lg sm:text-2xl font-bold text-gray-900">Panneau d'Administration</h2>
           <Button variant="ghost" size="icon" onClick={onClose}>
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4 sm:h-5 sm:w-5" />
           </Button>
         </div>
 
-        <div className="p-6 overflow-y-auto max-h-[calc(90vh-100px)]">
+        <div className="p-3 sm:p-6 overflow-y-auto max-h-[calc(95vh-80px)] sm:max-h-[calc(90vh-100px)]">
           <Tabs defaultValue="tasks" className="w-full">
-            <TabsList className="grid w-full grid-cols-6">
-              <TabsTrigger value="tasks">
-                <CheckSquare className="h-4 w-4 mr-2" />
-                Gestion des Tâches
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1 h-auto p-1">
+              <TabsTrigger value="tasks" className="text-xs sm:text-sm flex-col sm:flex-row gap-1 h-12 sm:h-10">
+                <CheckSquare className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline sm:ml-2">Gestion des</span>
+                <span>Tâches</span>
               </TabsTrigger>
-              <TabsTrigger value="courses">
-                <BookOpen className="h-4 w-4 mr-2" />
-                Gestion des Cours
+              <TabsTrigger value="courses" className="text-xs sm:text-sm flex-col sm:flex-row gap-1 h-12 sm:h-10">
+                <BookOpen className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline sm:ml-2">Gestion des</span>
+                <span>Cours</span>
               </TabsTrigger>
-              <TabsTrigger value="quizzes">
-                <CheckCircle className="h-4 w-4 mr-2" />
-                Quiz & Évaluations
+              <TabsTrigger value="quizzes" className="text-xs sm:text-sm flex-col sm:flex-row gap-1 h-12 sm:h-10">
+                <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline sm:ml-2">Quiz &</span>
+                <span>Évaluations</span>
               </TabsTrigger>
-              <TabsTrigger value="deadlines">
-                <Clock className="h-4 w-4 mr-2" />
-                Délais de Formation
+              <TabsTrigger value="deadlines" className="text-xs sm:text-sm flex-col sm:flex-row gap-1 h-12 sm:h-10">
+                <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline sm:ml-2">Délais de</span>
+                <span>Formation</span>
               </TabsTrigger>
-              <TabsTrigger value="students">
-                <Users className="h-4 w-4 mr-2" />
-                Progrès des Étudiants
+              <TabsTrigger value="students" className="text-xs sm:text-sm flex-col sm:flex-row gap-1 h-12 sm:h-10">
+                <Users className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline sm:ml-2">Progrès des</span>
+                <span>Étudiants</span>
               </TabsTrigger>
-              <TabsTrigger value="analytics">
-                <BarChart3 className="h-4 w-4 mr-2" />
-                Analytiques
+              <TabsTrigger value="analytics" className="text-xs sm:text-sm flex-col sm:flex-row gap-1 h-12 sm:h-10">
+                <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span>Analytiques</span>
               </TabsTrigger>
             </TabsList>
 
@@ -253,8 +258,8 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
 
         {/* Module Creator Modal */}
         {showModuleCreator && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg w-full max-w-7xl max-h-[95vh] overflow-hidden">
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+            <div className="bg-white rounded-lg w-full max-w-7xl max-h-[98vh] sm:max-h-[95vh] overflow-hidden">
               <div className="h-full overflow-y-auto">
                 <ModuleCreator
                   onSave={handleModuleSave}
