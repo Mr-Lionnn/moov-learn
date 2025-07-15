@@ -201,7 +201,7 @@ const FormationSwiper = ({ trainings }: FormationSwiperProps) => {
                           </span>
                           <span className="flex items-center gap-1">
                             <Users className="h-4 w-4" />
-                            {training.studentsCount} étudiants
+                            {training.studentsCount} employés
                           </span>
                            <div className="flex items-center gap-1">
                              <StarRatingDisplay 

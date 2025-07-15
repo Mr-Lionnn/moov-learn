@@ -14,9 +14,9 @@ const StudentProgressTab = ({ studentProgress }: StudentProgressTabProps) => {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Suivi des Progrès des Étudiants</CardTitle>
+          <CardTitle>Suivi des Progrès des Employés</CardTitle>
           <CardDescription>
-            Surveillez les performances et les progrès de tous les étudiants, incluant les résultats aux quiz
+            Surveillez les performances et les progrès de tous les tudia , incluant les résultats aux quiz
           </CardDescription>
         </CardHeader>
         <CardContent>

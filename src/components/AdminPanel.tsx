@@ -212,7 +212,7 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
               <TabsTrigger value="students" className="text-xs sm:text-sm flex-col sm:flex-row gap-1 h-12 sm:h-10">
                 <Users className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="hidden sm:inline sm:ml-2">Progrès des</span>
-                <span>Étudiants</span>
+                <span>Employés</span>
               </TabsTrigger>
               <TabsTrigger value="analytics" className="text-xs sm:text-sm flex-col sm:flex-row gap-1 h-12 sm:h-10">
                 <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4" />

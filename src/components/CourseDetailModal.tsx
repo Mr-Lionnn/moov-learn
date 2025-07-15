@@ -66,7 +66,7 @@ const CourseDetailModal = ({ isOpen, onClose, course }: CourseDetailModalProps) 
             </div>
             <div className="flex items-center gap-1">
               <Users className="h-4 w-4" />
-              <span>{course.students} étudiants</span>
+              <span>{course.students} employés</span>
             </div>
             <Badge variant="outline">{course.level}</Badge>
           </div>
