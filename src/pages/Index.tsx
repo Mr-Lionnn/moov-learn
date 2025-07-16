@@ -166,14 +166,14 @@ const Index = () => {
         <StatsGrid />
 
         {/* Search Bar */}
-        <div className="max-w-2xl mx-auto mb-6 sm:mb-8">
+        <div className="max-w-2xl mx-auto mb-12 mt-8">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
               placeholder="Rechercher formations, modules, créateurs..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 text-center"
+              className="pl-10 text-center h-12 text-base shadow-sm border-2 focus:border-primary/50"
             />
           </div>
         </div>
