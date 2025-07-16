@@ -53,7 +53,7 @@ const QuizManagementTab = ({ failedAttempts, questionAnalytics, onCreateQuiz }: 
 
       <Card>
         <CardHeader>
-          <CardTit des Questions</CardTitle>
+          <CardTitle>Analyse des Questions</CardTitle>
           <CardDescription>Questions avec taux d'échec élevé nécessitant révision</CardDescription>
         </CardHeader>
         <CardContent>
