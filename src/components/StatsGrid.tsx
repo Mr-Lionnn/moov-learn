@@ -25,8 +25,8 @@ const StatsGrid = ({ userRole = "student" }: StatsGridProps) => {
     },
     {
       title: "Certifications",
-      value: "3 Module Réussi",
-      description: "Obtenues",
+      value: "3 Module",
+      description: "Réussi",
       icon: Trophy,
       color: "text-yellow-600",
       bgColor: "bg-yellow-100"
