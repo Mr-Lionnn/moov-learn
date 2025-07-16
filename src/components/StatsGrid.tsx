@@ -17,7 +17,7 @@ const StatsGrid = ({ userRole = "student" }: StatsGridProps) => {
     },
     {
       title: "Heures Formation",
-      value: "32,5",
+      value: "32,5 h",
       description: "Ce mois-ci",
       icon: Clock,
       color: "text-green-600",
