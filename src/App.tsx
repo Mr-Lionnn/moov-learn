@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import Index from "./pages/Index";
 import Course from "./pages/Course";
 import CreateCourse from "./pages/CreateCourse";
+import CompletionConfirmation from "./components/CompletionConfirmation";
 import MyTrainings from "./pages/MyTrainings";
 import Employees from "./pages/Employees";
 import Analytics from "./pages/Analytics";
@@ -66,6 +67,11 @@ const App = () => (
                 <Route path="/create-course" element={
                   <ProtectedRoute>
                     <CreateCourse />
+                  </ProtectedRoute>
+                } />
+                <Route path="/course-completion" element={
+                  <ProtectedRoute>
+                    <CompletionConfirmation />
                   </ProtectedRoute>
                 } />
                 <Route path="/my-trainings" element={

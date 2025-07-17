@@ -19,8 +19,8 @@ const CreateCourse = () => {
       localStorage.setItem('moov_test_courses', JSON.stringify(existingCourses));
       
       console.log('✅ Course saved successfully:', courseData);
-      alert(`Formation "${courseData.title}" créée avec succès!`);
-      navigate('/'); // Return to dashboard
+      // Navigate to confirmation page with course data
+      navigate('/course-completion', { state: { courseData } });
     } catch (error) {
       console.error('Error saving course:', error);
       alert('Erreur lors de la création de la formation');
