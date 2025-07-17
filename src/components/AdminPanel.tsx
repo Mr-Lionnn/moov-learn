@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { X, Users, BookOpen, BarChart3, Clock, CheckCircle, CheckSquare } from "lucide-react";
@@ -19,6 +20,7 @@ import TaskManagementTab from "./admin/TaskManagementTab";
 import { Team } from "@/types/content";
 
 const AdminPanel = ({ onClose }: AdminPanelProps) => {
+  const navigate = useNavigate();
   const { setModuleDeadline, user } = useAuth();
   const [showQuizCreator, setShowQuizCreator] = useState(false);
   const [showModuleCreator, setShowModuleCreator] = useState(false);
@@ -184,23 +186,6 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
   // Check if user has permission to upload content
   const canUploadContent = user?.role === 'admin' || user?.role === 'team_chief' || user?.role === 'team_responsible';
 
-  // Show course creation workflow if active
-  if (showCourseWorkflow) {
-    return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
-        <div className="bg-white rounded-lg w-full max-w-7xl max-h-[98vh] sm:max-h-[95vh] overflow-hidden">
-          <div className="h-full overflow-y-auto">
-            <CourseCreationWorkflow
-              onSave={handleCourseWorkflowSave}
-              onCancel={() => setShowCourseWorkflow(false)}
-              teams={mockTeams}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   if (showQuizCreator && selectedCourseForQuiz) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
@@ -282,7 +267,10 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
                       Workflow guidé en 3 étapes : Structure, Évaluations, et Finalisation
                     </p>
                     <Button 
-                      onClick={() => setShowCourseWorkflow(true)} 
+                      onClick={() => {
+                        onClose();
+                        navigate('/create-course');
+                      }} 
                       size="lg"
                       className="moov-gradient text-white"
                       disabled={!canUploadContent}
