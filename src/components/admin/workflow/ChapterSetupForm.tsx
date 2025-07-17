@@ -18,9 +18,11 @@ import {
   Music, 
   Image,
   Clock,
-  CheckCircle
+  CheckCircle,
+  Eye
 } from "lucide-react";
 import { Chapter } from "../CourseCreationWorkflow";
+import FilePreview from "../../FilePreview";
 
 interface ChapterSetupFormProps {
   chapters: Chapter[];
@@ -290,7 +292,15 @@ const ChapterSetupForm = ({ chapters, onUpdate }: ChapterSetupFormProps) => {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => navigate('/upload-files')}
+                            onClick={() => {
+                              // Store the chapter context for file association
+                              sessionStorage.setItem('uploadContext', JSON.stringify({
+                                chapterId: chapter.id,
+                                chapterTitle: chapter.title,
+                                returnPath: '/create-course'
+                              }));
+                              navigate('/upload-files');
+                            }}
                           >
                             <Upload className="h-4 w-4 mr-2" />
                             Télécharger des Fichiers
@@ -298,16 +308,21 @@ const ChapterSetupForm = ({ chapters, onUpdate }: ChapterSetupFormProps) => {
                         </div>
                         
                         {chapter.files.length > 0 && (
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            {chapter.files.map((file) => (
-                              <div key={file.id} className="flex items-center gap-2 p-2 border rounded">
-                                <Icon className="h-4 w-4 text-gray-500" />
-                                <div className="flex-1 min-w-0">
-                                  <p className="text-sm font-medium truncate">{file.name}</p>
-                                  <p className="text-xs text-gray-500">{file.size}</p>
-                                </div>
-                              </div>
-                            ))}
+                          <div className="space-y-4">
+                            <h4 className="text-sm font-medium">Fichiers associés ({chapter.files.length}):</h4>
+                            <div className="space-y-3">
+                              {chapter.files.map((file) => (
+                                <FilePreview
+                                  key={file.id}
+                                  file={file}
+                                  onRemove={(fileId) => {
+                                    const updatedFiles = chapter.files.filter(f => f.id !== fileId);
+                                    updateChapter(chapter.id, { files: updatedFiles });
+                                  }}
+                                  showActions={true}
+                                />
+                              ))}
+                            </div>
                           </div>
                         )}
                       </div>

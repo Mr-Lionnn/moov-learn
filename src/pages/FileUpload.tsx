@@ -202,9 +202,22 @@ const FileUpload = () => {
         description: `${filesToUpload.length} fichier(s) téléchargé(s) avec succès`,
       });
       
+      // Get the return path from context
+      const uploadContext = sessionStorage.getItem('uploadContext');
+      let returnPath = '/create-course';
+      
+      if (uploadContext) {
+        try {
+          const context = JSON.parse(uploadContext);
+          returnPath = context.returnPath || '/create-course';
+        } catch (error) {
+          console.error('Error parsing upload context:', error);
+        }
+      }
+      
       // Wait a bit then navigate back
       setTimeout(() => {
-        navigate(-1);
+        navigate(returnPath);
       }, 1000);
       
     } catch (error) {
@@ -225,7 +238,11 @@ const FileUpload = () => {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => navigate(-1)}
+              onClick={() => {
+                // Clear upload context when going back
+                sessionStorage.removeItem('uploadContext');
+                navigate(-1);
+              }}
               className="flex items-center gap-2"
             >
               <ArrowLeft className="h-4 w-4" />

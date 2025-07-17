@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -65,6 +66,7 @@ const phases = [
 ];
 
 const CourseCreationWorkflow = ({ onSave, onCancel, teams }: CourseCreationWorkflowProps) => {
+  const location = useLocation();
   const [currentPhase, setCurrentPhase] = useState(1);
   const [courseData, setCourseData] = useState<CourseData>({
     title: "",
@@ -77,6 +79,64 @@ const CourseCreationWorkflow = ({ onSave, onCancel, teams }: CourseCreationWorkf
     chapters: [],
     quizzes: []
   });
+
+  // Load from session storage on component mount
+  useEffect(() => {
+    const savedData = sessionStorage.getItem('courseCreationData');
+    if (savedData) {
+      try {
+        const parsedData = JSON.parse(savedData);
+        setCourseData(parsedData);
+      } catch (error) {
+        console.error('Error loading course data from session storage:', error);
+      }
+    }
+  }, []);
+
+  // Save to session storage whenever course data changes
+  useEffect(() => {
+    sessionStorage.setItem('courseCreationData', JSON.stringify(courseData));
+  }, [courseData]);
+
+  // Handle file upload integration
+  useEffect(() => {
+    const uploadedFiles = sessionStorage.getItem('uploadedFiles');
+    if (uploadedFiles) {
+      try {
+        const files: ContentFile[] = JSON.parse(uploadedFiles);
+        if (files.length > 0) {
+          // Clear uploaded files from session storage
+          sessionStorage.removeItem('uploadedFiles');
+          
+          // Find the chapter that needs these files
+          const chapterToUpdate = courseData.chapters.find(chapter => 
+            chapter.contentType !== 'text' && 
+            chapter.files.length === 0
+          );
+          
+          if (chapterToUpdate) {
+            const updatedChapters = courseData.chapters.map(chapter =>
+              chapter.id === chapterToUpdate.id
+                ? { ...chapter, files: [...chapter.files, ...files] }
+                : chapter
+            );
+            setCourseData(prev => ({ ...prev, chapters: updatedChapters }));
+          }
+        }
+      } catch (error) {
+        console.error('Error processing uploaded files:', error);
+      }
+    }
+  }, [location.pathname, courseData.chapters]);
+
+  // Clear session storage when component unmounts (completed or cancelled)
+  useEffect(() => {
+    return () => {
+      if (location.pathname !== '/upload-files') {
+        sessionStorage.removeItem('courseCreationData');
+      }
+    };
+  }, [location.pathname]);
 
   const progress = (currentPhase / phases.length) * 100;
 
