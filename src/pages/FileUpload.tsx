@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { ContentFile, Team } from '@/types/content';
 import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 
 interface UploadFile {
   id: string;
@@ -40,6 +41,7 @@ const FileUpload = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, hasPermission } = useAuth();
+  const { toast } = useToast();
   const [files, setFiles] = useState<UploadFile[]>([]);
   const [dragOver, setDragOver] = useState(false);
 
@@ -154,33 +156,65 @@ const FileUpload = () => {
     }
 
     const filesToUpload = files.filter(f => !f.uploaded);
+    if (filesToUpload.length === 0) return;
     
-    for (const file of filesToUpload) {
-      updateFile(file.id, { uploading: true, error: undefined });
-      
-      try {
-        // Simulate upload
-        await new Promise(resolve => setTimeout(resolve, 2000));
+    try {
+      // Process all files
+      for (const file of filesToUpload) {
+        updateFile(file.id, { uploading: true, error: undefined });
         
-        updateFile(file.id, { uploading: false, uploaded: true });
-      } catch (error) {
-        updateFile(file.id, { 
-          uploading: false, 
-          error: 'Erreur lors du téléchargement' 
-        });
+        try {
+          // Simulate upload process
+          await new Promise(resolve => setTimeout(resolve, 1500));
+          
+          // Create ContentFile object for session storage
+          const contentFile: ContentFile = {
+            id: file.id,
+            name: file.name,
+            type: file.type,
+            size: file.size,
+            url: URL.createObjectURL(file.file),
+            author: user?.name || 'Utilisateur',
+            uploadDate: new Date().toISOString(),
+            downloads: 0,
+            teamIds: file.selectedTeams,
+            category: file.category,
+            description: file.description
+          };
+          
+          // Store in session storage
+          const existingFiles = JSON.parse(sessionStorage.getItem('uploadedFiles') || '[]');
+          existingFiles.push(contentFile);
+          sessionStorage.setItem('uploadedFiles', JSON.stringify(existingFiles));
+          
+          updateFile(file.id, { uploading: false, uploaded: true });
+        } catch (error) {
+          updateFile(file.id, { 
+            uploading: false, 
+            error: 'Erreur lors du téléchargement' 
+          });
+        }
       }
-    }
-
-    // Navigate back after successful upload
-    if (files.every(f => f.uploaded)) {
+      
+      // Show success message
+      toast({
+        title: "Téléchargement réussi",
+        description: `${filesToUpload.length} fichier(s) téléchargé(s) avec succès`,
+      });
+      
+      // Wait a bit then navigate back
       setTimeout(() => {
         navigate(-1);
       }, 1000);
+      
+    } catch (error) {
+      console.error('Upload process failed:', error);
     }
   };
 
   const canUpload = hasPermission('upload_files') || hasPermission('manage_files');
   const hasValidFiles = files.some(f => !f.uploaded && f.selectedTeams.length > 0);
+  const isUploading = files.some(f => f.uploading);
 
   return (
     <div className="min-h-screen bg-background">
@@ -366,9 +400,9 @@ const FileUpload = () => {
                   </Button>
                   <Button 
                     onClick={uploadFiles}
-                    disabled={!canUpload || !hasValidFiles || files.every(f => f.uploaded)}
+                    disabled={!canUpload || !hasValidFiles || files.every(f => f.uploaded) || isUploading}
                   >
-                    Télécharger
+                    {isUploading ? 'Téléchargement...' : 'Télécharger'}
                   </Button>
                 </div>
               </div>
