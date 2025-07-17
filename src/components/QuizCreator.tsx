@@ -14,12 +14,14 @@ interface QuizCreatorProps {
   courseId: string;
   onSave: (quiz: Quiz) => void;
   onCancel: () => void;
+  initialQuiz?: Quiz;
+  suggestedTitle?: string;
 }
 
-const QuizCreator = ({ courseId, onSave, onCancel }: QuizCreatorProps) => {
-  const [quiz, setQuiz] = useState<Partial<Quiz>>({
+const QuizCreator = ({ courseId, onSave, onCancel, initialQuiz, suggestedTitle }: QuizCreatorProps) => {
+  const [quiz, setQuiz] = useState<Partial<Quiz>>(initialQuiz || {
     courseId,
-    title: "",
+    title: suggestedTitle || "",
     description: "",
     passingGrade: 70,
     timeLimit: 30,

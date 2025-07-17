@@ -10,16 +10,19 @@ import { LearningModule } from "@/types/module";
 import { AdminPanelProps } from "@/types/admin";
 import { useAdminData } from "@/hooks/useAdminData";
 import CourseCreationTab from "./admin/CourseCreationTab";
+import CourseCreationWorkflow from "./admin/CourseCreationWorkflow";
 import QuizManagementTab from "./admin/QuizManagementTab";
 import DeadlineManagementTab from "./admin/DeadlineManagementTab";
 import StudentProgressTab from "./admin/StudentProgressTab";
 import AnalyticsTab from "./admin/AnalyticsTab";
 import TaskManagementTab from "./admin/TaskManagementTab";
+import { Team } from "@/types/content";
 
 const AdminPanel = ({ onClose }: AdminPanelProps) => {
   const { setModuleDeadline, user } = useAuth();
   const [showQuizCreator, setShowQuizCreator] = useState(false);
   const [showModuleCreator, setShowModuleCreator] = useState(false);
+  const [showCourseWorkflow, setShowCourseWorkflow] = useState(false);
   const [selectedCourseForQuiz, setSelectedCourseForQuiz] = useState<string | null>(null);
   
   const {
@@ -151,8 +154,52 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
     setShowQuizCreator(true);
   };
 
+  const handleCourseWorkflowSave = (courseData: any) => {
+    console.log("Course workflow saved:", courseData);
+    
+    // Save to localStorage
+    try {
+      const existingCourses = JSON.parse(localStorage.getItem('moov_test_courses') || '[]');
+      existingCourses.push(courseData);
+      localStorage.setItem('moov_test_courses', JSON.stringify(existingCourses));
+      
+      console.log('✅ Course saved successfully:', courseData);
+      alert(`Formation "${courseData.title}" créée avec succès!`);
+    } catch (error) {
+      console.error('Error saving course:', error);
+      alert('Erreur lors de la création de la formation');
+    }
+    
+    setShowCourseWorkflow(false);
+  };
+
+  // Mock teams data for the workflow
+  const mockTeams: Team[] = [
+    { id: 1, name: "Équipe Développement", memberCount: 8, description: "Équipe de développement", leaderId: 1, createdAt: new Date().toISOString() },
+    { id: 2, name: "Équipe Marketing", memberCount: 5, description: "Équipe marketing", leaderId: 2, createdAt: new Date().toISOString() },
+    { id: 3, name: "Équipe Support", memberCount: 6, description: "Équipe support", leaderId: 3, createdAt: new Date().toISOString() },
+    { id: 4, name: "Équipe Direction", memberCount: 3, description: "Direction", leaderId: 4, createdAt: new Date().toISOString() }
+  ];
+
   // Check if user has permission to upload content
   const canUploadContent = user?.role === 'admin' || user?.role === 'team_chief' || user?.role === 'team_responsible';
+
+  // Show course creation workflow if active
+  if (showCourseWorkflow) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+        <div className="bg-white rounded-lg w-full max-w-7xl max-h-[98vh] sm:max-h-[95vh] overflow-hidden">
+          <div className="h-full overflow-y-auto">
+            <CourseCreationWorkflow
+              onSave={handleCourseWorkflowSave}
+              onCancel={() => setShowCourseWorkflow(false)}
+              teams={mockTeams}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (showQuizCreator && selectedCourseForQuiz) {
     return (
@@ -225,13 +272,36 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
             </TabsContent>
 
             <TabsContent value="courses" className="space-y-6">
-              <CourseCreationTab
-                newCourse={newCourse}
-                setNewCourse={setNewCourse}
-                onCreateCourse={handleCreateCourse}
-                onShowModuleCreator={() => setShowModuleCreator(true)}
-                canUploadContent={canUploadContent}
-              />
+              <div className="space-y-6">
+                {/* New Unified Course Creation Button */}
+                <div className="text-center space-y-4 p-8 border-2 border-dashed border-gray-300 rounded-lg">
+                  <BookOpen className="h-12 w-12 text-gray-400 mx-auto" />
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Créer une Formation Complète</h3>
+                    <p className="text-gray-600 mb-4">
+                      Workflow guidé en 3 étapes : Structure, Évaluations, et Finalisation
+                    </p>
+                    <Button 
+                      onClick={() => setShowCourseWorkflow(true)} 
+                      size="lg"
+                      className="moov-gradient text-white"
+                      disabled={!canUploadContent}
+                    >
+                      <BookOpen className="h-4 w-4 mr-2" />
+                      Créer une Formation
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Legacy Course Creation (kept for compatibility) */}
+                <CourseCreationTab
+                  newCourse={newCourse}
+                  setNewCourse={setNewCourse}
+                  onCreateCourse={handleCreateCourse}
+                  onShowModuleCreator={() => setShowModuleCreator(true)}
+                  canUploadContent={canUploadContent}
+                />
+              </div>
             </TabsContent>
 
             <TabsContent value="quizzes" className="space-y-6">

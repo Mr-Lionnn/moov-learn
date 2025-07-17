@@ -143,7 +143,14 @@ const CourseCreationTab = ({
               <BookOpen className="h-4 w-4 mr-2" />
               Module Avancé
             </Button>
-            <Button variant="outline" disabled={!canUploadContent}>
+            <Button 
+              variant="outline" 
+              disabled={!canUploadContent}
+              onClick={() => {
+                // This will be handled by the new workflow
+                alert("Utilisez le nouveau workflow 'Créer une Formation' pour télécharger du contenu avec l'interface améliorée !");
+              }}
+            >
               <Upload className="h-4 w-4 mr-2" />
               Télécharger du Contenu
             </Button>
