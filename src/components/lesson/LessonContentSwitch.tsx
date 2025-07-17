@@ -3,7 +3,7 @@ import MediaPlayer from "@/components/MediaPlayer";
 import TextLessonContent from "./TextLessonContent";
 import QuizPlayer from "@/components/QuizPlayer";
 import ModuleRating, { ModuleRatingData } from "@/components/ModuleRating";
-import CompletionConfirmation from "@/components/CompletionConfirmation";
+import LessonCompletionConfirmation from "@/components/LessonCompletionConfirmation";
 import { sampleQuiz } from "@/data/sampleQuiz";
 import { Lesson } from "@/types/lesson";
 import { QuizResult } from "@/types/quiz";
@@ -55,7 +55,7 @@ const LessonContentSwitch = ({
 
   if (showConfirmation) {
     return (
-      <CompletionConfirmation
+      <LessonCompletionConfirmation
         moduleTitle={lesson.title}
         onReturnHome={handleConfirmationComplete}
         onStartNewTraining={handleConfirmationComplete}
