@@ -17,6 +17,7 @@ import Team from "./pages/Team";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
 import Files from "./pages/Files";
+import FileUpload from "./pages/FileUpload";
 import Tasks from "./pages/Tasks";
 import NotFound from "./pages/NotFound";
 import SessionWrapper from "./components/SessionWrapper";
@@ -112,6 +113,11 @@ const App = () => (
                 <Route path="/files" element={
                   <ProtectedRoute>
                     <Files />
+                  </ProtectedRoute>
+                } />
+                <Route path="/upload-files" element={
+                  <ProtectedRoute>
+                    <FileUpload />
                   </ProtectedRoute>
                 } />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

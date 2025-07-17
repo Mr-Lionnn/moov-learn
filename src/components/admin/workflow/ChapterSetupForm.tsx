@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,7 +25,6 @@ import { Chapter } from "../CourseCreationWorkflow";
 interface ChapterSetupFormProps {
   chapters: Chapter[];
   onUpdate: (chapters: Chapter[]) => void;
-  onUploadContent: (chapterId: string) => void;
 }
 
 const contentTypeIcons = {
@@ -43,7 +43,8 @@ const contentTypeLabels = {
   mixed: "Contenu Mixte"
 };
 
-const ChapterSetupForm = ({ chapters, onUpdate, onUploadContent }: ChapterSetupFormProps) => {
+const ChapterSetupForm = ({ chapters, onUpdate }: ChapterSetupFormProps) => {
+  const navigate = useNavigate();
   const [editingChapter, setEditingChapter] = useState<string | null>(null);
   const [newChapterTitle, setNewChapterTitle] = useState("");
 
@@ -289,7 +290,7 @@ const ChapterSetupForm = ({ chapters, onUpdate, onUploadContent }: ChapterSetupF
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => onUploadContent(chapter.id)}
+                            onClick={() => navigate('/upload-files')}
                           >
                             <Upload className="h-4 w-4 mr-2" />
                             Télécharger des Fichiers

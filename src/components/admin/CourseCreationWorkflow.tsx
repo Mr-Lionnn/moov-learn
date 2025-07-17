@@ -22,7 +22,6 @@ import BasicInfoForm from "./workflow/BasicInfoForm";
 import ChapterSetupForm from "./workflow/ChapterSetupForm";
 import QuizCreationForm from "./workflow/QuizCreationForm";
 import CourseReviewForm from "./workflow/CourseReviewForm";
-import FileUploader from "@/components/content/FileUploader";
 import { ContentFile, Team } from "@/types/content";
 import { Quiz } from "@/types/quiz";
 
@@ -78,8 +77,6 @@ const CourseCreationWorkflow = ({ onSave, onCancel, teams }: CourseCreationWorkf
     chapters: [],
     quizzes: []
   });
-  const [showFileUploader, setShowFileUploader] = useState(false);
-  const [currentChapterForUpload, setCurrentChapterForUpload] = useState<string | null>(null);
 
   const progress = (currentPhase / phases.length) * 100;
 
@@ -109,23 +106,6 @@ const CourseCreationWorkflow = ({ onSave, onCancel, teams }: CourseCreationWorkf
     handleNext();
   };
 
-  const handleFileUpload = (files: ContentFile[]) => {
-    if (currentChapterForUpload) {
-      const updatedChapters = courseData.chapters.map(chapter => 
-        chapter.id === currentChapterForUpload 
-          ? { ...chapter, files: [...chapter.files, ...files] }
-          : chapter
-      );
-      setCourseData(prev => ({ ...prev, chapters: updatedChapters }));
-    }
-    setShowFileUploader(false);
-    setCurrentChapterForUpload(null);
-  };
-
-  const openFileUploader = (chapterId: string) => {
-    setCurrentChapterForUpload(chapterId);
-    setShowFileUploader(true);
-  };
 
   const handleFinalSave = () => {
     const finalCourse: CourseData = {
@@ -214,7 +194,6 @@ const CourseCreationWorkflow = ({ onSave, onCancel, teams }: CourseCreationWorkf
               <ChapterSetupForm
                 chapters={courseData.chapters}
                 onUpdate={handleChapterUpdate}
-                onUploadContent={openFileUploader}
               />
             </div>
           )}
@@ -283,13 +262,6 @@ const CourseCreationWorkflow = ({ onSave, onCancel, teams }: CourseCreationWorkf
         </div>
       </div>
 
-      {/* File Uploader Modal */}
-      <FileUploader
-        isOpen={showFileUploader}
-        onClose={() => setShowFileUploader(false)}
-        onUpload={handleFileUpload}
-        teams={teams}
-      />
     </div>
   );
 };
