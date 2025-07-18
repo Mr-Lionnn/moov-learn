@@ -101,33 +101,33 @@ const CourseCreationWorkflow = ({ onSave, onCancel, teams }: CourseCreationWorkf
   // Handle file upload integration
   useEffect(() => {
     const uploadedFiles = sessionStorage.getItem('uploadedFiles');
-    if (uploadedFiles) {
+    const uploadContext = sessionStorage.getItem('uploadContext');
+    
+    if (uploadedFiles && uploadContext) {
       try {
         const files: ContentFile[] = JSON.parse(uploadedFiles);
-        if (files.length > 0) {
+        const context = JSON.parse(uploadContext);
+        
+        if (files.length > 0 && context.chapterId) {
           // Clear uploaded files from session storage
           sessionStorage.removeItem('uploadedFiles');
+          sessionStorage.removeItem('uploadContext');
           
-          // Find the chapter that needs these files
-          const chapterToUpdate = courseData.chapters.find(chapter => 
-            chapter.contentType !== 'text' && 
-            chapter.files.length === 0
-          );
-          
-          if (chapterToUpdate) {
-            const updatedChapters = courseData.chapters.map(chapter =>
-              chapter.id === chapterToUpdate.id
+          // Find the specific chapter that needs these files
+          setCourseData(prev => {
+            const updatedChapters = prev.chapters.map(chapter =>
+              chapter.id === context.chapterId
                 ? { ...chapter, files: [...chapter.files, ...files] }
                 : chapter
             );
-            setCourseData(prev => ({ ...prev, chapters: updatedChapters }));
-          }
+            return { ...prev, chapters: updatedChapters };
+          });
         }
       } catch (error) {
         console.error('Error processing uploaded files:', error);
       }
     }
-  }, [location.pathname, courseData.chapters]);
+  }, [location.pathname]);
 
   // Clear session storage when component unmounts (completed or cancelled)
   useEffect(() => {
