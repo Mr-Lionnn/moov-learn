@@ -14,9 +14,11 @@ import {
   Image,
   Target,
   Award,
-  Play
+  Play,
+  Eye
 } from "lucide-react";
 import { CourseData } from "../CourseCreationWorkflow";
+import CoursePreview from "./CoursePreview";
 
 interface CourseReviewFormProps {
   courseData: CourseData;
@@ -215,6 +217,22 @@ const CourseReviewForm = ({ courseData, onFinalSave }: CourseReviewFormProps) =>
         </Card>
       )}
 
+      {/* Interactive Preview */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Eye className="h-5 w-5" />
+            Aperçu Interactif
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-600 mb-4">
+            Prévisualisez votre formation exactement comme elle apparaîtra aux apprenants.
+          </p>
+          <CoursePreview courseData={courseData} />
+        </CardContent>
+      </Card>
+
       {/* Readiness Check */}
       <Card className={isReadyToPublish ? "border-green-200 bg-green-50" : "border-yellow-200 bg-yellow-50"}>
         <CardHeader>
@@ -229,14 +247,17 @@ const CourseReviewForm = ({ courseData, onFinalSave }: CourseReviewFormProps) =>
         </CardHeader>
         <CardContent>
           {isReadyToPublish ? (
-            <div>
-              <p className="text-green-800 mb-4">
+            <div className="space-y-4">
+              <p className="text-green-800">
                 ✅ Votre formation est prête à être publiée ! Tous les éléments essentiels sont en place.
               </p>
-              <Button onClick={onFinalSave} size="lg" className="bg-green-600 hover:bg-green-700 text-white">
-                <Play className="h-4 w-4 mr-2" />
-                Publier la Formation
-              </Button>
+              <div className="flex gap-3">
+                <CoursePreview courseData={courseData} />
+                <Button onClick={onFinalSave} size="lg" className="bg-green-600 hover:bg-green-700 text-white">
+                  <Play className="h-4 w-4 mr-2" />
+                  Publier la Formation
+                </Button>
+              </div>
             </div>
           ) : (
             <div>
