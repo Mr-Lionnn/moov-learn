@@ -8,16 +8,10 @@ import {
   PlayCircle,
   BookOpen,
   Headphones,
-  Target
+  Target,
+  FileText
 } from "lucide-react";
-
-interface Lesson {
-  id: number;
-  title: string;
-  duration: string;
-  completed: boolean;
-  type: "video" | "quiz" | "text" | "audio";
-}
+import { Lesson } from "@/types/lesson";
 
 interface CourseCurriculumProps {
   lessons: Lesson[];
@@ -44,6 +38,8 @@ const CourseCurriculum = ({
         return <BookOpen className="h-4 w-4 text-orange-600" />;
       case "audio":
         return <Headphones className="h-4 w-4 text-green-600" />;
+      case "document":
+        return <FileText className="h-4 w-4 text-indigo-600" />;
       default:
         return <PlayCircle className="h-4 w-4 text-gray-600" />;
     }
@@ -59,6 +55,8 @@ const CourseCurriculum = ({
         return "Lecture";
       case "audio":
         return "Audio";
+      case "document":
+        return "Document";
       default:
         return "Contenu";
     }

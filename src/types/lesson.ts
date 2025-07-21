@@ -3,7 +3,7 @@ export interface Lesson {
   title: string;
   duration: string;
   completed: boolean;
-  type: "video" | "quiz" | "text" | "audio";
+  type: "video" | "quiz" | "text" | "audio" | "document";
 }
 
 export interface LessonContentProps {

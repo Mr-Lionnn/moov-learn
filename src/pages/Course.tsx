@@ -60,6 +60,21 @@ const Course = () => {
         { id: 4, title: "Gestion des Conflits", duration: "45:20", completed: false, type: "video" },
         { id: 5, title: "Feedback et Coaching", duration: "35:15", completed: false, type: "audio" },
         { id: 6, title: "Évaluation Leadership", duration: "30:00", completed: false, type: "quiz" }
+      ],
+      'formation-moov': [
+        { id: 1, title: "Argumentaire de Vente Voix", duration: "25:00", completed: false, type: "document", 
+          fileName: "ARGUMENTAIRE DE VENTE VOIX.docx", fileType: "docx" },
+        { id: 2, title: "Argumentaire Commerciaux Front Office", duration: "20:00", completed: false, type: "document", 
+          fileName: "Argumentaire de vente commerciaux front office (AgenceMoovshops).docx", fileType: "docx" },
+        { id: 3, title: "Moov Intelligence Artificielle - Vidéo", duration: "15:30", completed: false, type: "video", 
+          fileName: "MIA.mp4", fileType: "mp4" },
+        { id: 4, title: "Guide Intelligence Artificielle", duration: "30:00", completed: false, type: "document", 
+          fileName: "Moov Intelligence Artificielle.pdf", fileType: "pdf" },
+        { id: 5, title: "Présentation Services SVA", duration: "25:00", completed: false, type: "document", 
+          fileName: "PRESENTATION SVA.pdf", fileType: "pdf" },
+        { id: 6, title: "Services Voix SMS Data", duration: "35:00", completed: false, type: "document", 
+          fileName: "SERVICE VOIX SMS DATA.pptx", fileType: "pptx" },
+        { id: 7, title: "Quiz Mensuel Formation Moov", duration: "30:00", completed: false, type: "quiz" }
       ]
     };
 

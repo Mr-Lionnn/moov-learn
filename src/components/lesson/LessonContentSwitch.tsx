@@ -4,7 +4,9 @@ import TextLessonContent from "./TextLessonContent";
 import QuizPlayer from "@/components/QuizPlayer";
 import ModuleRating, { ModuleRatingData } from "@/components/ModuleRating";
 import LessonCompletionConfirmation from "@/components/LessonCompletionConfirmation";
+import MoovDocumentContent from "./MoovDocumentContent";
 import { sampleQuiz } from "@/data/sampleQuiz";
+import { MoovCourseQuiz } from "@/MoovCourse/MoovCourseQuiz";
 import { Lesson } from "@/types/lesson";
 import { QuizResult } from "@/types/quiz";
 import { ratingService } from "@/services/ratingService";
@@ -74,6 +76,18 @@ const LessonContentSwitch = ({
 
   switch (lesson.type) {
     case "video":
+      // Check if it's a Moov course video with file
+      if (courseTitle?.includes("Moov") && (lesson as any).fileName) {
+        return (
+          <MoovDocumentContent
+            title={lesson.title}
+            fileName={(lesson as any).fileName}
+            fileType={(lesson as any).fileType}
+            duration={lesson.duration}
+            onComplete={() => setShowRating(true)}
+          />
+        );
+      }
       return (
         <MediaPlayer
           type="video"
@@ -96,10 +110,23 @@ const LessonContentSwitch = ({
     case "text":
       return <TextLessonContent onComplete={() => setShowRating(true)} />;
     
+    case "document":
+      return (
+        <MoovDocumentContent
+          title={lesson.title}
+          fileName={(lesson as any).fileName}
+          fileType={(lesson as any).fileType}
+          duration={lesson.duration}
+          onComplete={() => setShowRating(true)}
+        />
+      );
+    
     case "quiz":
+      // Use MoovCourseQuiz for Moov formation, otherwise use sample quiz
+      const quizToUse = courseTitle?.includes("Moov") ? MoovCourseQuiz : sampleQuiz;
       return (
         <QuizPlayer
-          quiz={sampleQuiz}
+          quiz={quizToUse}
           onComplete={handleQuizComplete}
           onContinue={handleQuizContinue}
         />

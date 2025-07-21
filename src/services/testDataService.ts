@@ -193,6 +193,26 @@ class TestDataService {
       completionRate: 71,
       enrolledUsers: 15,
       averageScore: 85
+    },
+    {
+      id: 'formation-moov',
+      title: 'Formation Moov - Services et Intelligence Artificielle',
+      description: 'Formation complète sur les services Moov, l\'intelligence artificielle et les argumentaires de vente. Inclut des présentations, documentations techniques et supports audio.',
+      level: 'intermediate',
+      duration: '3h 45min',
+      category: 'Formation Produit',
+      contentType: 'mixed',
+      targetAudience: ['Sales', 'Customer Service', 'All Employees'],
+      learningObjectives: [
+        'Maîtriser les services Moov (Voix, SMS, Data)',
+        'Comprendre l\'Intelligence Artificielle Moov',
+        'Appliquer les argumentaires de vente',
+        'Utiliser les présentations commerciales'
+      ],
+      isMandatory: true,
+      completionRate: 45,
+      enrolledUsers: 89,
+      averageScore: 78
     }
   ];
 

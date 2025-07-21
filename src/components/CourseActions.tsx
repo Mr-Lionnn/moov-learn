@@ -1,14 +1,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-
-interface Lesson {
-  id: number;
-  title: string;
-  duration: string;
-  completed: boolean;
-  type: "video" | "quiz" | "text" | "audio";
-}
+import { Lesson } from "@/types/lesson";
 
 interface CourseActionsProps {
   lessons: Lesson[];
