@@ -435,7 +435,7 @@ class TestDataService {
     }
 
     try {
-      // Transform TestCourse to match the expected format for CourseCard
+      // Include ALL courses from testCourses (which now includes formation-moov)
       const transformedCourses = this.testCourses.map(course => {
         // Ensure all required properties exist
         if (!course || !course.id || !course.title) {
@@ -454,13 +454,14 @@ class TestDataService {
           image: '/placeholder.svg',
           category: course.category || 'Formation',
           level: course.level === 'beginner' ? 'Débutant' : 
-                 course.level === 'intermediate' ? 'Intermédiaire' : 'Avancé'
+                 course.level === 'intermediate' ? 'Intermédiaire' : 'Avancé',
+          description: course.description
         };
       });
 
       // Filter out any null values
       const validCourses = transformedCourses.filter(course => course !== null);
-      console.log('Transformed courses:', validCourses);
+      console.log('Transformed courses (including Formation Moov):', validCourses);
       
       return validCourses;
     } catch (error) {
