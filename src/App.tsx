@@ -27,15 +27,15 @@ const queryClient = new QueryClient();
 
 function ErrorFallback({error}: {error: Error}) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="text-center p-8">
-        <h2 className="text-2xl font-bold text-red-600 mb-4">Something went wrong</h2>
-        <pre className="text-sm text-gray-700 mb-4 p-4 bg-gray-100 rounded overflow-auto">
+        <h2 className="text-2xl font-bold text-destructive mb-4">Something went wrong</h2>
+        <pre className="text-sm text-muted-foreground mb-4 p-4 bg-muted rounded overflow-auto">
           {error.message}
         </pre>
         <button 
           onClick={() => window.location.reload()} 
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90"
         >
           Reload page
         </button>
