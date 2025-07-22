@@ -427,6 +427,7 @@ class TestDataService {
 
   getCoursesForUser(userId: number): any[] {
     console.log('getCoursesForUser called with userId:', userId);
+    console.log('Available testCourses:', this.testCourses.map(c => ({id: c.id, title: c.title})));
     
     const user = this.getUserById(userId);
     if (!user) {
