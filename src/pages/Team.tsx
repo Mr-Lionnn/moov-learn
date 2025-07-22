@@ -9,7 +9,7 @@ import { Users, Search, Calendar, Award, BookOpen, Clock, TrendingUp, ArrowLeft 
 import Header from "@/components/Header";
 import UserProfileModal from "@/components/UserProfileModal";
 import { useAuth } from "@/contexts/AuthContext";
-import AdminPanel from "@/components/AdminPanel";
+
 import { useNavigate } from "react-router-dom";
 
 const Team = () => {
@@ -17,7 +17,7 @@ const Team = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedMemberForProfile, setSelectedMemberForProfile] = useState<any>(null);
   const { user } = useAuth();
-  const [showAdminPanel, setShowAdminPanel] = useState(false);
+  
 
   const teamMembers = [
     {
@@ -153,7 +153,7 @@ const Team = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
-      <Header onShowAdminPanel={() => setShowAdminPanel(true)} />
+      <Header />
       
       <main className="container mx-auto px-3 sm:px-4 lg:px-6 py-6 sm:py-8">
         <div className="mb-6 sm:mb-8">
@@ -348,9 +348,6 @@ const Team = () => {
         member={selectedMemberForProfile}
       />
 
-      {showAdminPanel && (
-        <AdminPanel onClose={() => setShowAdminPanel(false)} />
-      )}
     </div>
   );
 };

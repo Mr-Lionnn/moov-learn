@@ -13,7 +13,7 @@ import Header from "@/components/Header";
 import TeamManagementModal from "@/components/TeamManagementModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import AdminPanel from "@/components/AdminPanel";
+
 import { useNavigate } from "react-router-dom";
 
 const Employees = () => {
@@ -25,7 +25,7 @@ const Employees = () => {
   const [teamFilter, setTeamFilter] = useState("all");
   const [showTeamManagement, setShowTeamManagement] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [showAdminPanel, setShowAdminPanel] = useState(false);
+  
 
   const employees = [
     {
@@ -146,7 +146,7 @@ const Employees = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
-      <Header onShowAdminPanel={() => setShowAdminPanel(true)} />
+      <Header />
       
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
@@ -382,9 +382,6 @@ const Employees = () => {
         onClose={() => setShowTeamManagement(false)}
       />
 
-      {showAdminPanel && (
-        <AdminPanel onClose={() => setShowAdminPanel(false)} />
-      )}
     </div>
   );
 };

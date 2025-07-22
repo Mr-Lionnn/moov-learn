@@ -20,6 +20,7 @@ import Files from "./pages/Files";
 import FileUpload from "./pages/FileUpload";
 import Tasks from "./pages/Tasks";
 import Debug from "./pages/Debug";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import SessionWrapper from "./components/SessionWrapper";
 import { ErrorBoundary } from "react-error-boundary";
@@ -124,6 +125,11 @@ const App = () => (
                 <Route path="/debug" element={
                   <ProtectedRoute>
                     <Debug />
+                  </ProtectedRoute>
+                } />
+                <Route path="/admin" element={
+                  <ProtectedRoute>
+                    <Admin />
                   </ProtectedRoute>
                 } />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

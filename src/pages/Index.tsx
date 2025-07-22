@@ -26,7 +26,7 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { testDataService } from "@/services/testDataService";
 import { useNavigate } from "react-router-dom";
-import AdminPanel from "@/components/AdminPanel";
+
 
 const Index = () => {
   const { user } = useAuth();
@@ -35,7 +35,7 @@ const Index = () => {
   const [courses, setCourses] = useState<any[]>([]);
   const [tasks, setTasks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showAdminPanel, setShowAdminPanel] = useState(false);
+  
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -152,10 +152,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen moov-gradient-subtle">
-      <Header onShowAdminPanel={() => {
-        console.log('Setting showAdminPanel to true');
-        setShowAdminPanel(true);
-      }} />
+      <Header />
       
       <main className="container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6">
         <div className="mb-6 sm:mb-8">
@@ -317,9 +314,6 @@ const Index = () => {
         />
       )}
 
-      {showAdminPanel && (
-        <AdminPanel onClose={() => setShowAdminPanel(false)} />
-      )}
     </div>
   );
 };

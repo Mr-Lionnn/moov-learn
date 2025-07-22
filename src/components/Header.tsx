@@ -8,11 +8,9 @@ import DesktopNavigation from "./header/DesktopNavigation";
 import MobileNavigation from "./header/MobileNavigation";
 import UserMenu from "./header/UserMenu";
 
-interface HeaderProps {
-  onShowAdminPanel?: () => void;
-}
+interface HeaderProps {}
 
-const Header = ({ onShowAdminPanel }: HeaderProps) => {
+const Header = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
@@ -24,7 +22,7 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
           <HeaderLogo />
 
           {/* Desktop Navigation */}
-          <DesktopNavigation onShowAdminPanel={onShowAdminPanel} />
+          <DesktopNavigation />
 
           {/* User Actions */}
           <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
@@ -53,7 +51,7 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
             </Button>
 
             {/* User Menu */}
-            <UserMenu onShowAdminPanel={onShowAdminPanel} />
+            <UserMenu />
           </div>
         </div>
 
@@ -61,7 +59,6 @@ const Header = ({ onShowAdminPanel }: HeaderProps) => {
         <MobileNavigation 
           showMobileMenu={showMobileMenu}
           setShowMobileMenu={setShowMobileMenu}
-          onShowAdminPanel={onShowAdminPanel}
         />
       </header>
 

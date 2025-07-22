@@ -11,14 +11,14 @@ import FormationSwiper from "@/components/FormationSwiper";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { testDataService } from "@/services/testDataService";
-import AdminPanel from "@/components/AdminPanel";
+
 
 const MyTrainings = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
-  const [showAdminPanel, setShowAdminPanel] = useState(false);
+  
   const [trainings, setTrainings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -133,7 +133,7 @@ const MyTrainings = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
-        <Header onShowAdminPanel={() => setShowAdminPanel(true)} />
+        <Header />
         <main className="container mx-auto px-4 py-8">
           <div className="text-center">
             <p>Chargement des formations...</p>
@@ -145,7 +145,7 @@ const MyTrainings = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
-      <Header onShowAdminPanel={() => setShowAdminPanel(true)} />
+      <Header />
       
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
@@ -270,9 +270,6 @@ const MyTrainings = () => {
         )}
       </main>
 
-      {showAdminPanel && (
-        <AdminPanel onClose={() => setShowAdminPanel(false)} />
-      )}
     </div>
   );
 };

@@ -89,8 +89,8 @@ const UserMenu = ({ onShowAdminPanel }: UserMenuProps) => {
           <User className="mr-2 h-4 w-4" />
           Profil
         </DropdownMenuItem>
-        {onShowAdminPanel && (user?.role === "admin" || user?.role === "team_chief" || user?.role === "team_responsible") && (
-          <DropdownMenuItem onClick={onShowAdminPanel}>
+        {(user?.role === "admin" || user?.role === "team_chief" || user?.role === "team_responsible") && (
+          <DropdownMenuItem onClick={() => navigate("/admin")}>
             <BookOpen className="mr-2 h-4 w-4" />
             Administration
           </DropdownMenuItem>
