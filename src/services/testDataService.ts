@@ -426,24 +426,27 @@ class TestDataService {
   }
 
   getCoursesForUser(userId: number): any[] {
-    console.log('getCoursesForUser called with userId:', userId);
-    console.log('Available testCourses:', this.testCourses.map(c => ({id: c.id, title: c.title})));
+    console.log('🔍 getCoursesForUser called with userId:', userId);
+    console.log('🔍 Available testCourses COUNT:', this.testCourses.length);
+    console.log('🔍 Available testCourses:', this.testCourses.map(c => ({id: c.id, title: c.title})));
     
     const user = this.getUserById(userId);
     if (!user) {
-      console.warn('User not found for ID:', userId);
+      console.warn('❌ User not found for ID:', userId);
       return [];
     }
 
     try {
       // Include ALL courses from testCourses (which now includes formation-moov)
+      console.log('🔍 Processing testCourses, total count:', this.testCourses.length);
       const transformedCourses = this.testCourses.map(course => {
         // Ensure all required properties exist
         if (!course || !course.id || !course.title) {
-          console.warn('Invalid course data:', course);
+          console.warn('❌ Invalid course data:', course);
           return null;
         }
 
+        console.log('✅ Processing course:', course.id, course.title);
         return {
           id: course.id,
           title: course.title,

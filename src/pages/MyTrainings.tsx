@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -9,86 +9,70 @@ import { BookOpen, Clock, Users, Award, Search, Play, CheckCircle, Star, Filter,
 import Header from "@/components/Header";
 import FormationSwiper from "@/components/FormationSwiper";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { testDataService } from "@/services/testDataService";
 import AdminPanel from "@/components/AdminPanel";
 
 const MyTrainings = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [showAdminPanel, setShowAdminPanel] = useState(false);
+  const [trainings, setTrainings] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const trainings = [
-    {
-      id: 1,
-      title: "Fondamentaux des Réseaux TCP/IP",
-      instructor: "Marie Dubois",
-      duration: "8 heures",
-      progress: 75,
-      status: "En cours",
-      rating: 4.9,
-      studentsCount: 45,
-      image: "/placeholder.svg",
-      category: "Réseaux",
-      level: "Débutant",
-      completedLessons: 6,
-      totalLessons: 8,
-      nextLesson: "Routage Statique",
-      estimatedCompletion: "2 jours"
-    },
-    {
-      id: 2,
-      title: "Configuration des Switches Cisco",
-      instructor: "Pierre Martin",
-      duration: "12 heures",
-      progress: 40,
-      status: "En cours",
-      rating: 4.8,
-      studentsCount: 32,
-      image: "/placeholder.svg",
-      category: "Infrastructure",
-      level: "Intermédiaire",
-      completedLessons: 4,
-      totalLessons: 10,
-      nextLesson: "VLAN Configuration",
-      estimatedCompletion: "5 jours"
-    },
-    {
-      id: 3,
-      title: "Sécurité Réseau et Pare-feu",
-      instructor: "Sophie Laurent",
-      duration: "15 heures",
-      progress: 100,
-      status: "Terminée",
-      rating: 4.9,
-      studentsCount: 28,
-      image: "/placeholder.svg",
-      category: "Sécurité",
-      level: "Avancé",
-      completedLessons: 12,
-      totalLessons: 12,
-      nextLesson: null,
-      estimatedCompletion: null,
-      completedDate: "Il y a 1 semaine",
-      certificate: true
-    },
-    {
-      id: 4,
-      title: "Protocoles de Routage Dynamique",
-      instructor: "Thomas Durand",
-      duration: "10 heures",
-      progress: 0,
-      status: "Non commencée",
-      rating: 4.7,
-      studentsCount: 38,
-      image: "/placeholder.svg",
-      category: "Réseaux",
-      level: "Intermédiaire",
-      completedLessons: 0,
-      totalLessons: 8,
-      nextLesson: "Introduction aux Protocoles",
-      estimatedCompletion: "4 jours"
+  useEffect(() => {
+    console.log('🔥 MyTrainings - Loading courses for user:', user?.id);
+    
+    if (user?.id) {
+      try {
+        const userCourses = testDataService.getCoursesForUser(user.id);
+        console.log('🔥 MyTrainings - Loaded courses:', userCourses);
+        
+        // Transform courses to match training format with proper status mapping
+        const transformedTrainings = userCourses.map((course, index) => {
+          const randomProgress = Math.floor(Math.random() * 101);
+          const getRandomStatus = () => {
+            if (randomProgress === 100) return "Terminée";
+            if (randomProgress > 0) return "En cours";
+            return "Non commencée";
+          };
+          
+          return {
+            id: course.id,
+            title: course.title,
+            instructor: course.instructor || "Instructeur Expert",
+            duration: course.duration || "2h 00min",
+            progress: randomProgress,
+            status: getRandomStatus(),
+            rating: course.rating || 4.5,
+            studentsCount: course.students || 45,
+            image: course.image || "/placeholder.svg",
+            category: course.category || "Formation",
+            level: course.level || "Intermédiaire",
+            completedLessons: Math.floor((randomProgress / 100) * 8),
+            totalLessons: 8,
+            nextLesson: randomProgress < 100 ? "Prochaine leçon" : null,
+            estimatedCompletion: randomProgress < 100 ? "2-3 jours" : null,
+            completedDate: randomProgress === 100 ? "Il y a 1 semaine" : null,
+            certificate: randomProgress === 100,
+            description: course.description
+          };
+        });
+        
+        setTrainings(transformedTrainings);
+        console.log('🔥 MyTrainings - Transformed trainings:', transformedTrainings);
+      } catch (error) {
+        console.error('❌ MyTrainings - Error loading courses:', error);
+        setTrainings([]);
+      }
     }
-  ];
+    
+    setLoading(false);
+  }, [user]);
+
+  // Remove the hardcoded training data below and replace with dynamic data above
 
   const filteredTrainings = trainings.filter(training => {
     const matchesSearch = training.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -111,15 +95,15 @@ const MyTrainings = () => {
     }
   };
 
-  const handleContinueCourse = (trainingId: number) => {
+  const handleContinueCourse = (trainingId: string | number) => {
     navigate(`/course/${trainingId}`);
   };
 
-  const handleStartCourse = (trainingId: number) => {
+  const handleStartCourse = (trainingId: string | number) => {
     navigate(`/course/${trainingId}`);
   };
 
-  const handleReviewCourse = (trainingId: number) => {
+  const handleReviewCourse = (trainingId: string | number) => {
     navigate(`/course/${trainingId}`);
   };
 
@@ -145,6 +129,19 @@ const MyTrainings = () => {
     inProgress: trainings.filter(t => t.status === "En cours").length,
     totalHours: trainings.reduce((acc, t) => acc + parseInt(t.duration), 0)
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
+        <Header onShowAdminPanel={() => setShowAdminPanel(true)} />
+        <main className="container mx-auto px-4 py-8">
+          <div className="text-center">
+            <p>Chargement des formations...</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">

@@ -39,15 +39,17 @@ const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    console.log('Index useEffect triggered, user:', user);
+    console.log('🔥 Index useEffect triggered, user:', user);
     
     if (user?.id) {
       try {
+        console.log('🔥 About to call getCoursesForUser with user ID:', user.id);
         const userCourses = testDataService.getCoursesForUser(user.id);
         const userTasks = testDataService.getTasksForUser(user.id);
         
-        console.log('Loaded courses:', userCourses);
-        console.log('Loaded tasks:', userTasks);
+        console.log('🔥 Loaded courses:', userCourses);
+        console.log('🔥 Courses with Formation Moov:', userCourses.filter(c => c.title.includes('Moov')));
+        console.log('🔥 Loaded tasks:', userTasks);
         
         const validCourses = userCourses.filter(course => 
           course && 
