@@ -12,6 +12,7 @@ interface CourseDetailModalProps {
   onClose: () => void;
   course: {
     id: number | string;
+    originalId?: string;
     title: string;
     instructor: string;
     duration: string;
@@ -33,7 +34,10 @@ const CourseDetailModal = ({ isOpen, onClose, course }: CourseDetailModalProps) 
   }
 
   const handleContinue = () => {
-    navigate(`/course/${course.id}`);
+    // Ensure we use the correct course ID from the backend data
+    const courseId = course.originalId || course.id;
+    console.log('🔥 Navigating to course:', courseId, course);
+    navigate(`/course/${courseId}`);
     onClose();
   };
 

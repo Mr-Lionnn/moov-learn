@@ -84,6 +84,8 @@ const Index = () => {
       return;
     }
     
+    console.log('🔥 Course clicked:', course);
+    
     const courseWithDetails = {
       ...course,
       students: course.students || 45,

@@ -55,6 +55,7 @@ const MoovDocumentContent = ({
   };
 
   const handleViewDocument = () => {
+    console.log('🔥 Viewing document:', fileName, fileType);
     setIsViewing(true);
     // Simulate document viewing progress
     let currentProgress = 0;

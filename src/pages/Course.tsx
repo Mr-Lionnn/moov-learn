@@ -21,10 +21,12 @@ const Course = () => {
       : testCourses[0];
     
     if (selectedCourse) {
+      console.log('🔥 Loading course:', courseId, selectedCourse);
       setCourse(selectedCourse);
       
       // Generate realistic lessons based on course content
       const courseLessons = generateLessonsForCourse(selectedCourse);
+      console.log('🔥 Generated lessons for', selectedCourse.id, ':', courseLessons);
       setLessons(courseLessons);
     }
   }, [courseId]);

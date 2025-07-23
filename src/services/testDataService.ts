@@ -449,6 +449,7 @@ class TestDataService {
         console.log('✅ Processing course:', course.id, course.title);
         return {
           id: course.id,
+          originalId: course.id, // Preserve the original string ID
           title: course.title,
           instructor: 'Instructeur Expert',
           duration: course.duration || '2h 00min',
