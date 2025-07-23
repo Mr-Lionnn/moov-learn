@@ -62,12 +62,12 @@ const Course = () => {
         { id: 6, title: "Évaluation Leadership", duration: "30:00", completed: false, type: "quiz" }
       ],
       'formation-moov': [
-        { id: 1, title: "Argumentaire de Vente Voix", duration: "25:00", completed: false, type: "document", 
-          fileName: "ARGUMENTAIRE DE VENTE VOIX.docx", fileType: "docx" },
-        { id: 2, title: "Argumentaire Commerciaux Front Office", duration: "20:00", completed: false, type: "document", 
-          fileName: "Argumentaire de vente commerciaux front office (AgenceMoovshops).docx", fileType: "docx" },
-        { id: 3, title: "Moov Intelligence Artificielle - Vidéo", duration: "15:30", completed: false, type: "video", 
+        { id: 1, title: "Introduction au Service Client", duration: "15:30", completed: false, type: "video", 
           fileName: "MIA.mp4", fileType: "mp4" },
+        { id: 2, title: "Argumentaire de Vente Voix", duration: "25:00", completed: false, type: "document", 
+          fileName: "ARGUMENTAIRE DE VENTE VOIX.docx", fileType: "docx" },
+        { id: 3, title: "Argumentaire Commerciaux Front Office", duration: "20:00", completed: false, type: "document", 
+          fileName: "Argumentaire de vente commerciaux front office (AgenceMoovshops).docx", fileType: "docx" },
         { id: 4, title: "Guide Intelligence Artificielle", duration: "30:00", completed: false, type: "document", 
           fileName: "Moov Intelligence Artificielle.pdf", fileType: "pdf" },
         { id: 5, title: "Présentation Services SVA", duration: "25:00", completed: false, type: "document", 
@@ -114,6 +114,17 @@ const Course = () => {
             <ArrowLeft className="h-4 w-4 mr-2" />
             Retour au Tableau de Bord
           </Button>
+          
+          {/* Display Formation Title */}
+          <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">{course.title}</h1>
+            <p className="text-gray-600 text-lg">{course.description}</p>
+            <div className="flex items-center gap-4 mt-4">
+              <span className="text-sm text-gray-500">Durée: {course.duration}</span>
+              <span className="text-sm text-gray-500">Niveau: {course.level === 'beginner' ? 'Débutant' : course.level === 'intermediate' ? 'Intermédiaire' : 'Avancé'}</span>
+              <span className="text-sm text-gray-500">Catégorie: {course.category}</span>
+            </div>
+          </div>
         </div>
 
         <CoursePlayer
