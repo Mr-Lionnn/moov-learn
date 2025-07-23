@@ -46,11 +46,7 @@ const DesktopNavigation = ({
         <Button 
           variant="ghost" 
           className="text-gray-600 hover:bg-secondary hover:text-white text-sm px-2 xl:px-3"
-          onClick={() => {
-            if (onShowAdminPanel) {
-              onShowAdminPanel();
-            }
-          }}
+          onClick={() => navigate("/admin")}
         >
           <Target className="h-4 w-4 mr-1 xl:mr-2" />
           <span>Administration</span>
@@ -72,11 +68,7 @@ const DesktopNavigation = ({
         <Button 
           variant="ghost" 
           className="text-gray-600 hover:bg-secondary hover:text-white text-sm px-2 xl:px-3 bg-blue-50 hover:bg-blue-100 border border-blue-200"
-          onClick={() => {
-            if (onShowAdminPanel) {
-              onShowAdminPanel();
-            }
-          }}
+          onClick={() => navigate("/admin?tab=courses")}
         >
           <BookOpen className="h-4 w-4 mr-1 xl:mr-2" />
           <span className="hidden xl:inline">Créer Formation</span>

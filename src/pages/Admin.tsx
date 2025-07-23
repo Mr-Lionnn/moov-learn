@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Users, BookOpen, BarChart3, Clock, CheckCircle, CheckSquare } from "lucide-react";
@@ -19,10 +19,20 @@ import { Team } from "@/types/content";
 
 const Admin = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { setModuleDeadline, user } = useAuth();
+  const [activeTab, setActiveTab] = useState("tasks");
   const [showQuizCreator, setShowQuizCreator] = useState(false);
   const [showModuleCreator, setShowModuleCreator] = useState(false);
   const [selectedCourseForQuiz, setSelectedCourseForQuiz] = useState<string | null>(null);
+
+  // Handle URL tab parameter
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab === 'courses') {
+      setActiveTab('courses');
+    }
+  }, [searchParams]);
   
   const {
     newCourse,
@@ -191,7 +201,7 @@ const Admin = () => {
         </div>
 
         <div className="bg-white rounded-lg shadow-sm">
-          <Tabs defaultValue="tasks" className="w-full">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1 h-auto p-1 m-4 mb-0">
               <TabsTrigger value="tasks" className="text-xs sm:text-sm flex-col sm:flex-row gap-1 h-12 sm:h-10">
                 <CheckSquare className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -231,7 +241,7 @@ const Admin = () => {
 
               <TabsContent value="courses" className="space-y-6">
                 <div className="space-y-6">
-                  {/* New Unified Course Creation Button */}
+                  {/* Main Course Creation Button */}
                   <div className="text-center space-y-4 p-8 border-2 border-dashed border-gray-300 rounded-lg">
                     <BookOpen className="h-12 w-12 text-gray-400 mx-auto" />
                     <div>
@@ -250,15 +260,6 @@ const Admin = () => {
                       </Button>
                     </div>
                   </div>
-
-                  {/* Legacy Course Creation (kept for compatibility) */}
-                  <CourseCreationTab
-                    newCourse={newCourse}
-                    setNewCourse={setNewCourse}
-                    onCreateCourse={handleCreateCourse}
-                    onShowModuleCreator={() => setShowModuleCreator(true)}
-                    canUploadContent={canUploadContent}
-                  />
                 </div>
               </TabsContent>
 

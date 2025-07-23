@@ -61,7 +61,7 @@ const MobileNavigation = ({
             variant="ghost" 
             className="justify-start text-gray-600 hover:bg-secondary hover:text-white h-10"
             onClick={() => {
-              onShowAdminPanel && onShowAdminPanel();
+              navigate("/admin");
               setShowMobileMenu(false);
             }}
           >
