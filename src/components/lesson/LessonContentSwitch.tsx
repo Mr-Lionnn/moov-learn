@@ -74,10 +74,13 @@ const LessonContentSwitch = ({
     );
   }
 
+  console.log('🔥 LessonContentSwitch - Course title:', courseTitle, 'Lesson:', lesson);
+  
   switch (lesson.type) {
     case "video":
       // Check if it's a Moov course video with file
       if (courseTitle?.includes("Moov") && (lesson as any).fileName) {
+        console.log('🔥 Using MoovDocumentContent for video with file:', (lesson as any).fileName);
         return (
           <MoovDocumentContent
             title={lesson.title}
