@@ -80,7 +80,12 @@ const Course = () => {
       ]
     };
 
-    return lessonSets[course.id] || lessonSets['customer-service-excellence'];
+    console.log('🔥 Looking for lessons for course ID:', course.id, 'Available lesson sets:', Object.keys(lessonSets));
+    const lessons = lessonSets[course.id];
+    if (!lessons) {
+      console.log('⚠️ No lessons found for course:', course.id, 'falling back to customer-service-excellence');
+    }
+    return lessons || lessonSets['customer-service-excellence'];
   };
 
   const handleCourseComplete = () => {

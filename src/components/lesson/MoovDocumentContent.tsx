@@ -57,6 +57,20 @@ const MoovDocumentContent = ({
   const handleViewDocument = () => {
     console.log('🔥 Viewing document:', fileName, fileType);
     setIsViewing(true);
+    
+    // For video files, open the actual file
+    if (fileType.toLowerCase() === 'mp4') {
+      const videoPath = `/MoovCourse/${fileName}`;
+      window.open(videoPath, '_blank');
+    } else {
+      // For documents, try to open from MoovCourse folder
+      const documentPath = `/MoovCourse/${fileName}`;
+      const link = document.createElement('a');
+      link.href = documentPath;
+      link.target = '_blank';
+      link.click();
+    }
+    
     // Simulate document viewing progress
     let currentProgress = 0;
     const interval = setInterval(() => {
@@ -131,11 +145,20 @@ const MoovDocumentContent = ({
       case "mp4":
         return (
           <div className="bg-purple-50 p-6 rounded-lg border border-purple-200">
-            <div className="flex items-center justify-center h-64 bg-black rounded">
-              <div className="text-center text-white">
-                <Video className="h-16 w-16 text-purple-400 mx-auto mb-4" />
-                <p className="text-sm">Vidéo de Formation</p>
-                <p className="text-xs text-gray-300 mt-2">Intelligence Artificielle Moov</p>
+            <div className="flex items-center justify-center h-64 bg-black rounded relative overflow-hidden">
+              <video 
+                className="w-full h-full object-cover" 
+                poster="/placeholder.svg"
+                controls={false}
+              >
+                <source src={`/MoovCourse/${fileName}`} type="video/mp4" />
+              </video>
+              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                <div className="text-center text-white">
+                  <Video className="h-16 w-16 text-purple-400 mx-auto mb-4" />
+                  <p className="text-sm">Vidéo de Formation MIA</p>
+                  <p className="text-xs text-gray-300 mt-2">Intelligence Artificielle Moov</p>
+                </div>
               </div>
             </div>
           </div>
@@ -200,9 +223,14 @@ const MoovDocumentContent = ({
               <Button
                 variant="outline"
                 onClick={() => {
+                  const downloadPath = `/MoovCourse/${fileName}`;
+                  const link = document.createElement('a');
+                  link.href = downloadPath;
+                  link.download = fileName;
+                  link.click();
                   toast({
                     title: "Téléchargement",
-                    description: `${fileName} sera téléchargé.`,
+                    description: `${fileName} téléchargé avec succès.`,
                   });
                 }}
                 className="flex-1 sm:flex-none"
