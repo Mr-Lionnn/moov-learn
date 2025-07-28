@@ -1,25 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { 
-  ZoomIn, 
-  ZoomOut, 
-  RotateCw, 
-  RotateCcw, 
-  ChevronLeft, 
-  ChevronRight,
   Download,
   Save,
   Maximize,
   Minimize,
   FileText,
   Image,
-  X
+  Video,
+  Music
 } from 'lucide-react';
-import { ContentFile, ViewerState } from '@/types/content';
+import { ContentFile } from '@/types/content';
 import { useAuth } from '@/contexts/AuthContext';
+import PDFViewer from '@/components/viewers/PDFViewer';
+import MediaPlayer from '@/components/viewers/MediaPlayer';
+import OfficeViewer from '@/components/viewers/OfficeViewer';
+import ImageViewer from '@/components/viewers/ImageViewer';
 
 interface DocumentViewerProps {
   isOpen: boolean;
@@ -31,160 +29,108 @@ interface DocumentViewerProps {
 
 const DocumentViewer = ({ isOpen, onClose, file, onSave, onDownload }: DocumentViewerProps) => {
   const { hasPermission } = useAuth();
-  const [viewerState, setViewerState] = useState<ViewerState>({
-    zoom: 100,
-    rotation: 0,
-    currentPage: 1,
-    totalPages: 1,
-    fullscreen: false,
-    loading: true,
-    error: undefined
-  });
-
-  useEffect(() => {
-    if (file && isOpen) {
-      loadDocument(file);
-    }
-  }, [file, isOpen]);
-
-  const loadDocument = async (file: ContentFile) => {
-    setViewerState(prev => ({ ...prev, loading: true, error: undefined }));
-    
-    try {
-      // Simulate document loading
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      let totalPages = 1;
-      if (file.type === 'pdf') totalPages = file.pages || Math.floor(Math.random() * 20) + 5;
-      if (file.type === 'pptx') totalPages = Math.floor(Math.random() * 15) + 3;
-      if (file.type === 'docx') totalPages = Math.floor(Math.random() * 25) + 1;
-
-      setViewerState(prev => ({
-        ...prev,
-        loading: false,
-        totalPages,
-        currentPage: 1,
-        zoom: 100,
-        rotation: 0
-      }));
-    } catch (error) {
-      setViewerState(prev => ({
-        ...prev,
-        loading: false,
-        error: 'Erreur lors du chargement du document'
-      }));
-    }
-  };
-
-  const handleZoomIn = () => {
-    setViewerState(prev => ({ ...prev, zoom: Math.min(prev.zoom + 25, 300) }));
-  };
-
-  const handleZoomOut = () => {
-    setViewerState(prev => ({ ...prev, zoom: Math.max(prev.zoom - 25, 25) }));
-  };
-
-  const handlePreviousPage = () => {
-    setViewerState(prev => ({ 
-      ...prev, 
-      currentPage: Math.max(prev.currentPage - 1, 1) 
-    }));
-  };
-
-  const handleNextPage = () => {
-    setViewerState(prev => ({ 
-      ...prev, 
-      currentPage: Math.min(prev.currentPage + 1, prev.totalPages) 
-    }));
-  };
-
-  const handleRotateRight = () => {
-    setViewerState(prev => ({ ...prev, rotation: (prev.rotation + 90) % 360 }));
-  };
-
-  const handleRotateLeft = () => {
-    setViewerState(prev => ({ ...prev, rotation: (prev.rotation - 90 + 360) % 360 }));
-  };
+  const [fullscreen, setFullscreen] = useState(false);
 
   const toggleFullscreen = () => {
-    setViewerState(prev => ({ ...prev, fullscreen: !prev.fullscreen }));
+    setFullscreen(prev => !prev);
   };
 
   const getFileIcon = (type: string) => {
     switch (type) {
       case 'pdf':
       case 'docx':
+      case 'pptx':
+      case 'xlsx':
       case 'txt':
         return <FileText className="h-6 w-6 text-red-500" />;
       case 'jpg':
       case 'png':
         return <Image className="h-6 w-6 text-blue-500" />;
+      case 'mp4':
+      case 'webm':
+      case 'avi':
+        return <Video className="h-6 w-6 text-purple-500" />;
+      case 'mp3':
+      case 'wav':
+      case 'aac':
+      case 'ogg':
+        return <Music className="h-6 w-6 text-green-500" />;
       default:
         return <FileText className="h-6 w-6 text-gray-500" />;
     }
   };
 
-  const renderRealContent = (file: ContentFile) => {
-    const { type, url } = file;
-    
+  const renderDocumentContent = () => {
+    if (!file) return null;
+
+    const { type, url, name } = file;
+
     switch (type) {
       case 'pdf':
         return (
-          <div className="w-full h-[600px]">
-            <iframe 
-              src={url}
-              className="w-full h-full border rounded-lg"
-              title={file.name}
-            />
-          </div>
+          <PDFViewer 
+            url={url} 
+            fileName={name}
+            onDownload={onDownload ? () => onDownload(file) : undefined}
+          />
         );
       
       case 'mp4':
+      case 'webm':
+      case 'avi':
         return (
-          <div className="w-full max-w-4xl mx-auto">
-            <video 
-              controls 
-              className="w-full h-auto rounded-lg shadow-lg"
-              poster="/placeholder.svg"
-            >
-              <source src={url} type="video/mp4" />
-              Votre navigateur ne supporte pas la lecture vidéo.
-            </video>
-          </div>
+          <MediaPlayer 
+            url={url} 
+            type="video" 
+            fileName={name}
+            poster={file.thumbnailUrl}
+            onDownload={onDownload ? () => onDownload(file) : undefined}
+          />
+        );
+      
+      case 'mp3':
+      case 'wav':
+      case 'aac':
+      case 'ogg':
+        return (
+          <MediaPlayer 
+            url={url} 
+            type="audio" 
+            fileName={name}
+            onDownload={onDownload ? () => onDownload(file) : undefined}
+          />
         );
       
       case 'docx':
       case 'pptx':
+      case 'xlsx':
         return (
-          <div className="w-full h-[600px]">
-            <iframe 
-              src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(window.location.origin + url)}`}
-              className="w-full h-full border rounded-lg"
-              title={file.name}
-            />
-          </div>
+          <OfficeViewer 
+            url={url} 
+            type={type as 'docx' | 'pptx' | 'xlsx'} 
+            fileName={name}
+            onDownload={onDownload ? () => onDownload(file) : undefined}
+          />
         );
       
       case 'jpg':
       case 'png':
         return (
-          <div className="flex items-center justify-center">
-            <img 
-              src={url} 
-              alt={file.name}
-              className="max-w-full max-h-[600px] rounded-lg shadow-lg"
-            />
-          </div>
+          <ImageViewer 
+            url={url} 
+            fileName={name}
+            onDownload={onDownload ? () => onDownload(file) : undefined}
+          />
         );
       
       default:
         return (
-          <div className="flex items-center justify-center min-h-[400px] bg-gray-50 rounded-lg">
+          <div className="flex items-center justify-center min-h-[400px] bg-muted/50 rounded-lg">
             <div className="text-center">
-              <FileText className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600">Format non supporté: {type}</p>
-              <p className="text-sm text-gray-500 mt-2">
-                <a href={url} download className="text-blue-600 hover:underline">
+              <FileText className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground">Format non supporté: {type}</p>
+              <p className="text-sm text-muted-foreground mt-2">
+                <a href={url} download className="text-primary hover:underline">
                   Télécharger le fichier
                 </a>
               </p>
@@ -194,46 +140,11 @@ const DocumentViewer = ({ isOpen, onClose, file, onSave, onDownload }: DocumentV
     }
   };
 
-  const renderDocumentContent = () => {
-    if (viewerState.loading) {
-      return (
-        <div className="flex items-center justify-center h-96">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-gray-600">Chargement du document...</p>
-          </div>
-        </div>
-      );
-    }
-
-    if (viewerState.error) {
-      return (
-        <div className="flex items-center justify-center h-96">
-          <div className="text-center text-red-600">
-            <X className="h-12 w-12 mx-auto mb-4" />
-            <p>{viewerState.error}</p>
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <div 
-        className="transition-all duration-300 origin-center"
-        style={{
-          transform: `scale(${viewerState.zoom / 100}) rotate(${viewerState.rotation}deg)`,
-        }}
-      >
-        {file && renderRealContent(file)}
-      </div>
-    );
-  };
-
   if (!file) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className={`${viewerState.fullscreen ? 'max-w-screen max-h-screen w-full h-full' : 'max-w-6xl max-h-[90vh]'} overflow-hidden`}>
+      <DialogContent className={`${fullscreen ? 'max-w-screen max-h-screen w-full h-full' : 'max-w-6xl max-h-[90vh]'} overflow-hidden`}>
         <DialogHeader className="flex flex-row items-center justify-between pb-4 border-b">
           <div className="flex items-center gap-3">
             {getFileIcon(file.type)}
@@ -241,83 +152,34 @@ const DocumentViewer = ({ isOpen, onClose, file, onSave, onDownload }: DocumentV
               <DialogTitle className="text-lg font-semibold">{file.name}</DialogTitle>
               <div className="flex items-center gap-2 mt-1">
                 <Badge variant="outline" className="text-xs">{file.type.toUpperCase()}</Badge>
-                <span className="text-sm text-gray-500">{file.size}</span>
-                <span className="text-sm text-gray-500">•</span>
-                <span className="text-sm text-gray-500">Par {file.author}</span>
+                <span className="text-sm text-muted-foreground">{file.size}</span>
+                <span className="text-sm text-muted-foreground">•</span>
+                <span className="text-sm text-muted-foreground">Par {file.author}</span>
               </div>
             </div>
           </div>
           
-          {/* Document Controls */}
+          {/* Global Controls */}
           <div className="flex items-center gap-2">
-            {/* Navigation Controls */}
-            {file.type !== 'jpg' && file.type !== 'png' && viewerState.totalPages > 1 && (
-              <div className="flex items-center gap-1 border-r pr-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handlePreviousPage}
-                  disabled={viewerState.currentPage === 1}
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-                <span className="text-sm px-2">
-                  {viewerState.currentPage} / {viewerState.totalPages}
-                </span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleNextPage}
-                  disabled={viewerState.currentPage === viewerState.totalPages}
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
-              </div>
+            {hasPermission('manage_files') && onSave && (
+              <Button variant="ghost" size="sm" onClick={() => onSave(file)}>
+                <Save className="h-4 w-4" />
+              </Button>
             )}
-            
-            {/* Zoom Controls */}
-            <div className="flex items-center gap-1 border-r pr-2">
-              <Button variant="ghost" size="sm" onClick={handleZoomOut}>
-                <ZoomOut className="h-4 w-4" />
+            {hasPermission('download_files') && onDownload && (
+              <Button variant="ghost" size="sm" onClick={() => onDownload(file)}>
+                <Download className="h-4 w-4" />
               </Button>
-              <span className="text-sm px-2">{viewerState.zoom}%</span>
-              <Button variant="ghost" size="sm" onClick={handleZoomIn}>
-                <ZoomIn className="h-4 w-4" />
-              </Button>
-            </div>
-            
-            {/* Rotation Controls */}
-            <div className="flex items-center gap-1 border-r pr-2">
-              <Button variant="ghost" size="sm" onClick={handleRotateLeft}>
-                <RotateCcw className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="sm" onClick={handleRotateRight}>
-                <RotateCw className="h-4 w-4" />
-              </Button>
-            </div>
-            
-            {/* Action Controls */}
-            <div className="flex items-center gap-1">
-              {hasPermission('manage_files') && onSave && (
-                <Button variant="ghost" size="sm" onClick={() => onSave(file)}>
-                  <Save className="h-4 w-4" />
-                </Button>
-              )}
-              {hasPermission('download_files') && onDownload && (
-                <Button variant="ghost" size="sm" onClick={() => onDownload(file)}>
-                  <Download className="h-4 w-4" />
-                </Button>
-              )}
-              <Button variant="ghost" size="sm" onClick={toggleFullscreen}>
-                {viewerState.fullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
-              </Button>
-            </div>
+            )}
+            <Button variant="ghost" size="sm" onClick={toggleFullscreen}>
+              {fullscreen ? <Minimize className="h-4 w-4" /> : <Maximize className="h-4 w-4" />}
+            </Button>
           </div>
         </DialogHeader>
         
-        <ScrollArea className="flex-1 p-4">
+        <div className="flex-1 overflow-auto">
           {renderDocumentContent()}
-        </ScrollArea>
+        </div>
       </DialogContent>
     </Dialog>
   );

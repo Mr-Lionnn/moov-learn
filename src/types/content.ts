@@ -1,7 +1,7 @@
 export interface ContentFile {
   id: string;
   name: string;
-  type: 'pdf' | 'pptx' | 'docx' | 'mp4' | 'mp3' | 'jpg' | 'png' | 'txt';
+  type: 'pdf' | 'pptx' | 'docx' | 'xlsx' | 'mp4' | 'mp3' | 'wav' | 'aac' | 'ogg' | 'webm' | 'avi' | 'jpg' | 'png' | 'txt';
   size: string;
   url: string;
   author: string;
