@@ -21,7 +21,7 @@ const Course = () => {
     
     const selectedCourse = courseId 
       ? testCourses.find(c => c.id === courseId)
-      : testCourses[0];
+      : null; // Don't default to first course - this was causing the issue!
     
     if (selectedCourse) {
       console.log('🔥 Loading course:', courseId, selectedCourse);
@@ -34,6 +34,8 @@ const Course = () => {
     } else {
       console.error('❌ Course not found for ID:', courseId);
       console.log('Available course IDs:', testCourses.map(c => c.id));
+      setCourse(null);
+      setLessons([]);
     }
   }, [courseId]);
 
