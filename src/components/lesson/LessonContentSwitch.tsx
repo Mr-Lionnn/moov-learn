@@ -114,15 +114,19 @@ const LessonContentSwitch = ({
       return <TextLessonContent onComplete={() => setShowRating(true)} />;
     
     case "document":
-      return (
-        <MoovDocumentContent
-          title={lesson.title}
-          fileName={(lesson as any).fileName}
-          fileType={(lesson as any).fileType}
-          duration={lesson.duration}
-          onComplete={() => setShowRating(true)}
-        />
-      );
+      // For Moov course documents, use MoovDocumentContent
+      if (courseTitle?.includes("Moov") && (lesson as any).fileName) {
+        return (
+          <MoovDocumentContent
+            title={lesson.title}
+            fileName={(lesson as any).fileName}
+            fileType={(lesson as any).fileType}
+            duration={lesson.duration}
+            onComplete={() => setShowRating(true)}
+          />
+        );
+      }
+      return <TextLessonContent onComplete={() => setShowRating(true)} />;
     
     case "quiz":
       // Use moovCourseQuiz for Moov formation, otherwise use sample quiz
