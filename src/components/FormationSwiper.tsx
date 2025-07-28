@@ -26,8 +26,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 interface Training {
-  id: number | string;
-  originalId?: string;
+  id: number;
   title: string;
   instructor: string;
   duration: string;
@@ -74,25 +73,16 @@ const FormationSwiper = ({ trainings }: FormationSwiperProps) => {
     }
   };
 
-  const handleContinueCourse = (training: Training) => {
-    const courseId = training.originalId || training.id;
-    console.log('🔥 FormationSwiper - Continue course:', training);
-    console.log('🔥 FormationSwiper - Using courseId:', courseId);
-    navigate(`/course/${courseId}`);
+  const handleContinueCourse = (trainingId: number) => {
+    navigate(`/course/${trainingId}`);
   };
 
-  const handleStartCourse = (training: Training) => {
-    const courseId = training.originalId || training.id;
-    console.log('🔥 FormationSwiper - Start course:', training);
-    console.log('🔥 FormationSwiper - Using courseId:', courseId);
-    navigate(`/course/${courseId}`);
+  const handleStartCourse = (trainingId: number) => {
+    navigate(`/course/${trainingId}`);
   };
 
-  const handleReviewCourse = (training: Training) => {
-    const courseId = training.originalId || training.id;
-    console.log('🔥 FormationSwiper - Review course:', training);
-    console.log('🔥 FormationSwiper - Using courseId:', courseId);
-    navigate(`/course/${courseId}`);
+  const handleReviewCourse = (trainingId: number) => {
+    navigate(`/course/${trainingId}`);
   };
 
   const handleDownloadCertificate = (trainingTitle: string) => {
@@ -285,7 +275,7 @@ const FormationSwiper = ({ trainings }: FormationSwiperProps) => {
                       <div className="flex gap-2">
                         {training.status === "Terminée" ? (
                           <>
-                            <Button variant="outline" size="sm" onClick={() => handleReviewCourse(training)}>
+                            <Button variant="outline" size="sm" onClick={() => handleReviewCourse(training.id)}>
                               Revoir
                             </Button>
                             {training.certificate && (
@@ -296,12 +286,12 @@ const FormationSwiper = ({ trainings }: FormationSwiperProps) => {
                             )}
                           </>
                         ) : training.status === "En cours" ? (
-                          <Button size="sm" onClick={() => handleContinueCourse(training)}>
+                          <Button size="sm" onClick={() => handleContinueCourse(training.id)}>
                             <Play className="h-4 w-4 mr-2" />
                             Continuer
                           </Button>
                         ) : (
-                          <Button size="sm" onClick={() => handleStartCourse(training)}>
+                          <Button size="sm" onClick={() => handleStartCourse(training.id)}>
                             <Play className="h-4 w-4 mr-2" />
                             Commencer
                           </Button>

@@ -14,35 +14,21 @@ const Course = () => {
   const [lessons, setLessons] = useState<any[]>([]);
 
   useEffect(() => {
-    // Load course data based on courseId
+    // Load course data based on courseId or default to first course
     const testCourses = testDataService.getTestCourses();
-    console.log('🔍 Course.tsx - Received courseId from URL:', courseId);
-    console.log('🔍 Course.tsx - Type of courseId:', typeof courseId);
-    console.log('🔍 Course.tsx - Available courses from testDataService:');
-    testCourses.forEach(c => console.log(`  - ID: "${c.id}" (${typeof c.id}), Title: ${c.title}`));
-    
     const selectedCourse = courseId 
-      ? testCourses.find(c => {
-          console.log(`  Comparing "${c.id}" === "${courseId}": ${c.id === courseId}`);
-          return c.id === courseId || c.id === courseId.toString();
-        })
-      : null;
+      ? testCourses.find(c => c.id === courseId)
+      : testCourses[0];
     
-    if (!selectedCourse) {
-      console.error('❌ Course.tsx - Course not found for ID:', courseId);
-      console.error('❌ Available course IDs:', testCourses.map(c => c.id));
-      setCourse(null);
-      setLessons([]);
-      return;
+    if (selectedCourse) {
+      console.log('🔥 Loading course:', courseId, selectedCourse);
+      setCourse(selectedCourse);
+      
+      // Generate realistic lessons based on course content
+      const courseLessons = generateLessonsForCourse(selectedCourse);
+      console.log('🔥 Generated lessons for', selectedCourse.id, ':', courseLessons);
+      setLessons(courseLessons);
     }
-    
-    console.log('✅ Course.tsx - Found course:', selectedCourse);
-    setCourse(selectedCourse);
-    
-    // Generate realistic lessons based on course content
-    const courseLessons = generateLessonsForCourse(selectedCourse);
-    console.log('🔥 Generated lessons for', selectedCourse.id, ':', courseLessons);
-    setLessons(courseLessons);
   }, [courseId]);
 
   const generateLessonsForCourse = (course: any) => {
@@ -113,14 +99,7 @@ const Course = () => {
       <div className="min-h-screen moov-gradient-subtle flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p>Formation non trouvée</p>
-          <Button 
-            variant="outline" 
-            onClick={() => navigate("/")}
-            className="mt-4"
-          >
-            Retour au Tableau de Bord
-          </Button>
+          <p>Chargement du cours...</p>
         </div>
       </div>
     );
