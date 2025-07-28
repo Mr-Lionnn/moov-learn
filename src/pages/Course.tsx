@@ -105,13 +105,37 @@ const Course = () => {
     navigate("/");
   };
 
-  if (!course) {
+  if (!course && !courseId) {
     return (
       <div className="min-h-screen moov-gradient-subtle flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
           <p>Chargement du cours...</p>
         </div>
+      </div>
+    );
+  }
+
+  if (!course && courseId) {
+    return (
+      <div className="min-h-screen moov-gradient-subtle">
+        <Header />
+        <main className="container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate("/")}
+            className="mb-4"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Retour au Tableau de Bord
+          </Button>
+          <div className="bg-white rounded-lg shadow-sm p-6 text-center">
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Formation non trouvée</h1>
+            <p className="text-gray-600 mb-4">
+              Le cours avec l'ID "{courseId}" n'existe pas.
+            </p>
+          </div>
+        </main>
       </div>
     );
   }
