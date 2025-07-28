@@ -78,6 +78,19 @@ const LessonContentSwitch = ({
   
   switch (lesson.type) {
     case "video":
+      // Check if it's a Moov course video with file
+      if (courseTitle?.includes("Moov") && (lesson as any).fileName) {
+        console.log('🔥 Using MoovDocumentContent for video with file:', (lesson as any).fileName);
+        return (
+          <MoovDocumentContent
+            title={lesson.title}
+            fileName={(lesson as any).fileName}
+            fileType={(lesson as any).fileType}
+            duration={lesson.duration}
+            onComplete={() => setShowRating(true)}
+          />
+        );
+      }
       return (
         <MediaPlayer
           type="video"
@@ -101,6 +114,18 @@ const LessonContentSwitch = ({
       return <TextLessonContent onComplete={() => setShowRating(true)} />;
     
     case "document":
+      // For Moov course documents, use MoovDocumentContent
+      if (courseTitle?.includes("Moov") && (lesson as any).fileName) {
+        return (
+          <MoovDocumentContent
+            title={lesson.title}
+            fileName={(lesson as any).fileName}
+            fileType={(lesson as any).fileType}
+            duration={lesson.duration}
+            onComplete={() => setShowRating(true)}
+          />
+        );
+      }
       return <TextLessonContent onComplete={() => setShowRating(true)} />;
     
     case "quiz":
