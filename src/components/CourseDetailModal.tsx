@@ -36,7 +36,10 @@ const CourseDetailModal = ({ isOpen, onClose, course }: CourseDetailModalProps) 
   const handleContinue = () => {
     // Use the original ID if available, otherwise use the transformed ID
     const courseId = course.originalId || course.id;
-    console.log('🔥 CourseDetailModal - Navigating to course:', courseId, course);
+    console.log('🔥 CourseDetailModal - About to navigate');
+    console.log('🔥 CourseDetailModal - course object:', course);
+    console.log('🔥 CourseDetailModal - courseId being used:', courseId);
+    console.log('🔥 CourseDetailModal - Navigating to:', `/course/${courseId}`);
     navigate(`/course/${courseId}`);
     onClose();
   };

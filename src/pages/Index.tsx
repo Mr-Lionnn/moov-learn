@@ -84,7 +84,8 @@ const Index = () => {
       return;
     }
     
-    console.log('🔥 Course clicked:', course);
+    console.log('🔥 Index.tsx - Course clicked:', course);
+    console.log('🔥 Index.tsx - Course ID being used for navigation:', course.id || course.originalId);
     
     const courseWithDetails = {
       ...course,

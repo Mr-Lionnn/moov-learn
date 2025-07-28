@@ -16,22 +16,27 @@ const Course = () => {
   useEffect(() => {
     // Load course data based on courseId
     const testCourses = testDataService.getTestCourses();
-    console.log('🔍 Course.tsx - Received courseId:', courseId);
-    console.log('🔍 Available courses:', testCourses.map(c => ({ id: c.id, title: c.title })));
+    console.log('🔍 Course.tsx - Received courseId from URL:', courseId);
+    console.log('🔍 Course.tsx - Type of courseId:', typeof courseId);
+    console.log('🔍 Course.tsx - Available courses from testDataService:');
+    testCourses.forEach(c => console.log(`  - ID: "${c.id}" (${typeof c.id}), Title: ${c.title}`));
     
     const selectedCourse = courseId 
-      ? testCourses.find(c => c.id === courseId || c.id === courseId.toString())
+      ? testCourses.find(c => {
+          console.log(`  Comparing "${c.id}" === "${courseId}": ${c.id === courseId}`);
+          return c.id === courseId || c.id === courseId.toString();
+        })
       : null;
     
     if (!selectedCourse) {
-      console.error('❌ Course not found for ID:', courseId, 'Available courses:', testCourses.map(c => c.id));
-      // Instead of redirecting immediately, let's show an error state
+      console.error('❌ Course.tsx - Course not found for ID:', courseId);
+      console.error('❌ Available course IDs:', testCourses.map(c => c.id));
       setCourse(null);
       setLessons([]);
       return;
     }
     
-    console.log('✅ Found course:', courseId, selectedCourse);
+    console.log('✅ Course.tsx - Found course:', selectedCourse);
     setCourse(selectedCourse);
     
     // Generate realistic lessons based on course content
