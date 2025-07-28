@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Video, Download, Eye } from "lucide-react";
+import { FileText, Video, Download, Eye, Play, Pause } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import DocumentViewer from "@/components/content/DocumentViewer";
-import { ContentFile } from "@/types/content";
 
 interface MoovDocumentContentProps {
   title: string;
@@ -23,25 +21,8 @@ const MoovDocumentContent = ({
   onComplete 
 }: MoovDocumentContentProps) => {
   const { toast } = useToast();
-  const [isDocumentViewerOpen, setIsDocumentViewerOpen] = useState(false);
-  const [isViewed, setIsViewed] = useState(false);
-
-  // Create ContentFile object for DocumentViewer
-  const documentFile: ContentFile = {
-    id: `moov-${fileName}`,
-    name: fileName,
-    type: fileType.toLowerCase() as 'pdf' | 'pptx' | 'docx' | 'mp4' | 'mp3' | 'jpg' | 'png' | 'txt',
-    size: "2.3 MB",
-    url: `/MoovCourse/${fileName}`,
-    author: "Formation Moov",
-    uploadDate: new Date().toISOString(),
-    downloads: 0,
-    teamIds: [],
-    category: "formation",
-    description: title,
-    duration: duration,
-    pages: fileType.toLowerCase() === 'pdf' ? 15 : undefined
-  };
+  const [isViewing, setIsViewing] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const getFileIcon = () => {
     switch (fileType.toLowerCase()) {
@@ -74,12 +55,41 @@ const MoovDocumentContent = ({
   };
 
   const handleViewDocument = () => {
-    setIsDocumentViewerOpen(true);
-    setIsViewed(true);
+    console.log('🔥 Viewing document:', fileName, fileType);
+    setIsViewing(true);
+    
+    // For video files, open the actual file
+    if (fileType.toLowerCase() === 'mp4') {
+      const videoPath = `/src/MoovCourse/${fileName}`;
+      window.open(videoPath, '_blank');
+    } else {
+      // For documents, try to open from MoovCourse folder
+      const documentPath = `/src/MoovCourse/${fileName}`;
+      const link = document.createElement('a');
+      link.href = documentPath;
+      link.target = '_blank';
+      link.click();
+    }
+    
+    // Simulate document viewing progress
+    let currentProgress = 0;
+    const interval = setInterval(() => {
+      currentProgress += 10;
+      setProgress(currentProgress);
+      if (currentProgress >= 100) {
+        clearInterval(interval);
+        setTimeout(() => {
+          toast({
+            title: "Document consulté",
+            description: "Vous avez terminé la consultation de ce document.",
+          });
+        }, 1000);
+      }
+    }, 800);
   };
 
   const handleComplete = () => {
-    if (isViewed) {
+    if (progress >= 100) {
       onComplete();
       toast({
         title: "Leçon terminée",
@@ -92,18 +102,6 @@ const MoovDocumentContent = ({
         variant: "destructive"
       });
     }
-  };
-
-  const handleDownload = () => {
-    const downloadPath = `/MoovCourse/${fileName}`;
-    const link = document.createElement('a');
-    link.href = downloadPath;
-    link.download = fileName;
-    link.click();
-    toast({
-      title: "Téléchargement",
-      description: `${fileName} téléchargé avec succès.`,
-    });
   };
 
   const getFilePreview = () => {
@@ -153,7 +151,7 @@ const MoovDocumentContent = ({
                 poster="/placeholder.svg"
                 controls={false}
               >
-                <source src={`/MoovCourse/${fileName}`} type="video/mp4" />
+                <source src={`/src/MoovCourse/${fileName}`} type="video/mp4" />
               </video>
               <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
                 <div className="text-center text-white">
@@ -182,7 +180,6 @@ const MoovDocumentContent = ({
                 <div className="flex items-center gap-2 mt-1">
                   <Badge variant="secondary">{getFileTypeLabel()}</Badge>
                   {duration && <Badge variant="outline">{duration}</Badge>}
-                  {isViewed && <Badge variant="default" className="bg-green-600">Consulté</Badge>}
                 </div>
               </div>
             </div>
@@ -198,18 +195,44 @@ const MoovDocumentContent = ({
 
             {getFilePreview()}
 
+            {isViewing && progress > 0 && (
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span>Progression de la consultation</span>
+                  <span>{progress}%</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div 
+                    className="bg-primary h-2 rounded-full transition-all duration-300" 
+                    style={{ width: `${progress}%` }}
+                  ></div>
+                </div>
+              </div>
+            )}
+
             <div className="flex gap-3 flex-wrap">
               <Button
                 onClick={handleViewDocument}
+                disabled={isViewing && progress < 100}
                 className="flex-1 sm:flex-none"
               >
                 <Eye className="h-4 w-4 mr-2" />
-                Consulter le Document
+                {isViewing && progress < 100 ? 'Consultation en cours...' : 'Consulter le Document'}
               </Button>
               
               <Button
                 variant="outline"
-                onClick={handleDownload}
+                onClick={() => {
+                  const downloadPath = `/src/MoovCourse/${fileName}`;
+                  const link = document.createElement('a');
+                  link.href = downloadPath;
+                  link.download = fileName;
+                  link.click();
+                  toast({
+                    title: "Téléchargement",
+                    description: `${fileName} téléchargé avec succès.`,
+                  });
+                }}
                 className="flex-1 sm:flex-none"
               >
                 <Download className="h-4 w-4 mr-2" />
@@ -217,7 +240,7 @@ const MoovDocumentContent = ({
               </Button>
             </div>
 
-            {isViewed && (
+            {progress >= 100 && (
               <Button
                 onClick={handleComplete}
                 className="w-full"
@@ -229,13 +252,6 @@ const MoovDocumentContent = ({
           </div>
         </CardContent>
       </Card>
-
-      <DocumentViewer
-        isOpen={isDocumentViewerOpen}
-        onClose={() => setIsDocumentViewerOpen(false)}
-        file={documentFile}
-        onDownload={handleDownload}
-      />
     </div>
   );
 };
