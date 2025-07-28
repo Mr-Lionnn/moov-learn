@@ -16,24 +16,29 @@ const Course = () => {
   useEffect(() => {
     // Load course data based on courseId
     const testCourses = testDataService.getTestCourses();
+    console.log('🔍 Course.tsx - Received courseId:', courseId);
+    console.log('🔍 Available courses:', testCourses.map(c => ({ id: c.id, title: c.title })));
+    
     const selectedCourse = courseId 
-      ? testCourses.find(c => c.id === courseId)
+      ? testCourses.find(c => c.id === courseId || c.id === courseId.toString())
       : null;
     
     if (!selectedCourse) {
       console.error('❌ Course not found for ID:', courseId, 'Available courses:', testCourses.map(c => c.id));
-      navigate('/');
+      // Instead of redirecting immediately, let's show an error state
+      setCourse(null);
+      setLessons([]);
       return;
     }
     
-    console.log('🔥 Loading course:', courseId, selectedCourse);
+    console.log('✅ Found course:', courseId, selectedCourse);
     setCourse(selectedCourse);
     
     // Generate realistic lessons based on course content
     const courseLessons = generateLessonsForCourse(selectedCourse);
     console.log('🔥 Generated lessons for', selectedCourse.id, ':', courseLessons);
     setLessons(courseLessons);
-  }, [courseId, navigate]);
+  }, [courseId]);
 
   const generateLessonsForCourse = (course: any) => {
     const lessonSets: { [key: string]: any[] } = {
@@ -103,7 +108,14 @@ const Course = () => {
       <div className="min-h-screen moov-gradient-subtle flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p>Chargement du cours...</p>
+          <p>Formation non trouvée</p>
+          <Button 
+            variant="outline" 
+            onClick={() => navigate("/")}
+            className="mt-4"
+          >
+            Retour au Tableau de Bord
+          </Button>
         </div>
       </div>
     );

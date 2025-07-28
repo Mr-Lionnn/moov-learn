@@ -34,9 +34,9 @@ const CourseDetailModal = ({ isOpen, onClose, course }: CourseDetailModalProps) 
   }
 
   const handleContinue = () => {
-    // Use the correct course ID - should match the ID from testDataService
-    const courseId = course.id;
-    console.log('🔥 Navigating to course:', courseId, course);
+    // Use the original ID if available, otherwise use the transformed ID
+    const courseId = course.originalId || course.id;
+    console.log('🔥 CourseDetailModal - Navigating to course:', courseId, course);
     navigate(`/course/${courseId}`);
     onClose();
   };

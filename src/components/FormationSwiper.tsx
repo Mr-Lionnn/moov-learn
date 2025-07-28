@@ -73,16 +73,19 @@ const FormationSwiper = ({ trainings }: FormationSwiperProps) => {
     }
   };
 
-  const handleContinueCourse = (trainingId: number) => {
-    navigate(`/course/${trainingId}`);
+  const handleContinueCourse = (training: Training) => {
+    console.log('🔥 FormationSwiper - Continue course:', training);
+    navigate(`/course/${training.id}`);
   };
 
-  const handleStartCourse = (trainingId: number) => {
-    navigate(`/course/${trainingId}`);
+  const handleStartCourse = (training: Training) => {
+    console.log('🔥 FormationSwiper - Start course:', training);
+    navigate(`/course/${training.id}`);
   };
 
-  const handleReviewCourse = (trainingId: number) => {
-    navigate(`/course/${trainingId}`);
+  const handleReviewCourse = (training: Training) => {
+    console.log('🔥 FormationSwiper - Review course:', training);
+    navigate(`/course/${training.id}`);
   };
 
   const handleDownloadCertificate = (trainingTitle: string) => {
@@ -275,7 +278,7 @@ const FormationSwiper = ({ trainings }: FormationSwiperProps) => {
                       <div className="flex gap-2">
                         {training.status === "Terminée" ? (
                           <>
-                            <Button variant="outline" size="sm" onClick={() => handleReviewCourse(training.id)}>
+                            <Button variant="outline" size="sm" onClick={() => handleReviewCourse(training)}>
                               Revoir
                             </Button>
                             {training.certificate && (
@@ -286,12 +289,12 @@ const FormationSwiper = ({ trainings }: FormationSwiperProps) => {
                             )}
                           </>
                         ) : training.status === "En cours" ? (
-                          <Button size="sm" onClick={() => handleContinueCourse(training.id)}>
+                          <Button size="sm" onClick={() => handleContinueCourse(training)}>
                             <Play className="h-4 w-4 mr-2" />
                             Continuer
                           </Button>
                         ) : (
-                          <Button size="sm" onClick={() => handleStartCourse(training.id)}>
+                          <Button size="sm" onClick={() => handleStartCourse(training)}>
                             <Play className="h-4 w-4 mr-2" />
                             Commencer
                           </Button>
