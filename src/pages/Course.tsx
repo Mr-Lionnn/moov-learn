@@ -14,22 +14,26 @@ const Course = () => {
   const [lessons, setLessons] = useState<any[]>([]);
 
   useEffect(() => {
-    // Load course data based on courseId or default to first course
+    // Load course data based on courseId
     const testCourses = testDataService.getTestCourses();
     const selectedCourse = courseId 
       ? testCourses.find(c => c.id === courseId)
-      : testCourses[0];
+      : null;
     
-    if (selectedCourse) {
-      console.log('🔥 Loading course:', courseId, selectedCourse);
-      setCourse(selectedCourse);
-      
-      // Generate realistic lessons based on course content
-      const courseLessons = generateLessonsForCourse(selectedCourse);
-      console.log('🔥 Generated lessons for', selectedCourse.id, ':', courseLessons);
-      setLessons(courseLessons);
+    if (!selectedCourse) {
+      console.error('❌ Course not found for ID:', courseId, 'Available courses:', testCourses.map(c => c.id));
+      navigate('/');
+      return;
     }
-  }, [courseId]);
+    
+    console.log('🔥 Loading course:', courseId, selectedCourse);
+    setCourse(selectedCourse);
+    
+    // Generate realistic lessons based on course content
+    const courseLessons = generateLessonsForCourse(selectedCourse);
+    console.log('🔥 Generated lessons for', selectedCourse.id, ':', courseLessons);
+    setLessons(courseLessons);
+  }, [courseId, navigate]);
 
   const generateLessonsForCourse = (course: any) => {
     const lessonSets: { [key: string]: any[] } = {
