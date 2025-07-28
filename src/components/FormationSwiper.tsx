@@ -26,7 +26,8 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 interface Training {
-  id: number;
+  id: number | string;
+  originalId?: string;
   title: string;
   instructor: string;
   duration: string;
@@ -74,18 +75,24 @@ const FormationSwiper = ({ trainings }: FormationSwiperProps) => {
   };
 
   const handleContinueCourse = (training: Training) => {
+    const courseId = training.originalId || training.id;
     console.log('🔥 FormationSwiper - Continue course:', training);
-    navigate(`/course/${training.id}`);
+    console.log('🔥 FormationSwiper - Using courseId:', courseId);
+    navigate(`/course/${courseId}`);
   };
 
   const handleStartCourse = (training: Training) => {
+    const courseId = training.originalId || training.id;
     console.log('🔥 FormationSwiper - Start course:', training);
-    navigate(`/course/${training.id}`);
+    console.log('🔥 FormationSwiper - Using courseId:', courseId);
+    navigate(`/course/${courseId}`);
   };
 
   const handleReviewCourse = (training: Training) => {
+    const courseId = training.originalId || training.id;
     console.log('🔥 FormationSwiper - Review course:', training);
-    navigate(`/course/${training.id}`);
+    console.log('🔥 FormationSwiper - Using courseId:', courseId);
+    navigate(`/course/${courseId}`);
   };
 
   const handleDownloadCertificate = (trainingTitle: string) => {
