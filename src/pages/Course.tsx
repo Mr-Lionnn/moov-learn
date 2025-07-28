@@ -9,7 +9,7 @@ import { testDataService } from "@/services/testDataService";
 
 const Course = () => {
   const navigate = useNavigate();
-  const { courseId } = useParams();
+  const { id: courseId } = useParams();
   const [course, setCourse] = useState<any>(null);
   const [lessons, setLessons] = useState<any[]>([]);
 
