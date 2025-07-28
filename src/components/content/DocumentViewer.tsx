@@ -124,56 +124,79 @@ const DocumentViewer = ({ isOpen, onClose, file, onSave, onDownload }: DocumentV
     }
   };
 
-  const renderRealContent = (file: ContentFile) => {
-    const { type, url } = file;
+  const generateMockContent = (file: ContentFile) => {
+    const { type, name } = file;
     
     switch (type) {
       case 'pdf':
         return (
-          <div className="w-full h-[600px]">
-            <iframe 
-              src={url}
-              className="w-full h-full border rounded-lg"
-              title={file.name}
-            />
+          <div className="bg-white p-8 shadow-lg rounded-lg min-h-[600px]">
+            <h1 className="text-2xl font-bold mb-6 text-center">Document PDF - {name}</h1>
+            <div className="space-y-4 text-gray-700 leading-relaxed">
+              <p>Page {viewerState.currentPage} sur {viewerState.totalPages}</p>
+              <p>Ceci est un exemple de contenu PDF. Le document contient des informations importantes sur la formation technique.</p>
+              <h2 className="text-xl font-semibold mt-6 mb-3">Section {viewerState.currentPage}</h2>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+              <ul className="list-disc ml-6 space-y-2">
+                <li>Point important numéro un</li>
+                <li>Deuxième élément clé à retenir</li>
+                <li>Troisième concept essentiel</li>
+              </ul>
+            </div>
           </div>
         );
       
-      case 'mp4':
+      case 'pptx':
         return (
-          <div className="w-full max-w-4xl mx-auto">
-            <video 
-              controls 
-              className="w-full h-auto rounded-lg shadow-lg"
-              poster="/placeholder.svg"
-            >
-              <source src={url} type="video/mp4" />
-              Votre navigateur ne supporte pas la lecture vidéo.
-            </video>
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-lg min-h-[500px] flex flex-col justify-center">
+            <h1 className="text-3xl font-bold text-center mb-8 text-blue-800">
+              Présentation - Slide {viewerState.currentPage}
+            </h1>
+            <div className="text-center space-y-6">
+              <div className="bg-white p-6 rounded-lg shadow-md">
+                <h2 className="text-xl font-semibold mb-4">Contenu Principal</h2>
+                <p className="text-gray-700">Cette diapositive contient des informations clés sur le sujet traité.</p>
+              </div>
+              <div className="flex justify-center space-x-4">
+                <div className="bg-white p-4 rounded-lg w-32 h-24 flex items-center justify-center shadow-sm">
+                  <span className="text-sm text-gray-600">Graphique</span>
+                </div>
+                <div className="bg-white p-4 rounded-lg w-32 h-24 flex items-center justify-center shadow-sm">
+                  <span className="text-sm text-gray-600">Données</span>
+                </div>
+              </div>
+            </div>
           </div>
         );
       
       case 'docx':
-      case 'pptx':
         return (
-          <div className="w-full h-[600px]">
-            <iframe 
-              src={`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(window.location.origin + url)}`}
-              className="w-full h-full border rounded-lg"
-              title={file.name}
-            />
+          <div className="bg-white p-8 max-w-4xl mx-auto min-h-[600px] shadow-lg">
+            <div className="border-l-4 border-blue-500 pl-4 mb-6">
+              <h1 className="text-2xl font-bold">Document Word - {name}</h1>
+              <p className="text-gray-600">Page {viewerState.currentPage} sur {viewerState.totalPages}</p>
+            </div>
+            <div className="prose max-w-none">
+              <h2>Introduction</h2>
+              <p>Ce document contient des informations détaillées sur les procédures et protocoles techniques.</p>
+              <h2>Contenu Principal</h2>
+              <p>Les sections suivantes décrivent les étapes importantes à suivre pour compléter la formation.</p>
+              <blockquote className="border-l-4 border-gray-300 pl-4 italic text-gray-600">
+                Note importante: Assurez-vous de suivre toutes les étapes dans l'ordre présenté.
+              </blockquote>
+            </div>
           </div>
         );
       
       case 'jpg':
       case 'png':
         return (
-          <div className="flex items-center justify-center">
-            <img 
-              src={url} 
-              alt={file.name}
-              className="max-w-full max-h-[600px] rounded-lg shadow-lg"
-            />
+          <div className="flex items-center justify-center min-h-[500px] bg-gray-100 rounded-lg">
+            <div className="text-center">
+              <Image className="h-24 w-24 text-gray-400 mx-auto mb-4" />
+              <p className="text-gray-600">Image: {name}</p>
+              <p className="text-sm text-gray-500">Aperçu de l'image en cours de chargement...</p>
+            </div>
           </div>
         );
       
@@ -183,11 +206,6 @@ const DocumentViewer = ({ isOpen, onClose, file, onSave, onDownload }: DocumentV
             <div className="text-center">
               <FileText className="h-16 w-16 text-gray-400 mx-auto mb-4" />
               <p className="text-gray-600">Format non supporté: {type}</p>
-              <p className="text-sm text-gray-500 mt-2">
-                <a href={url} download className="text-blue-600 hover:underline">
-                  Télécharger le fichier
-                </a>
-              </p>
             </div>
           </div>
         );
@@ -224,7 +242,7 @@ const DocumentViewer = ({ isOpen, onClose, file, onSave, onDownload }: DocumentV
           transform: `scale(${viewerState.zoom / 100}) rotate(${viewerState.rotation}deg)`,
         }}
       >
-        {file && renderRealContent(file)}
+        {file && generateMockContent(file)}
       </div>
     );
   };
