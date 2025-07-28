@@ -16,6 +16,9 @@ const Course = () => {
   useEffect(() => {
     // Load course data based on courseId or default to first course
     const testCourses = testDataService.getTestCourses();
+    console.log('🔥 Course component - courseId from URL:', courseId);
+    console.log('🔥 Available courses:', testCourses.map(c => ({ id: c.id, title: c.title })));
+    
     const selectedCourse = courseId 
       ? testCourses.find(c => c.id === courseId)
       : testCourses[0];
@@ -28,6 +31,9 @@ const Course = () => {
       const courseLessons = generateLessonsForCourse(selectedCourse);
       console.log('🔥 Generated lessons for', selectedCourse.id, ':', courseLessons);
       setLessons(courseLessons);
+    } else {
+      console.error('❌ Course not found for ID:', courseId);
+      console.log('Available course IDs:', testCourses.map(c => c.id));
     }
   }, [courseId]);
 
@@ -83,9 +89,12 @@ const Course = () => {
     console.log('🔥 Looking for lessons for course ID:', course.id, 'Available lesson sets:', Object.keys(lessonSets));
     const lessons = lessonSets[course.id];
     if (!lessons) {
-      console.log('⚠️ No lessons found for course:', course.id, 'falling back to customer-service-excellence');
+      console.log('⚠️ No lessons found for course:', course.id);
+      console.log('⚠️ This will result in no content being displayed!');
+      // Don't return fallback - let the component handle the missing lessons gracefully
+      return [];
     }
-    return lessons || lessonSets['customer-service-excellence'];
+    return lessons;
   };
 
   const handleCourseComplete = () => {
@@ -101,6 +110,31 @@ const Course = () => {
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
           <p>Chargement du cours...</p>
         </div>
+      </div>
+    );
+  }
+
+  if (lessons.length === 0) {
+    return (
+      <div className="min-h-screen moov-gradient-subtle">
+        <Header />
+        <main className="container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate("/")}
+            className="mb-4"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Retour au Tableau de Bord
+          </Button>
+          <div className="bg-white rounded-lg shadow-sm p-6 text-center">
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Formation non trouvée</h1>
+            <p className="text-gray-600 mb-4">
+              Le contenu de cette formation n'est pas disponible pour le moment.
+            </p>
+            <p className="text-sm text-gray-500">ID de cours: {courseId}</p>
+          </div>
+        </main>
       </div>
     );
   }
