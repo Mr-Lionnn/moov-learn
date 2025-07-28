@@ -60,11 +60,11 @@ const MoovDocumentContent = ({
     
     // For video files, open the actual file
     if (fileType.toLowerCase() === 'mp4') {
-      const videoPath = `/MoovCourse/${fileName}`;
+      const videoPath = `/src/MoovCourse/${fileName}`;
       window.open(videoPath, '_blank');
     } else {
       // For documents, try to open from MoovCourse folder
-      const documentPath = `/MoovCourse/${fileName}`;
+      const documentPath = `/src/MoovCourse/${fileName}`;
       const link = document.createElement('a');
       link.href = documentPath;
       link.target = '_blank';
@@ -151,7 +151,7 @@ const MoovDocumentContent = ({
                 poster="/placeholder.svg"
                 controls={false}
               >
-                <source src={`/MoovCourse/${fileName}`} type="video/mp4" />
+                <source src={`/src/MoovCourse/${fileName}`} type="video/mp4" />
               </video>
               <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
                 <div className="text-center text-white">
@@ -223,7 +223,7 @@ const MoovDocumentContent = ({
               <Button
                 variant="outline"
                 onClick={() => {
-                  const downloadPath = `/MoovCourse/${fileName}`;
+                  const downloadPath = `/src/MoovCourse/${fileName}`;
                   const link = document.createElement('a');
                   link.href = downloadPath;
                   link.download = fileName;

@@ -6,7 +6,7 @@ import ModuleRating, { ModuleRatingData } from "@/components/ModuleRating";
 import LessonCompletionConfirmation from "@/components/LessonCompletionConfirmation";
 import MoovDocumentContent from "./MoovDocumentContent";
 import { sampleQuiz } from "@/data/sampleQuiz";
-import { MoovCourseQuiz } from "@/MoovCourse/MoovCourseQuiz";
+import { moovCourseQuiz } from "@/data/moovCourseQuiz";
 import { Lesson } from "@/types/lesson";
 import { QuizResult } from "@/types/quiz";
 import { ratingService } from "@/services/ratingService";
@@ -125,8 +125,8 @@ const LessonContentSwitch = ({
       );
     
     case "quiz":
-      // Use MoovCourseQuiz for Moov formation, otherwise use sample quiz
-      const quizToUse = courseTitle?.includes("Moov") ? MoovCourseQuiz : sampleQuiz;
+      // Use moovCourseQuiz for Moov formation, otherwise use sample quiz
+      const quizToUse = courseTitle?.includes("Moov") ? moovCourseQuiz : sampleQuiz;
       return (
         <QuizPlayer
           quiz={quizToUse}

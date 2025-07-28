@@ -64,7 +64,7 @@ const Course = () => {
         { id: 6, title: "Évaluation Leadership", duration: "30:00", completed: false, type: "quiz" }
       ],
       'formation-moov': [
-        { id: 1, title: "Introduction au Service Client", duration: "15:30", completed: false, type: "video", 
+        { id: 1, title: "Vidéo Intelligence Artificielle Moov", duration: "15:30", completed: false, type: "video", 
           fileName: "MIA.mp4", fileType: "mp4" },
         { id: 2, title: "Argumentaire de Vente Voix", duration: "25:00", completed: false, type: "document", 
           fileName: "ARGUMENTAIRE DE VENTE VOIX.docx", fileType: "docx" },
