@@ -23,13 +23,13 @@ import {
   BarChart3,
   Search
 } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useSupabaseAuth } from "@/contexts/SupabaseAuthContext";
 import { testDataService } from "@/services/testDataService";
 import { useNavigate } from "react-router-dom";
 
 
 const Index = () => {
-  const { user } = useAuth();
+  const { profile: user } = useSupabaseAuth();
   const navigate = useNavigate();
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
   const [courses, setCourses] = useState<any[]>([]);
@@ -44,8 +44,9 @@ const Index = () => {
     if (user?.id) {
       try {
         console.log('🔥 About to call getCoursesForUser with user ID:', user.id);
-        const userCourses = testDataService.getCoursesForUser(user.id);
-        const userTasks = testDataService.getTasksForUser(user.id);
+        // Temporarily use mock data until we migrate to Supabase data
+        const userCourses = testDataService.getCoursesForUser(1);
+        const userTasks = testDataService.getTasksForUser(1);
         
         console.log('🔥 Loaded courses:', userCourses);
         console.log('🔥 Courses with Formation Moov:', userCourses.filter(c => c.title.includes('Moov')));
@@ -159,7 +160,7 @@ const Index = () => {
       <main className="container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6">
         <div className="mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
-            Bienvenue, {user?.name || 'Utilisateur'}!
+            Bienvenue, {user?.full_name || 'Utilisateur'}!
           </h1>
           <p className="text-sm sm:text-base text-gray-600">Suivez votre progression et continuez votre apprentissage</p>
         </div>

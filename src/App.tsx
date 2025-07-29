@@ -3,9 +3,9 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "./contexts/AuthContext";
+import { SupabaseAuthProvider } from "./contexts/SupabaseAuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Login from "./pages/Login";
+import Auth from "./pages/Auth";
 import Index from "./pages/Index";
 import Course from "./pages/Course";
 import CreateCourse from "./pages/CreateCourse";
@@ -49,14 +49,14 @@ function ErrorFallback({error}: {error: Error}) {
 const App = () => (
   <ErrorBoundary FallbackComponent={ErrorFallback}>
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
+      <SupabaseAuthProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
           <BrowserRouter>
             <SessionWrapper>
               <Routes>
-                <Route path="/login" element={<Login />} />
+                <Route path="/auth" element={<Auth />} />
                 <Route path="/" element={
                   <ProtectedRoute>
                     <Index />
@@ -138,7 +138,7 @@ const App = () => (
             </SessionWrapper>
           </BrowserRouter>
         </TooltipProvider>
-      </AuthProvider>
+      </SupabaseAuthProvider>
     </QueryClientProvider>
   </ErrorBoundary>
 );
