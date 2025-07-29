@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Mail, Lock, User, Phone, Calendar, Building } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -81,15 +82,38 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await signUp(signupData.email, signupData.password, {
-        full_name: signupData.full_name,
-        phone: signupData.phone,
-        date_of_birth: signupData.date_of_birth,
-        role: signupData.role,
-        team: signupData.team,
-        site: signupData.site,
-        department: signupData.department
+      console.log('Attempting signup with:', {
+        email: signupData.email,
+        metadata: {
+          full_name: signupData.full_name,
+          phone: signupData.phone,
+          date_of_birth: signupData.date_of_birth,
+          role: signupData.role,
+          team: signupData.team,
+          site: signupData.site,
+          department: signupData.department
+        }
       });
+
+      // Use supabase directly to debug the issue
+      const { data, error } = await supabase.auth.signUp({
+        email: signupData.email,
+        password: signupData.password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`,
+          data: {
+            full_name: signupData.full_name,
+            phone: signupData.phone,
+            date_of_birth: signupData.date_of_birth,
+            role: signupData.role,
+            team: signupData.team,
+            site: signupData.site,
+            department: signupData.department
+          }
+        }
+      });
+
+      console.log('Signup result:', { data, error });
       
       if (error) {
         toast({
