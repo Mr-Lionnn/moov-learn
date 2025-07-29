@@ -22,7 +22,7 @@ import Tasks from "./pages/Tasks";
 
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
-import SessionWrapper from "./components/SessionWrapper";
+
 import { ErrorBoundary } from "react-error-boundary";
 
 const queryClient = new QueryClient();
@@ -54,8 +54,7 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <SessionWrapper>
-              <Routes>
+            <Routes>
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/" element={
                   <ProtectedRoute>
@@ -129,8 +128,7 @@ const App = () => (
                 } />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
-              </Routes>
-            </SessionWrapper>
+            </Routes>
           </BrowserRouter>
         </TooltipProvider>
       </SupabaseAuthProvider>
