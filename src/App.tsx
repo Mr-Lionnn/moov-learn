@@ -47,7 +47,7 @@ function ErrorFallback({error}: {error: Error}) {
 }
 
 const App = () => (
-  <ErrorBoundary FallbackComponent={ErrorFallback}>
+  <ErrorBoundary fallback={<ErrorFallback error={new Error("Something went wrong")} />}>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <TooltipProvider>
