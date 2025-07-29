@@ -15,7 +15,7 @@ import {
   BookOpen
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/hooks/useAuthCompatibility";
 import { useToast } from "@/hooks/use-toast";
 
 interface UserMenuProps {
@@ -33,7 +33,7 @@ const UserMenu = ({ onShowAdminPanel }: UserMenuProps) => {
       title: "Déconnexion réussie",
       description: "À bientôt !",
     });
-    navigate("/login");
+    navigate("/auth");
   };
 
   const getInitials = (name: string) => {

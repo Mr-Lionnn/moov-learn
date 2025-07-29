@@ -9,7 +9,7 @@ import { BookOpen, Clock, Users, Award, Search, Play, CheckCircle, Star, Filter,
 import Header from "@/components/Header";
 import FormationSwiper from "@/components/FormationSwiper";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/hooks/useAuthCompatibility";
 import { testDataService } from "@/services/testDataService";
 
 
