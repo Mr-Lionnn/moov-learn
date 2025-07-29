@@ -12,13 +12,13 @@ import {
   Shield
 } from 'lucide-react';
 import { testDataService } from '@/services/testDataService';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/useAuthCompatibility';
 import { useNavigate } from 'react-router-dom';
 
 const TestDataInitializer = () => {
   const [isInitialized, setIsInitialized] = useState(false);
   const [showTestAccounts, setShowTestAccounts] = useState(false);
-  const { login } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,22 +37,8 @@ const TestDataInitializer = () => {
   };
 
   const loginAsTestUser = (userId: number) => {
-    console.log('Attempting to login as test user:', userId);
-    const testUser = testDataService.getUserById(userId);
-    if (testUser) {
-      console.log('Found test user:', testUser);
-      login({
-        id: testUser.id,
-        email: testUser.email,
-        name: testUser.name,
-        role: testUser.role,
-        department: testUser.department,
-        teamId: testUser.teamId
-      });
-      navigate('/');
-    } else {
-      console.error('Test user not found:', userId);
-    }
+    console.log('Note: Test user login is not available with Supabase auth');
+    navigate('/auth');
   };
 
   const getRoleColor = (role: string) => {

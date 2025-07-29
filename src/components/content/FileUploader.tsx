@@ -19,7 +19,7 @@ import {
   CheckCircle
 } from 'lucide-react';
 import { ContentFile, Team } from '@/types/content';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/useAuthCompatibility';
 
 interface FileUploaderProps {
   isOpen: boolean;
