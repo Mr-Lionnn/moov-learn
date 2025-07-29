@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { FileText, Video, Download, Eye, Play, Pause } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import DocumentViewer from "@/components/content/DocumentViewer";
+import { ContentFile } from "@/types/content";
 
 interface MoovDocumentContentProps {
   title: string;
@@ -23,6 +25,8 @@ const MoovDocumentContent = ({
   const { toast } = useToast();
   const [isViewing, setIsViewing] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [showDocumentViewer, setShowDocumentViewer] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const getFileIcon = () => {
     switch (fileType.toLowerCase()) {
@@ -58,17 +62,12 @@ const MoovDocumentContent = ({
     console.log('🔥 Viewing document:', fileName, fileType);
     setIsViewing(true);
     
-    // For video files, open the actual file
     if (fileType.toLowerCase() === 'mp4') {
-      const videoPath = `/src/MoovCourse/${fileName}`;
-      window.open(videoPath, '_blank');
+      // For video files, toggle play state
+      setIsPlaying(!isPlaying);
     } else {
-      // For documents, try to open from MoovCourse folder
-      const documentPath = `/src/MoovCourse/${fileName}`;
-      const link = document.createElement('a');
-      link.href = documentPath;
-      link.target = '_blank';
-      link.click();
+      // For documents, open the document viewer
+      setShowDocumentViewer(true);
     }
     
     // Simulate document viewing progress
@@ -86,6 +85,31 @@ const MoovDocumentContent = ({
         }, 1000);
       }
     }, 800);
+  };
+
+  const createContentFile = (): ContentFile => {
+    const getContentType = (type: string) => {
+      switch (type.toLowerCase()) {
+        case 'mp4': return 'mp4';
+        case 'pdf': return 'pdf';
+        case 'docx': return 'docx';
+        case 'pptx': return 'pptx';
+        default: return 'txt';
+      }
+    };
+
+    return {
+      id: fileName,
+      name: fileName,
+      type: getContentType(fileType),
+      url: `/src/MoovCourse/${fileName}`,
+      size: '0 MB',
+      uploadDate: new Date().toISOString(),
+      author: 'Moov',
+      downloads: 0,
+      teamIds: [],
+      category: 'formation'
+    };
   };
 
   const handleComplete = () => {
@@ -108,59 +132,100 @@ const MoovDocumentContent = ({
     switch (fileType.toLowerCase()) {
       case "pdf":
         return (
-          <div className="bg-red-50 p-6 rounded-lg border border-red-200">
-            <div className="flex items-center justify-center h-64 bg-white rounded border-2 border-dashed border-red-300">
+          <div className="relative aspect-video bg-gradient-to-br from-red-50 to-red-100 rounded-lg border border-red-200 overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300"
+               onClick={handleViewDocument}>
+            <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center">
-                <FileText className="h-16 w-16 text-red-400 mx-auto mb-4" />
-                <p className="text-sm text-gray-600">Aperçu du document PDF</p>
-                <p className="text-xs text-gray-500 mt-2">Cliquez sur "Consulter" pour ouvrir</p>
+                <div className="w-20 h-20 bg-red-500 rounded-lg flex items-center justify-center mb-4 mx-auto shadow-lg">
+                  <FileText className="h-10 w-10 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold text-red-700 mb-2">{fileName}</h3>
+                <p className="text-sm text-red-600">Document PDF</p>
+                <div className="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg inline-flex items-center gap-2 text-sm">
+                  <Eye className="h-4 w-4" />
+                  Ouvrir le document
+                </div>
               </div>
             </div>
           </div>
         );
       case "docx":
         return (
-          <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
-            <div className="flex items-center justify-center h-64 bg-white rounded border-2 border-dashed border-blue-300">
+          <div className="relative aspect-video bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border border-blue-200 overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300"
+               onClick={handleViewDocument}>
+            <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center">
-                <FileText className="h-16 w-16 text-blue-400 mx-auto mb-4" />
-                <p className="text-sm text-gray-600">Document Word</p>
-                <p className="text-xs text-gray-500 mt-2">Argumentaires et guides pratiques</p>
+                <div className="w-20 h-20 bg-blue-500 rounded-lg flex items-center justify-center mb-4 mx-auto shadow-lg">
+                  <FileText className="h-10 w-10 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold text-blue-700 mb-2">{fileName}</h3>
+                <p className="text-sm text-blue-600">Document Word</p>
+                <div className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg inline-flex items-center gap-2 text-sm">
+                  <Eye className="h-4 w-4" />
+                  Ouvrir le document
+                </div>
               </div>
             </div>
           </div>
         );
       case "pptx":
         return (
-          <div className="bg-orange-50 p-6 rounded-lg border border-orange-200">
-            <div className="flex items-center justify-center h-64 bg-white rounded border-2 border-dashed border-orange-300">
+          <div className="relative aspect-video bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg border border-orange-200 overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300"
+               onClick={handleViewDocument}>
+            <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center">
-                <FileText className="h-16 w-16 text-orange-400 mx-auto mb-4" />
-                <p className="text-sm text-gray-600">Présentation PowerPoint</p>
-                <p className="text-xs text-gray-500 mt-2">Supports de formation visuels</p>
+                <div className="w-20 h-20 bg-orange-500 rounded-lg flex items-center justify-center mb-4 mx-auto shadow-lg">
+                  <FileText className="h-10 w-10 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold text-orange-700 mb-2">{fileName}</h3>
+                <p className="text-sm text-orange-600">Présentation PowerPoint</p>
+                <div className="mt-4 px-4 py-2 bg-orange-500 text-white rounded-lg inline-flex items-center gap-2 text-sm">
+                  <Eye className="h-4 w-4" />
+                  Ouvrir la présentation
+                </div>
               </div>
             </div>
           </div>
         );
       case "mp4":
         return (
-          <div className="bg-purple-50 p-6 rounded-lg border border-purple-200">
-            <div className="flex items-center justify-center h-64 bg-black rounded relative overflow-hidden">
-              <video 
-                className="w-full h-full object-cover" 
-                poster="/placeholder.svg"
-                controls={false}
-              >
-                <source src={`/src/MoovCourse/${fileName}`} type="video/mp4" />
-              </video>
-              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                <div className="text-center text-white">
-                  <Video className="h-16 w-16 text-purple-400 mx-auto mb-4" />
-                  <p className="text-sm">Vidéo de Formation MIA</p>
-                  <p className="text-xs text-gray-300 mt-2">Intelligence Artificielle Moov</p>
+          <div className="relative aspect-video bg-black rounded-lg overflow-hidden group cursor-pointer"
+               onClick={handleViewDocument}>
+            <video 
+              className="w-full h-full object-cover" 
+              poster="/placeholder.svg"
+            >
+              <source src={`/src/MoovCourse/${fileName}`} type="video/mp4" />
+            </video>
+            <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center group-hover:bg-opacity-50 transition-all duration-300">
+              <div className="text-center text-white">
+                <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-4 mx-auto transition-all duration-300 ${
+                  isPlaying ? 'bg-red-600' : 'bg-white bg-opacity-20 backdrop-blur-sm border-2 border-white'
+                }`}>
+                  {isPlaying ? (
+                    <Pause className="h-8 w-8 text-white" />
+                  ) : (
+                    <Play className="h-8 w-8 text-white ml-1" />
+                  )}
                 </div>
+                <h3 className="text-lg font-semibold mb-2">{title}</h3>
+                <p className="text-sm text-gray-200">Vidéo de Formation</p>
+                {duration && (
+                  <div className="mt-2 px-3 py-1 bg-black bg-opacity-50 rounded-full text-xs">
+                    {duration}
+                  </div>
+                )}
               </div>
             </div>
+            {/* Progress bar for video viewing */}
+            {isViewing && progress > 0 && (
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-black bg-opacity-50">
+                <div 
+                  className="h-full bg-red-500 transition-all duration-300" 
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            )}
           </div>
         );
       default:
@@ -170,56 +235,59 @@ const MoovDocumentContent = ({
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              {getFileIcon()}
-              <div>
-                <CardTitle className="text-lg">{title}</CardTitle>
-                <div className="flex items-center gap-2 mt-1">
-                  <Badge variant="secondary">{getFileTypeLabel()}</Badge>
-                  {duration && <Badge variant="outline">{duration}</Badge>}
-                </div>
-              </div>
+      {/* Main content preview */}
+      <div className="space-y-4">
+        {getFilePreview()}
+        
+        {/* Progress bar for non-video content */}
+        {isViewing && progress > 0 && fileType.toLowerCase() !== 'mp4' && (
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm text-muted-foreground">
+              <span>Progression de la consultation</span>
+              <span>{progress}%</span>
+            </div>
+            <div className="w-full bg-secondary rounded-full h-2">
+              <div 
+                className="bg-primary h-2 rounded-full transition-all duration-300" 
+                style={{ width: `${progress}%` }}
+              />
             </div>
           </div>
-        </CardHeader>
-        <CardContent>
+        )}
+      </div>
+
+      {/* Document information card */}
+      <Card>
+        <CardContent className="pt-6">
           <div className="space-y-4">
-            <div className="text-sm text-muted-foreground">
-              <p><strong>Fichier:</strong> {fileName}</p>
-              <p><strong>Type:</strong> {getFileTypeLabel()}</p>
-              {duration && <p><strong>Durée estimée:</strong> {duration}</p>}
-            </div>
-
-            {getFilePreview()}
-
-            {isViewing && progress > 0 && (
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span>Progression de la consultation</span>
-                  <span>{progress}%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-primary h-2 rounded-full transition-all duration-300" 
-                    style={{ width: `${progress}%` }}
-                  ></div>
+            <div className="flex items-start justify-between">
+              <div className="flex items-center gap-3">
+                {getFileIcon()}
+                <div>
+                  <h3 className="font-semibold text-lg">{title}</h3>
+                  <div className="flex items-center gap-2 mt-1">
+                    <Badge variant="secondary">{getFileTypeLabel()}</Badge>
+                    {duration && <Badge variant="outline">{duration}</Badge>}
+                  </div>
                 </div>
               </div>
-            )}
+            </div>
 
-            <div className="flex gap-3 flex-wrap">
-              <Button
-                onClick={handleViewDocument}
-                disabled={isViewing && progress < 100}
-                className="flex-1 sm:flex-none"
-              >
-                <Eye className="h-4 w-4 mr-2" />
-                {isViewing && progress < 100 ? 'Consultation en cours...' : 'Consulter le Document'}
-              </Button>
-              
+            <div className="grid grid-cols-2 gap-4 text-sm text-muted-foreground">
+              <div>
+                <span className="font-medium">Fichier:</span> {fileName}
+              </div>
+              <div>
+                <span className="font-medium">Type:</span> {getFileTypeLabel()}
+              </div>
+              {duration && (
+                <div className="col-span-2">
+                  <span className="font-medium">Durée estimée:</span> {duration}
+                </div>
+              )}
+            </div>
+
+            <div className="flex gap-3 pt-2">
               <Button
                 variant="outline"
                 onClick={() => {
@@ -233,7 +301,7 @@ const MoovDocumentContent = ({
                     description: `${fileName} téléchargé avec succès.`,
                   });
                 }}
-                className="flex-1 sm:flex-none"
+                className="flex-1"
               >
                 <Download className="h-4 w-4 mr-2" />
                 Télécharger
@@ -252,6 +320,13 @@ const MoovDocumentContent = ({
           </div>
         </CardContent>
       </Card>
+
+      {/* Document Viewer Modal */}
+      <DocumentViewer
+        isOpen={showDocumentViewer}
+        onClose={() => setShowDocumentViewer(false)}
+        file={showDocumentViewer ? createContentFile() : null}
+      />
     </div>
   );
 };
