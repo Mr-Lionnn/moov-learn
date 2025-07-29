@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from "@/hooks/useAuthCompatibility";
 
 interface RoleBasedAccessProps {
   children: ReactNode;

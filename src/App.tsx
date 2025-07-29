@@ -19,7 +19,7 @@ import Profile from "./pages/Profile";
 import Files from "./pages/Files";
 import FileUpload from "./pages/FileUpload";
 import Tasks from "./pages/Tasks";
-import Debug from "./pages/Debug";
+
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import SessionWrapper from "./components/SessionWrapper";
@@ -120,11 +120,6 @@ const App = () => (
                 <Route path="/upload-files" element={
                   <ProtectedRoute>
                     <FileUpload />
-                  </ProtectedRoute>
-                } />
-                <Route path="/debug" element={
-                  <ProtectedRoute>
-                    <Debug />
                   </ProtectedRoute>
                 } />
                 <Route path="/admin" element={

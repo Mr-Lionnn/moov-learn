@@ -90,8 +90,20 @@ export const useAuth = () => {
     addNotification: () => {},
     markNotificationRead: () => {},
     setModuleDeadline: (moduleId: string, deadline: string, teamMembers: string[]) => {
-      // TODO: Implement with Supabase notifications
+      // Implement with Supabase notifications via edge function
       console.log('setModuleDeadline called:', { moduleId, deadline, teamMembers });
+      
+      // Call Supabase edge function for notifications
+      fetch('/api/send-notification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'deadline',
+          moduleId,
+          deadline,
+          recipients: teamMembers
+        })
+      }).catch(err => console.error('Failed to send notifications:', err));
     }
   };
 };

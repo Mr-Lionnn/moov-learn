@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Timer, BarChart3, BookOpen } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/hooks/useAuthCompatibility";
 import { testDataService } from "@/services/testDataService";
 
 interface TaskManagementDropdownProps {

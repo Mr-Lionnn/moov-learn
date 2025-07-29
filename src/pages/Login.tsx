@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/hooks/useAuthCompatibility";
 import { useNavigate } from "react-router-dom";
 import { testDataService } from "@/services/testDataService";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -68,18 +68,12 @@ const Login = () => {
         if (testUser) {
           console.log('Found test user:', testUser);
           loginRateLimiter.reset(sanitizedEmail); // Reset on successful login
-          login({
-            id: testUser.id,
-            email: testUser.email,
-            name: testUser.name,
-            role: testUser.role,
-            department: testUser.department,
-            teamId: testUser.teamId
-          });
+          // Navigate directly since this is old login page
           toast({
-            title: "Connexion réussie",
-            description: `Bienvenue, ${testUser.name}!`
+            title: "Connexion réussie", 
+            description: `Bienvenue, ${testUser.name}! Veuillez utiliser la nouvelle page d'authentification.`
           });
+          navigate("/auth");
           navigate("/");
           return;
         }
@@ -95,12 +89,12 @@ const Login = () => {
       };
       
       console.log('Using mock user:', mockUser);
-      loginRateLimiter.reset(sanitizedEmail); // Reset on successful login
-      login(mockUser);
+      // Redirect to new auth page
       toast({
-        title: "Connexion réussie",
-        description: "Bienvenue dans Moov-Learn!"
+        title: "Redirection",
+        description: "Veuillez utiliser la nouvelle page d'authentification"
       });
+      navigate("/auth");
       navigate("/");
     } catch (error) {
       console.error('Login error:', error);

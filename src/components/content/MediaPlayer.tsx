@@ -17,7 +17,7 @@ import {
   Music
 } from 'lucide-react';
 import { ContentFile } from '@/types/content';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from "@/hooks/useAuthCompatibility";
 
 interface MediaPlayerProps {
   isOpen: boolean;

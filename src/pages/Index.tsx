@@ -44,9 +44,10 @@ const Index = () => {
     if (user?.id) {
       try {
         console.log('🔥 About to call getCoursesForUser with user ID:', user.id);
-        // Temporarily use mock data until we migrate to Supabase data
-        const userCourses = testDataService.getCoursesForUser(1);
-        const userTasks = testDataService.getTasksForUser(1);
+        // Convert string ID to number for compatibility with test service
+        const userId = parseInt(user.id) || 1;
+        const userCourses = testDataService.getCoursesForUser(userId);
+        const userTasks = testDataService.getTasksForUser(userId);
         
         console.log('🔥 Loaded courses:', userCourses);
         console.log('🔥 Courses with Formation Moov:', userCourses.filter(c => c.title.includes('Moov')));

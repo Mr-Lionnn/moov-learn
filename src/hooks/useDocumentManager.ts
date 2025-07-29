@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from "@/hooks/useAuthCompatibility";
 import { useToast } from '@/hooks/use-toast';
 
 interface DocumentFile {

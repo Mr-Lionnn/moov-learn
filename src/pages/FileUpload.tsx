@@ -20,7 +20,7 @@ import {
   ArrowLeft
 } from 'lucide-react';
 import { ContentFile, Team } from '@/types/content';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from "@/hooks/useAuthCompatibility";
 import { useToast } from '@/hooks/use-toast';
 
 interface UploadFile {

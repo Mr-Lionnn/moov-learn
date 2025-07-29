@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { X, Users, BookOpen, BarChart3, Clock, CheckCircle, CheckSquare } from "lucide-react";
 import QuizCreator from "./QuizCreator";
 import ModuleCreator from "./module/ModuleCreator";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/hooks/useAuthCompatibility";
 import { Quiz } from "@/types/quiz";
 import { LearningModule } from "@/types/module";
 import { AdminPanelProps } from "@/types/admin";

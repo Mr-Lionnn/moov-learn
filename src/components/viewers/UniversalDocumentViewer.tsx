@@ -26,7 +26,7 @@ import {
   Maximize2
 } from 'lucide-react';
 import { ContentFile, ViewerState } from '@/types/content';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from "@/hooks/useAuthCompatibility";
 import PDFViewer from './PDFViewer';
 import OfficeViewer from './OfficeViewer';
 import MediaPlayerViewer from './MediaPlayerViewer';

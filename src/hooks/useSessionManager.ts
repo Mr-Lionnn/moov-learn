@@ -1,12 +1,12 @@
 
 import { useEffect, useRef } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
 
 const SESSION_KEY = 'moov_learn_session';
 const HEARTBEAT_INTERVAL = 5000; // 5 seconds
 
 export const useSessionManager = (enforceStrictMode = false) => {
-  const { logout } = useAuth();
+  const { signOut } = useSupabaseAuth();
   const sessionId = useRef<string>('');
   const heartbeatInterval = useRef<NodeJS.Timeout>();
 
@@ -19,7 +19,7 @@ export const useSessionManager = (enforceStrictMode = false) => {
       const existingSession = localStorage.getItem(SESSION_KEY);
       if (existingSession && existingSession !== sessionId.current) {
         // Another session exists, force logout
-        logout();
+        signOut();
         alert('Cette session a été fermée car un quiz est en cours dans un autre onglet.');
         return;
       }
@@ -32,7 +32,7 @@ export const useSessionManager = (enforceStrictMode = false) => {
         const currentSession = localStorage.getItem(SESSION_KEY);
         if (currentSession !== sessionId.current) {
           // Session hijacked by another tab
-          logout();
+          signOut();
           alert('Cette session a été fermée car un quiz est en cours dans un autre onglet.');
           if (heartbeatInterval.current) {
             clearInterval(heartbeatInterval.current);
@@ -46,7 +46,7 @@ export const useSessionManager = (enforceStrictMode = false) => {
       // Listen for storage changes (other tabs)
       const handleStorageChange = (e: StorageEvent) => {
         if (e.key === SESSION_KEY && e.newValue !== sessionId.current) {
-          logout();
+          signOut();
           alert('Cette session a été fermée car un quiz est en cours dans un autre onglet.');
           if (heartbeatInterval.current) {
             clearInterval(heartbeatInterval.current);
@@ -59,7 +59,7 @@ export const useSessionManager = (enforceStrictMode = false) => {
         if (document.visibilityState === 'visible') {
           const currentSession = localStorage.getItem(SESSION_KEY);
           if (currentSession !== sessionId.current) {
-            logout();
+            signOut();
             alert('Cette session a été fermée car un quiz est en cours dans un autre onglet.');
           }
         }
@@ -94,7 +94,7 @@ export const useSessionManager = (enforceStrictMode = false) => {
         }
       };
     }
-  }, [logout, enforceStrictMode]);
+  }, [signOut, enforceStrictMode]);
 
   return sessionId.current;
 };

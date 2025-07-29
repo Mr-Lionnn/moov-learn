@@ -10,7 +10,7 @@ import { moovCourseQuiz } from "@/data/moovCourseQuiz";
 import { Lesson } from "@/types/lesson";
 import { QuizResult } from "@/types/quiz";
 import { ratingService } from "@/services/ratingService";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/hooks/useAuthCompatibility";
 
 interface LessonContentSwitchProps {
   lesson: Lesson;
