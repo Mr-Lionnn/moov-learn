@@ -68,9 +68,14 @@ const Auth = () => {
   };
 
   const handleSignup = async (e: React.FormEvent) => {
+    console.log('=== FORM SUBMIT FIRED ===');
     e.preventDefault();
     
+    console.log('Current signup data:', signupData);
+    console.log('Password match check:', signupData.password === signupData.confirmPassword);
+    
     if (signupData.password !== signupData.confirmPassword) {
+      console.log('Password mismatch detected');
       toast({
         title: "Erreur",
         description: "Les mots de passe ne correspondent pas",
@@ -79,6 +84,7 @@ const Auth = () => {
       return;
     }
 
+    console.log('Validation passed, proceeding with signup...');
     setIsLoading(true);
 
     try {
