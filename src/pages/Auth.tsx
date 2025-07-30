@@ -96,6 +96,8 @@ const Auth = () => {
       });
 
       // Use supabase directly to debug the issue
+      console.log('Starting signup process...');
+      
       const { data, error } = await supabase.auth.signUp({
         email: signupData.email,
         password: signupData.password,
@@ -113,7 +115,15 @@ const Auth = () => {
         }
       });
 
-      console.log('Signup result:', { data, error });
+      console.log('Raw signup result:', { data, error });
+      console.log('Data details:', data);
+      console.log('Error details:', error);
+      
+      if (error) {
+        console.log('Error code:', error.status);
+        console.log('Error message:', error.message);
+        console.log('Full error object:', JSON.stringify(error, null, 2));
+      }
       
       if (error) {
         console.error('Signup error details:', error);
