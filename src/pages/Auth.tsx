@@ -82,8 +82,14 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
-      console.log('Attempting signup with:', {
+      console.log('=== COMPREHENSIVE SIGNUP DEBUG ===');
+      console.log('Network online:', navigator.onLine);
+      console.log('Current URL:', window.location.href);
+      console.log('Environment check complete');
+      
+      console.log('Signup data:', {
         email: signupData.email,
+        password: signupData.password ? '***PRESENT***' : 'MISSING',
         metadata: {
           full_name: signupData.full_name,
           phone: signupData.phone,
@@ -95,9 +101,12 @@ const Auth = () => {
         }
       });
 
-      // Use supabase directly to debug the issue
-      console.log('Starting signup process...');
+      // Test basic connection first
+      console.log('Testing Supabase connection...');
+      const healthCheck = await supabase.from('profiles').select('count', { count: 'exact', head: true });
+      console.log('Health check result:', healthCheck);
       
+      console.log('Attempting signup...');
       const { data, error } = await supabase.auth.signUp({
         email: signupData.email,
         password: signupData.password,
@@ -115,19 +124,17 @@ const Auth = () => {
         }
       });
 
-      // Add network status check
-      if (!navigator.onLine) {
-        throw new Error('Pas de connexion internet');
-      }
-
-      console.log('Raw signup result:', { data, error });
-      console.log('Data details:', data);
-      console.log('Error details:', error);
+      console.log('=== SIGNUP RESPONSE ===');
+      console.log('Response data:', JSON.stringify(data, null, 2));
+      console.log('Response error:', JSON.stringify(error, null, 2));
       
       if (error) {
-        console.log('Error code:', error.status);
+        console.log('=== ERROR ANALYSIS ===');
         console.log('Error message:', error.message);
-        console.log('Full error object:', JSON.stringify(error, null, 2));
+        console.log('Error status:', error.status);
+        console.log('Error code:', error.code);
+        console.log('Error name:', error.name);
+        console.log('Error stack:', error.stack);
       }
       
       if (error) {
