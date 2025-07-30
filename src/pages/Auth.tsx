@@ -12,10 +12,17 @@ import { Loader2, Mail, Lock, User, Phone, Calendar, Building } from 'lucide-rea
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const Auth = () => {
-  // Create Supabase client directly to bypass import issues
+  // Create properly configured Supabase client
   const supabase = createClient(
     "https://fxsztiaxjmqniiqdrjoi.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4c3p0aWF4am1xbmlpcWRyam9pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAyMjk4MjAsImV4cCI6MjA2NTgwNTgyMH0.Ax8OjnbwnEf9E3b1F9X6pBtOX2pn91e59F8UEsWk1nk"
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4c3p0aWF4am1xbmlpcWRyam9pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAyMjk4MjAsImV4cCI6MjA2NTgwNTgyMH0.Ax8OjnbwnEf9E3b1F9X6pBtOX2pn91e59F8UEsWk1nk",
+    {
+      auth: {
+        storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+        persistSession: true,
+        autoRefreshToken: true,
+      }
+    }
   );
   
   const { user, signIn, loading } = useSupabaseAuth();
