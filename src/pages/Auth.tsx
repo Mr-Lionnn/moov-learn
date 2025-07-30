@@ -70,6 +70,16 @@ const Auth = () => {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // CRITICAL DEBUG: Check if supabase client exists
+    if (!supabase) {
+      toast({
+        title: "Erreur critique",
+        description: "Client Supabase non initialisé",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     if (signupData.password !== signupData.confirmPassword) {
       toast({
         title: "Erreur",
