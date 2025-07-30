@@ -82,6 +82,10 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
+      console.log('Starting signup process...');
+      console.log('Supabase client:', supabase);
+      console.log('Signup data:', signupData);
+      
       const { data, error } = await supabase.auth.signUp({
         email: signupData.email,
         password: signupData.password,
@@ -99,7 +103,10 @@ const Auth = () => {
         }
       });
       
+      console.log('Signup response:', { data, error });
+      
       if (error) {
+        console.error('Signup error:', error);
         toast({
           title: "Erreur d'inscription",
           description: error.message,
