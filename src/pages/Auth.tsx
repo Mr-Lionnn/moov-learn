@@ -68,7 +68,6 @@ const Auth = () => {
   };
 
   const handleSignup = async (e: React.FormEvent) => {
-    alert('Function called!'); // CRITICAL TEST
     e.preventDefault();
     
     // CRITICAL DEBUG: Check if supabase client exists
