@@ -45,12 +45,16 @@ export const SupabaseAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Fetch user profile
-          const { data: profileData } = await supabase
+          // Fetch user profile - use maybeSingle to prevent error when no profile exists
+          const { data: profileData, error: profileError } = await supabase
             .from('profiles')
             .select('*')
             .eq('user_id', session.user.id)
-            .single();
+            .maybeSingle();
+          
+          if (profileError) {
+            console.warn('Profile fetch error:', profileError);
+          }
           
           setProfile(profileData);
         } else {
@@ -62,9 +66,25 @@ export const SupabaseAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
     );
 
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        // Also fetch profile on initial load
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('user_id', session.user.id)
+          .maybeSingle();
+        
+        if (profileError) {
+          console.warn('Initial profile fetch error:', profileError);
+        }
+        
+        setProfile(profileData);
+      }
+      
       setLoading(false);
     });
 
