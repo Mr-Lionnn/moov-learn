@@ -12,7 +12,7 @@ import { Loader2, Mail, Lock, User, Phone, Calendar, Building } from 'lucide-rea
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const Auth = () => {
-  const { user, signIn, signUp, loading } = useSupabaseAuth();
+  const { user, signIn, loading } = useSupabaseAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   
