@@ -68,14 +68,9 @@ const Auth = () => {
   };
 
   const handleSignup = async (e: React.FormEvent) => {
-    console.log('=== FORM SUBMIT FIRED ===');
     e.preventDefault();
     
-    console.log('Current signup data:', signupData);
-    console.log('Password match check:', signupData.password === signupData.confirmPassword);
-    
     if (signupData.password !== signupData.confirmPassword) {
-      console.log('Password mismatch detected');
       toast({
         title: "Erreur",
         description: "Les mots de passe ne correspondent pas",
@@ -84,35 +79,9 @@ const Auth = () => {
       return;
     }
 
-    console.log('Validation passed, proceeding with signup...');
     setIsLoading(true);
 
     try {
-      console.log('=== COMPREHENSIVE SIGNUP DEBUG ===');
-      console.log('Network online:', navigator.onLine);
-      console.log('Current URL:', window.location.href);
-      console.log('Environment check complete');
-      
-      console.log('Signup data:', {
-        email: signupData.email,
-        password: signupData.password ? '***PRESENT***' : 'MISSING',
-        metadata: {
-          full_name: signupData.full_name,
-          phone: signupData.phone,
-          date_of_birth: signupData.date_of_birth,
-          role: signupData.role,
-          team: signupData.team,
-          site: signupData.site,
-          department: signupData.department
-        }
-      });
-
-      // Test basic connection first
-      console.log('Testing Supabase connection...');
-      const healthCheck = await supabase.from('profiles').select('count', { count: 'exact', head: true });
-      console.log('Health check result:', healthCheck);
-      
-      console.log('Attempting signup...');
       const { data, error } = await supabase.auth.signUp({
         email: signupData.email,
         password: signupData.password,
@@ -129,53 +98,31 @@ const Auth = () => {
           }
         }
       });
-
-      console.log('=== SIGNUP RESPONSE ===');
-      console.log('Response data:', JSON.stringify(data, null, 2));
-      console.log('Response error:', JSON.stringify(error, null, 2));
       
       if (error) {
-        console.log('=== ERROR ANALYSIS ===');
-        console.log('Error message:', error.message);
-        console.log('Error status:', error.status);
-        console.log('Error code:', error.code);
-        console.log('Error name:', error.name);
-        console.log('Error stack:', error.stack);
-      }
-      
-      if (error) {
-        console.error('Signup error details:', error);
         toast({
           title: "Erreur d'inscription",
-          description: error.message || "Erreur lors de l'inscription",
+          description: error.message,
           variant: "destructive"
         });
-      } else if (data.user) {
-        console.log('User created successfully:', data.user);
+        return;
+      }
+
+      if (data.user) {
         toast({
-          title: "Inscription réussie",
-          description: data.user.email_confirmed_at 
-            ? "Votre compte a été créé avec succès" 
-            : "Vérifiez votre email pour confirmer votre compte"
+          title: "Inscription réussie", 
+          description: "Votre compte a été créé avec succès"
         });
         
-        // If email confirmation is disabled, try to sign in automatically
         if (data.user.email_confirmed_at) {
-          const { error: loginError } = await supabase.auth.signInWithPassword({
-            email: signupData.email,
-            password: signupData.password
-          });
-          
-          if (!loginError) {
-            navigate('/');
-          }
+          navigate('/');
         }
       }
     } catch (error: any) {
-      console.error('Unexpected signup error:', error);
+      console.error('Signup error:', error);
       toast({
         title: "Erreur",
-        description: error.message || "Une erreur inattendue s'est produite",
+        description: "Erreur de connexion au serveur",
         variant: "destructive"
       });
     } finally {
