@@ -52,14 +52,22 @@ const Auth = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-
     try {
-      const { error } = await signIn(loginData.email, loginData.password);
-      
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: loginData.email,
+        password: loginData.password
+      });
       if (error) {
+        console.error('Login Error Details:', {
+          code: error.code,
+          message: error.message,
+          status: error.status,
+          fullError: error
+        });
         toast({
           title: "Erreur de connexion",
-          description: error.message,
+          description: `${error.message || 'Une erreur inconnue s\'est produite'}
+            ${error.code ? `\nCode d'erreur: ${error.code}` : ''}`,
           variant: "destructive"
         });
       } else {
@@ -69,10 +77,11 @@ const Auth = () => {
         });
         navigate('/');
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Unexpected Login Error:', error);
       toast({
         title: "Erreur",
-        description: "Une erreur inattendue s'est produite",
+        description: `Erreur inattendue : ${error.message || JSON.stringify(error)}`,
         variant: "destructive"
       });
     } finally {
@@ -83,7 +92,7 @@ const Auth = () => {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    
+    // Password match validation
     if (signupData.password !== signupData.confirmPassword) {
       toast({
         title: "Erreur",
@@ -92,14 +101,20 @@ const Auth = () => {
       });
       return;
     }
-
+    
+    // Password complexity validation
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(signupData.password)) {
+      toast({
+        title: "Mot de passe invalide",
+        description: "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     setIsLoading(true);
-
     try {
-      console.log('Starting signup process...');
-      console.log('Supabase client:', supabase);
-      console.log('Signup data:', signupData);
-      
       const { data, error } = await supabase.auth.signUp({
         email: signupData.email,
         password: signupData.password,
@@ -117,33 +132,63 @@ const Auth = () => {
         }
       });
       
-      console.log('Signup response:', { data, error });
-      
+      // Detailed error logging
       if (error) {
-        console.error('Signup error details:', error);
+        console.error('Signup Error Details:', {
+          code: error.code,
+          message: error.message,
+          status: error.status,
+          fullError: error
+        });
+        
+        // Specific error handling for common signup scenarios
+        let errorMessage = 'Une erreur d\'inscription s\'est produite';
+        switch (error.code) {
+          case 'user_already_exists':
+            errorMessage = 'Un utilisateur avec cet email existe déjà';
+            break;
+          case 'invalid_email':
+            errorMessage = 'L\'adresse email est invalide';
+            break;
+          case 'password_too_short':
+            errorMessage = 'Le mot de passe est trop court';
+            break;
+          default:
+            errorMessage = error.message || 'Une erreur inconnue s\'est produite';
+        }
         toast({
           title: "Erreur d'inscription",
-          description: `REAL ERROR: ${error.message || (error as any).error_description || JSON.stringify(error)}`,
+          description: `${errorMessage}${error.code ? `\nCode d'erreur: ${error.code}` : ''}`,
           variant: "destructive"
         });
         return;
       }
-
+      
+      // Successful signup handling
       if (data.user) {
+        console.log('Signup successful:', data.user);
         toast({
-          title: "Inscription réussie", 
-          description: "Votre compte a été créé avec succès"
+          title: "Inscription réussie",
+          description: "Un email de confirmation a été envoyé. Veuillez vérifier votre boîte de réception."
         });
         
+        // Optionally navigate or show additional instructions
         if (data.user.email_confirmed_at) {
           navigate('/');
+        } else {
+          // Prompt user to check email for confirmation
+          toast({
+            title: "Confirmation requise",
+            description: "Veuillez confirmer votre email en cliquant sur le lien envoyé.",
+            variant: "default"
+          });
         }
       }
     } catch (error: any) {
-      console.error('Signup error:', error);
+      console.error('Unexpected Signup Error:', error);
       toast({
         title: "Erreur",
-        description: "Erreur de connexion au serveur",
+        description: `Erreur de connexion au serveur : ${error.message || JSON.stringify(error)}`,
         variant: "destructive"
       });
     } finally {
