@@ -116,21 +116,38 @@ const Auth = () => {
       console.log('Signup result:', { data, error });
       
       if (error) {
+        console.error('Signup error details:', error);
         toast({
           title: "Erreur d'inscription",
-          description: error.message,
+          description: error.message || "Erreur lors de l'inscription",
           variant: "destructive"
         });
-      } else {
+      } else if (data.user) {
+        console.log('User created successfully:', data.user);
         toast({
           title: "Inscription réussie",
-          description: "Vérifiez votre email pour confirmer votre compte"
+          description: data.user.email_confirmed_at 
+            ? "Votre compte a été créé avec succès" 
+            : "Vérifiez votre email pour confirmer votre compte"
         });
+        
+        // If email confirmation is disabled, try to sign in automatically
+        if (data.user.email_confirmed_at) {
+          const { error: loginError } = await supabase.auth.signInWithPassword({
+            email: signupData.email,
+            password: signupData.password
+          });
+          
+          if (!loginError) {
+            navigate('/');
+          }
+        }
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Unexpected signup error:', error);
       toast({
         title: "Erreur",
-        description: "Une erreur inattendue s'est produite",
+        description: error.message || "Une erreur inattendue s'est produite",
         variant: "destructive"
       });
     } finally {
