@@ -6,12 +6,18 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
-import { supabase } from '@/integrations/supabase/client';
+import { createClient } from '@supabase/supabase-js';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Mail, Lock, User, Phone, Calendar, Building } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const Auth = () => {
+  // Create Supabase client directly to bypass import issues
+  const supabase = createClient(
+    "https://fxsztiaxjmqniiqdrjoi.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4c3p0aWF4am1xbmlpcWRyam9pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAyMjk4MjAsImV4cCI6MjA2NTgwNTgyMH0.Ax8OjnbwnEf9E3b1F9X6pBtOX2pn91e59F8UEsWk1nk"
+  );
+  
   const { user, signIn, loading } = useSupabaseAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
