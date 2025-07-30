@@ -120,10 +120,10 @@ const Auth = () => {
       console.log('Signup response:', { data, error });
       
       if (error) {
-        console.error('Signup error:', error);
+        console.error('Signup error details:', error);
         toast({
           title: "Erreur d'inscription",
-          description: error.message,
+          description: `REAL ERROR: ${error.message || (error as any).error_description || JSON.stringify(error)}`,
           variant: "destructive"
         });
         return;
