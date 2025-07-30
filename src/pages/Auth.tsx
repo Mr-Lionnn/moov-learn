@@ -115,6 +115,11 @@ const Auth = () => {
         }
       });
 
+      // Add network status check
+      if (!navigator.onLine) {
+        throw new Error('Pas de connexion internet');
+      }
+
       console.log('Raw signup result:', { data, error });
       console.log('Data details:', data);
       console.log('Error details:', error);
