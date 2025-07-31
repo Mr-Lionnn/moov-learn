@@ -219,6 +219,20 @@ class TestDataService {
   private testTasks: TestTask[] = [
     {
       id: 1,
+      title: 'Compléter la Formation Moov',
+      description: 'Formation obligatoire sur les services Moov, l\'intelligence artificielle et les argumentaires de vente',
+      assignedBy: 'Sarah Chen',
+      assignedTo: ['Sales', 'Customer Service', 'All Employees'],
+      deadline: '2025-02-28',
+      priority: 'high',
+      status: 'in-progress',
+      progress: 35,
+      category: 'mandatory',
+      courseId: 'formation-moov',
+      completionCriteria: 'Compléter toutes les sections et réussir le quiz avec 80% minimum'
+    },
+    {
+      id: 2,
       title: 'Compléter la Formation RGPD',
       description: 'Formation obligatoire sur la conformité RGPD à compléter avant la fin du mois',
       assignedBy: 'Sarah Chen',
@@ -232,7 +246,7 @@ class TestDataService {
       completionCriteria: 'Réussir le quiz avec 85% minimum'
     },
     {
-      id: 2,
+      id: 3,
       title: 'Améliorer les Compétences Service Client',
       description: 'Formation sur l\'excellence en service client pour améliorer la satisfaction client',
       assignedBy: 'Marc Dubois',
@@ -246,7 +260,7 @@ class TestDataService {
       completionCriteria: 'Terminer le cours et obtenir la certification'
     },
     {
-      id: 3,
+      id: 4,
       title: 'Formation Trimestrielle Équipe Vente',
       description: 'Formation avancée sur les techniques de vente pour l\'équipe commerciale',
       assignedBy: 'Sarah Chen',
@@ -260,7 +274,7 @@ class TestDataService {
       completionCriteria: 'Compléter 3 cours connexes avec note de passage'
     },
     {
-      id: 4,
+      id: 5,
       title: 'Développement Leadership',
       description: 'Formation au leadership pour les futurs managers',
       assignedBy: 'Sarah Chen',
