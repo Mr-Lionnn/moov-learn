@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { ContentFile, ViewerState } from '@/types/content';
 import { Button } from '@/components/ui/button';
 import { Loader2, X, AlertCircle, ExternalLink } from 'lucide-react';
-import { sanitizeHtml } from '@/utils/security';
 import mammoth from 'mammoth';
 import * as XLSX from 'xlsx';
 
@@ -162,7 +161,7 @@ const OfficeViewer = ({ file, viewerState, onViewerStateChange }: OfficeViewerPr
             transform: `scale(${viewerState.zoom / 100}) rotate(${viewerState.rotation}deg)`,
             transformOrigin: 'top left',
           }}
-          dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }}
+          dangerouslySetInnerHTML={{ __html: content }}
         />
       </div>
     </div>

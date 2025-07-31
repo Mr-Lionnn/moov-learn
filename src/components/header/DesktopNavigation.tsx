@@ -6,7 +6,7 @@ import {
   Target
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuthCompatibility";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface DesktopNavigationProps {
   onShowAdminPanel?: () => void;

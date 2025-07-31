@@ -8,7 +8,7 @@ import {
   BarChart3 
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuthCompatibility";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface MobileNavigationProps {
   showMobileMenu: boolean;

@@ -3,9 +3,9 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { SupabaseAuthProvider } from "./contexts/SupabaseAuthContext";
+import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Auth from "./pages/Auth";
+import Login from "./pages/Login";
 import Index from "./pages/Index";
 import Course from "./pages/Course";
 import CreateCourse from "./pages/CreateCourse";
@@ -19,10 +19,10 @@ import Profile from "./pages/Profile";
 import Files from "./pages/Files";
 import FileUpload from "./pages/FileUpload";
 import Tasks from "./pages/Tasks";
-
+import Debug from "./pages/Debug";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
-
+import SessionWrapper from "./components/SessionWrapper";
 import { ErrorBoundary } from "react-error-boundary";
 
 const queryClient = new QueryClient();
@@ -49,13 +49,14 @@ function ErrorFallback({error}: {error: Error}) {
 const App = () => (
   <ErrorBoundary FallbackComponent={ErrorFallback}>
     <QueryClientProvider client={queryClient}>
-      <SupabaseAuthProvider>
+      <AuthProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <Routes>
-                <Route path="/auth" element={<Auth />} />
+            <SessionWrapper>
+              <Routes>
+                <Route path="/login" element={<Login />} />
                 <Route path="/" element={
                   <ProtectedRoute>
                     <Index />
@@ -121,6 +122,11 @@ const App = () => (
                     <FileUpload />
                   </ProtectedRoute>
                 } />
+                <Route path="/debug" element={
+                  <ProtectedRoute>
+                    <Debug />
+                  </ProtectedRoute>
+                } />
                 <Route path="/admin" element={
                   <ProtectedRoute>
                     <Admin />
@@ -128,10 +134,11 @@ const App = () => (
                 } />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
-            </Routes>
+              </Routes>
+            </SessionWrapper>
           </BrowserRouter>
         </TooltipProvider>
-      </SupabaseAuthProvider>
+      </AuthProvider>
     </QueryClientProvider>
   </ErrorBoundary>
 );

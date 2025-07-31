@@ -23,13 +23,13 @@ import {
   BarChart3,
   Search
 } from "lucide-react";
-import { useSupabaseAuth } from "@/contexts/SupabaseAuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { testDataService } from "@/services/testDataService";
 import { useNavigate } from "react-router-dom";
 
 
 const Index = () => {
-  const { profile: user } = useSupabaseAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
   const [courses, setCourses] = useState<any[]>([]);
@@ -44,10 +44,8 @@ const Index = () => {
     if (user?.id) {
       try {
         console.log('🔥 About to call getCoursesForUser with user ID:', user.id);
-        // Convert string ID to number for compatibility with test service
-        const userId = parseInt(user.id) || 1;
-        const userCourses = testDataService.getCoursesForUser(userId);
-        const userTasks = testDataService.getTasksForUser(userId);
+        const userCourses = testDataService.getCoursesForUser(user.id);
+        const userTasks = testDataService.getTasksForUser(user.id);
         
         console.log('🔥 Loaded courses:', userCourses);
         console.log('🔥 Courses with Formation Moov:', userCourses.filter(c => c.title.includes('Moov')));
@@ -161,7 +159,7 @@ const Index = () => {
       <main className="container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6">
         <div className="mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
-            Bienvenue, {user?.full_name || 'Utilisateur'}!
+            Bienvenue, {user?.name || 'Utilisateur'}!
           </h1>
           <p className="text-sm sm:text-base text-gray-600">Suivez votre progression et continuez votre apprentissage</p>
         </div>

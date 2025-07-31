@@ -8,7 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Users, Search, Calendar, Award, BookOpen, Clock, TrendingUp, ArrowLeft } from "lucide-react";
 import Header from "@/components/Header";
 import UserProfileModal from "@/components/UserProfileModal";
-import { useAuth } from "@/hooks/useAuthCompatibility";
+import { useAuth } from "@/contexts/AuthContext";
 
 import { useNavigate } from "react-router-dom";
 

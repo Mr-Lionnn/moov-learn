@@ -23,7 +23,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import DocumentViewer from "@/components/enhanced/DocumentViewer";
-import { useAuth } from "@/hooks/useAuthCompatibility";
+import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useDocumentManager } from "@/hooks/useDocumentManager";
 import RoleBasedAccess from "@/components/enhanced/RoleBasedAccess";

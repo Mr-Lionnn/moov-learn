@@ -1,5 +1,5 @@
 
-import { useSupabaseAuth } from "@/contexts/SupabaseAuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { useSessionManager } from "@/hooks/useSessionManager";
 
 interface SessionWrapperProps {
@@ -7,10 +7,13 @@ interface SessionWrapperProps {
 }
 
 const SessionWrapper = ({ children }: SessionWrapperProps) => {
-  const { user } = useSupabaseAuth();
+  const { isAuthenticated } = useAuth();
   
-  // Always call hook (no conditional calling)
-  useSessionManager(false); // Use non-strict mode to prevent blank pages
+  // Only enforce strict session management if user is authenticated
+  // For now, we'll set isQuizActive to false by default to prevent session conflicts
+  if (isAuthenticated) {
+    useSessionManager(false); // Always use non-strict mode to prevent blank pages
+  }
 
   return <>{children}</>;
 };

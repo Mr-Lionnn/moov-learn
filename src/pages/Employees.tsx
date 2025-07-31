@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Users, Search, Filter, UserPlus, Mail, Phone, Shield, Settings, Star, ChevronDown, ArrowLeft } from "lucide-react";
 import Header from "@/components/Header";
 import TeamManagementModal from "@/components/TeamManagementModal";
-import { useAuth } from "@/hooks/useAuthCompatibility";
+import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 
 import { useNavigate } from "react-router-dom";
