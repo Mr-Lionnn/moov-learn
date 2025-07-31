@@ -41,6 +41,10 @@ const Index = () => {
   useEffect(() => {
     console.log('🔥 Index useEffect triggered, user:', user);
     
+    // Force reinitialize progress data for testing
+    console.log('🔍 Clearing localStorage to force reinit...');
+    localStorage.removeItem('moov_test_progress');
+    
     if (user?.id) {
       try {
         console.log('🔥 About to call getCoursesForUser with user ID:', user.id);

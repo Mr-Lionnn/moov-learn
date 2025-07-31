@@ -124,6 +124,10 @@ const StatsGrid = ({ userRole = "student" }: StatsGridProps) => {
       const allProgress = storedProgress ? JSON.parse(storedProgress) : testDataService.getTestProgress();
       const userProgress = allProgress.filter(p => p.userId === user.id);
       
+      console.log('🔍 StatsGrid Debug - User ID:', user.id);
+      console.log('🔍 StatsGrid Debug - All Progress from localStorage:', allProgress);
+      console.log('🔍 StatsGrid Debug - User Progress:', userProgress);
+      
       // Calculate active modules (in progress)
       const activeModules = userProgress.filter(p => p.status === 'in_progress').length;
       

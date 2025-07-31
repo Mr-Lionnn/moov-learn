@@ -67,15 +67,10 @@ class TestDataService {
       console.log('✅ Test data automatically initialized');
     }
     
-    // Initialize progress data if not exists
-    if (!testProgress) {
-      localStorage.setItem('moov_test_progress', JSON.stringify(this.testProgress));
-      console.log('✅ Test progress data initialized');
-    } else {
-      // Load existing progress from localStorage
-      this.testProgress = JSON.parse(testProgress);
-      console.log('✅ Test progress data loaded from localStorage');
-    }
+    // Always initialize progress data with the latest structure
+    localStorage.setItem('moov_test_progress', JSON.stringify(this.testProgress));
+    console.log('✅ Test progress data force-initialized with Sarah Chen data:', this.testProgress);
+    console.log('✅ Sarah Chen progress entries:', this.testProgress.filter(p => p.userId === 1));
   }
 
   private testUsers: TestUser[] = [
