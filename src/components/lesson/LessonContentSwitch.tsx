@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import MediaPlayer from "@/components/MediaPlayer";
 import TextLessonContent from "./TextLessonContent";
 import QuizPlayer from "@/components/QuizPlayer";
@@ -24,18 +25,29 @@ const LessonContentSwitch = ({
   onLessonComplete 
 }: LessonContentSwitchProps) => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [showRating, setShowRating] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [quizResult, setQuizResult] = useState<QuizResult | null>(null);
 
   const handleQuizComplete = (result: QuizResult) => {
     console.log("Quiz completed with result:", result);
-    // Don't show rating immediately - let quiz results show first
-    // Rating will be shown when user clicks "Continue" on quiz results
+    setQuizResult(result);
   };
 
   const handleQuizContinue = () => {
     console.log("User clicked continue after quiz");
-    setShowRating(true);
+    // Only allow rating if quiz was passed
+    if (quizResult?.passed) {
+      setShowRating(true);
+    } else {
+      // If quiz was not passed, skip rating and go to confirmation
+      setShowConfirmation(true);
+    }
+  };
+
+  const handleExploreFormations = () => {
+    navigate('/');
   };
 
   const handleRatingSubmit = (rating: ModuleRatingData) => {
@@ -148,6 +160,7 @@ const LessonContentSwitch = ({
           quiz={quizToUse}
           onComplete={handleQuizComplete}
           onContinue={handleQuizContinue}
+          onExploreFormations={handleExploreFormations}
         />
       );
     

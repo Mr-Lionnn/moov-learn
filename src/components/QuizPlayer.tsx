@@ -13,9 +13,10 @@ interface QuizPlayerProps {
   quiz: Quiz;
   onComplete?: (result: QuizResult) => void;
   onContinue?: () => void;
+  onExploreFormations?: () => void;
 }
 
-const QuizPlayer = ({ quiz, onComplete, onContinue }: QuizPlayerProps) => {
+const QuizPlayer = ({ quiz, onComplete, onContinue, onExploreFormations }: QuizPlayerProps) => {
   const { 
     currentQuiz, 
     quizAttempt, 
@@ -88,6 +89,7 @@ const QuizPlayer = ({ quiz, onComplete, onContinue }: QuizPlayerProps) => {
         result={quizResult}
         onRetry={handleRetryQuiz}
         onContinue={onContinue}
+        onExploreFormations={onExploreFormations}
       />
     );
   }

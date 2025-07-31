@@ -16,9 +16,10 @@ interface EnhancedQuizResultsProps {
   result: QuizResult;
   onRetry?: () => void;
   onContinue?: () => void;
+  onExploreFormations?: () => void;
 }
 
-const EnhancedQuizResults = ({ result, onRetry, onContinue }: EnhancedQuizResultsProps) => {
+const EnhancedQuizResults = ({ result, onRetry, onContinue, onExploreFormations }: EnhancedQuizResultsProps) => {
   const { percentage, passed, correctAnswers, totalQuestions, feedback } = result;
 
   return (
@@ -96,18 +97,30 @@ const EnhancedQuizResults = ({ result, onRetry, onContinue }: EnhancedQuizResult
           ))}
         </div>
         
-        <div className="flex gap-3 justify-center">
-          {onRetry && (
-            <Button variant="outline" onClick={onRetry}>
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Recommencer
-            </Button>
-          )}
+        <div className="flex flex-col gap-3 items-center">
+          <div className="flex gap-3">
+            {onRetry && (
+              <Button variant="outline" onClick={onRetry}>
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Recommencer
+              </Button>
+            )}
+            
+            {onContinue && passed && (
+              <Button onClick={onContinue} className="moov-gradient text-white">
+                Continuer
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Button>
+            )}
+          </div>
           
-          {onContinue && (
-            <Button onClick={onContinue} className="moov-gradient text-white">
-              Continuer
-              <ArrowRight className="h-4 w-4 ml-2" />
+          {onExploreFormations && (
+            <Button 
+              variant="secondary" 
+              onClick={onExploreFormations}
+              className="w-full max-w-md"
+            >
+              Souhaitez-vous explorer d'autres formations ?
             </Button>
           )}
         </div>
