@@ -493,91 +493,97 @@ class TestDataService {
     const allTasks = [
       {
         id: 1,
-        title: "Compléter le module de sécurité réseau",
-        description: "Terminer les 5 leçons sur la sécurité des réseaux informatiques",
-        courseId: 1,
-        assignedBy: "Marie Dupont",
+        title: "Compléter la Formation Moov",
+        description: "Terminer la formation complète sur les services Moov et l'intelligence artificielle",
+        courseId: "formation-moov",
+        assignedBy: "Sarah Chen",
         priority: "high",
         status: "in-progress",
-        progress: 65,
-        deadline: "2024-02-15",
+        progress: 35,
+        deadline: "2025-02-28",
         category: "mandatory",
-        completionCriteria: "Obtenir au moins 80% au quiz final et compléter tous les exercices pratiques",
-        evaluation: 78,
-        timeLimit: "3 heures par module"
+        completionCriteria: "Compléter toutes les sections et réussir le quiz avec 80% minimum",
+        evaluation: null,
+        timeLimit: "3 heures 45 minutes"
       },
       {
         id: 2,
-        title: "Quiz de certification Cisco",
-        description: "Passer l'examen de certification pour le routage Cisco",
-        courseId: 2,
-        assignedBy: "Pierre Martin",
+        title: "Formation RGPD Obligatoire",
+        description: "Compléter la formation sur la conformité RGPD et protection des données",
+        courseId: "gdpr-compliance",
+        assignedBy: "Sarah Chen",
         priority: "high",
-        status: "pending",
-        progress: 0,
-        deadline: "2024-02-20",
+        status: "in-progress",
+        progress: 45,
+        deadline: "2025-01-30",
         category: "mandatory",
-        completionCriteria: "Score minimum de 85% requis pour la certification",
+        completionCriteria: "Réussir le quiz avec 85% minimum",
         evaluation: null,
-        timeLimit: "2 heures"
+        timeLimit: "1 heure 45 minutes"
       },
       {
         id: 3,
-        title: "Formation développement professionnel",
-        description: "Participer au séminaire sur les compétences de leadership",
-        courseId: null,
-        assignedBy: "Sophie Legrand",
+        title: "Excellence en Service Client",
+        description: "Formation sur les techniques de service client et gestion des situations difficiles",
+        courseId: "customer-service-excellence",
+        assignedBy: "Marc Dubois",
         priority: "medium",
-        status: "completed",
-        progress: 100,
-        deadline: "2024-01-30",
+        status: "in-progress",
+        progress: 60,
+        deadline: "2025-02-15",
         category: "professional_development",
-        completionCriteria: "Présence obligatoire et participation active aux discussions",
-        evaluation: 92,
-        timeLimit: "1 jour"
+        completionCriteria: "Terminer le cours et obtenir la certification",
+        evaluation: 78,
+        timeLimit: "2 heures 30 minutes"
       },
       {
         id: 4,
-        title: "Mise à jour sécurité informatique",
-        description: "Lire et valider les nouvelles procédures de sécurité",
-        courseId: 3,
-        assignedBy: "Thomas Leroy",
+        title: "Techniques de Vente Avancées",
+        description: "Développer vos compétences en vente consultative et gestion des objections",
+        courseId: "advanced-sales-techniques",
+        assignedBy: "Sarah Chen",
         priority: "medium",
-        status: "in-progress",
-        progress: 40,
-        deadline: "2024-02-25",
-        category: "mandatory",
-        completionCriteria: "Lire tous les documents et passer le test de validation",
+        status: "pending",
+        progress: 25,
+        deadline: "2025-03-31",
+        category: "role_specific",
+        completionCriteria: "Compléter 3 modules connexes avec note de passage",
         evaluation: null,
-        timeLimit: "1 heure"
+        timeLimit: "3 heures 15 minutes"
       },
       {
         id: 5,
-        title: "Formation avancée réseaux",
-        description: "Approfondir les connaissances en architecture réseau",
-        courseId: 1,
-        assignedBy: "Marie Dupont",
+        title: "Formation Leadership",
+        description: "Formation essentielle pour les futurs managers sur la gestion d'équipe",
+        courseId: "leadership-fundamentals",
+        assignedBy: "Sarah Chen",
         priority: "low",
-        status: "overdue",
-        progress: 25,
-        deadline: "2024-01-25",
-        category: "specialized",
-        completionCriteria: "Compléter le projet final et présenter la solution",
-        evaluation: 45,
-        timeLimit: "5 heures par module"
+        status: "pending",
+        progress: 10,
+        deadline: "2025-04-15",
+        category: "professional_development",
+        completionCriteria: "Compléter le cours et passer l'évaluation",
+        evaluation: null,
+        timeLimit: "4 heures"
       }
     ];
 
-    // Return tasks based on user role
-    if (userId === 1) { // Adeline Agbodan - Network Administrator
-      return allTasks.filter(task => [1, 2, 4].includes(task.id));
-    } else if (userId === 2) { // Christelle Adjovi - IT Support
-      return allTasks.filter(task => [3, 4, 5].includes(task.id));
-    } else if (userId === 3) { // Rodrigue Hounkpatin - Network Engineer
-      return allTasks.filter(task => [1, 2, 3, 5].includes(task.id));
-    }
-    
-    return allTasks; // Default for other users
+    // Return relevant tasks based on user role
+    const user = this.getUserById(userId);
+    if (!user) return allTasks;
+
+    // Filter tasks based on user role and department
+    return allTasks.filter(task => {
+      if (task.category === 'mandatory') return true; // Everyone gets mandatory tasks
+      
+      if (user.role === 'admin') return true; // Admins see all tasks
+      
+      if (task.courseId === 'customer-service-excellence' && user.department === 'Customer Service') return true;
+      if (task.courseId === 'advanced-sales-techniques' && user.department === 'Sales') return true;
+      if (task.courseId === 'leadership-fundamentals' && (user.role === 'team_chief' || user.role === 'team_responsible')) return true;
+      
+      return task.category === 'professional_development'; // Include professional development for all
+    });
   }
 
   getUserProgress(userId: number): TestProgress[] {
