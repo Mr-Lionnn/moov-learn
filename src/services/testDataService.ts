@@ -60,9 +60,21 @@ class TestDataService {
 
   private autoInitialize(): void {
     const testUsers = localStorage.getItem('moov_test_users');
+    const testProgress = localStorage.getItem('moov_test_progress');
+    
     if (!testUsers) {
       this.initializeTestData();
       console.log('✅ Test data automatically initialized');
+    }
+    
+    // Initialize progress data if not exists
+    if (!testProgress) {
+      localStorage.setItem('moov_test_progress', JSON.stringify(this.testProgress));
+      console.log('✅ Test progress data initialized');
+    } else {
+      // Load existing progress from localStorage
+      this.testProgress = JSON.parse(testProgress);
+      console.log('✅ Test progress data loaded from localStorage');
     }
   }
 
@@ -290,6 +302,36 @@ class TestDataService {
   ];
 
   private testProgress: TestProgress[] = [
+    // Sarah Chen (admin) progress
+    {
+      userId: 1,
+      courseId: 'formation-moov',
+      progress: 35,
+      status: 'in_progress',
+      lastAccessed: '2024-12-27',
+      timeSpent: 120,
+      quizAttempts: 0
+    },
+    {
+      userId: 1,
+      courseId: 'gdpr-compliance',
+      progress: 45,
+      status: 'in_progress',
+      lastAccessed: '2024-12-26',
+      timeSpent: 85,
+      quizAttempts: 0
+    },
+    {
+      userId: 1,
+      courseId: 'customer-service-excellence',
+      progress: 100,
+      status: 'completed',
+      lastAccessed: '2024-12-20',
+      timeSpent: 150,
+      quizAttempts: 1,
+      quizScore: 88
+    },
+    // Other users progress
     {
       userId: 3,
       courseId: 'customer-service-excellence',
@@ -588,6 +630,58 @@ class TestDataService {
 
   getUserProgress(userId: number): TestProgress[] {
     return this.testProgress.filter(progress => progress.userId === userId);
+  }
+
+  // Update user progress dynamically
+  updateUserProgress(userId: number, courseId: string, progress: number, timeSpent?: number): void {
+    const existingIndex = this.testProgress.findIndex(p => p.userId === userId && p.courseId === courseId);
+    
+    const now = new Date().toISOString().split('T')[0]; // Current date in YYYY-MM-DD format
+    
+    if (existingIndex >= 0) {
+      // Update existing progress
+      this.testProgress[existingIndex] = {
+        ...this.testProgress[existingIndex],
+        progress,
+        status: progress >= 100 ? 'completed' : 'in_progress',
+        lastAccessed: now,
+        timeSpent: (this.testProgress[existingIndex].timeSpent || 0) + (timeSpent || 0)
+      };
+    } else {
+      // Create new progress entry
+      this.testProgress.push({
+        userId,
+        courseId,
+        progress,
+        status: progress >= 100 ? 'completed' : 'in_progress',
+        lastAccessed: now,
+        timeSpent: timeSpent || 0,
+        quizAttempts: 0
+      });
+    }
+    
+    // Update localStorage to persist changes
+    localStorage.setItem('moov_test_progress', JSON.stringify(this.testProgress));
+    
+    // Dispatch custom event to update UI
+    window.dispatchEvent(new CustomEvent('progressUpdated'));
+  }
+
+  // Update quiz results
+  updateQuizResult(userId: number, courseId: string, score: number, attempts: number): void {
+    const existingIndex = this.testProgress.findIndex(p => p.userId === userId && p.courseId === courseId);
+    
+    if (existingIndex >= 0) {
+      this.testProgress[existingIndex] = {
+        ...this.testProgress[existingIndex],
+        quizScore: score,
+        quizAttempts: attempts,
+        status: score >= 80 ? 'completed' : 'in_progress' // Assuming 80% is passing
+      };
+    }
+    
+    // Update localStorage
+    localStorage.setItem('moov_test_progress', JSON.stringify(this.testProgress));
   }
 
   // Initialize test data in localStorage

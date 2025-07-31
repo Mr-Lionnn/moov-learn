@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, Clock, Trophy, TrendingUp, Users, GraduationCap } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { testDataService } from "@/services/testDataService";
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 
 interface StatsGridProps {
   userRole?: "student" | "admin";
@@ -10,12 +10,33 @@ interface StatsGridProps {
 
 const StatsGrid = ({ userRole = "student" }: StatsGridProps) => {
   const { user } = useAuth();
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  // Listen for localStorage changes to update stats in real-time
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setRefreshTrigger(prev => prev + 1);
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also listen for custom events when we update progress
+    window.addEventListener('progressUpdated', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('progressUpdated', handleStorageChange);
+    };
+  }, []);
 
   const stats = useMemo(() => {
     if (userRole === "admin") {
       const allUsers = testDataService.getTestUsers();
       const allCourses = testDataService.getTestCourses();
-      const allProgress = testDataService.getTestProgress();
+      
+      // Get progress data from localStorage or service
+      const storedProgress = localStorage.getItem('moov_test_progress');
+      const allProgress = storedProgress ? JSON.parse(storedProgress) : testDataService.getTestProgress();
       
       // Calculate completion rate
       const completedCount = allProgress.filter(p => p.status === 'completed').length;
@@ -98,9 +119,10 @@ const StatsGrid = ({ userRole = "student" }: StatsGridProps) => {
         ];
       }
 
-      const userCourses = testDataService.getCoursesForUser(user.id);
-      const userTasks = testDataService.getTasksForUser(user.id);
-      const userProgress = testDataService.getTestProgress().filter(p => p.userId === user.id);
+      // Get progress data from localStorage first, then fallback to service
+      const storedProgress = localStorage.getItem('moov_test_progress');
+      const allProgress = storedProgress ? JSON.parse(storedProgress) : testDataService.getTestProgress();
+      const userProgress = allProgress.filter(p => p.userId === user.id);
       
       // Calculate active modules (in progress)
       const activeModules = userProgress.filter(p => p.status === 'in_progress').length;
@@ -153,7 +175,7 @@ const StatsGrid = ({ userRole = "student" }: StatsGridProps) => {
         }
       ];
     }
-  }, [user, userRole]);
+  }, [user, userRole, refreshTrigger]);
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
