@@ -41,13 +41,33 @@ const DocumentSection = ({ documents, courseTitle, lessonTitle }: DocumentSectio
 
   const handleViewDocument = (document: Document) => {
     if (viewDocument(document)) {
+      // Generate proper file URL based on file name
+      let fileUrl = '';
+      
+      // Check if it's a MoovCourse file
+      const moovCourseFiles = [
+        'Moov Intelligence Artificielle.pdf',
+        'ARGUMENTAIRE DE VENTE VOIX.docx',
+        'Argumentaire de vente commerciaux front office (AgenceMoovshops).docx',
+        'PRESENTATION SVA.pdf',
+        'SERVICE VOIX SMS DATA.pptx',
+        'MIA.mp4'
+      ];
+      
+      if (moovCourseFiles.includes(document.name)) {
+        fileUrl = `/MoovCourse/${document.name}`;
+      } else {
+        // For other files, use a general public path or mock URL
+        fileUrl = `/files/${document.name}`;
+      }
+      
       // Convert Document to ContentFile format for the viewer
       const contentFile = {
         id: document.id.toString(),
         name: document.name,
         type: document.type.toLowerCase() as any,
         size: document.size,
-        url: `/api/files/${document.id}`, // Mock URL
+        url: fileUrl,
         author: document.author,
         uploadDate: document.date,
         downloads: document.downloads,

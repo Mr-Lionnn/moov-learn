@@ -59,13 +59,33 @@ const Files = () => {
 
   const handleViewFile = (file: any) => {
     if (viewDocument(file)) {
+      // Generate proper file URL based on file name
+      let fileUrl = '';
+      
+      // Check if it's a MoovCourse file
+      const moovCourseFiles = [
+        'Moov Intelligence Artificielle.pdf',
+        'ARGUMENTAIRE DE VENTE VOIX.docx',
+        'Argumentaire de vente commerciaux front office (AgenceMoovshops).docx',
+        'PRESENTATION SVA.pdf',
+        'SERVICE VOIX SMS DATA.pptx',
+        'MIA.mp4'
+      ];
+      
+      if (moovCourseFiles.includes(file.name)) {
+        fileUrl = `/MoovCourse/${file.name}`;
+      } else {
+        // For other files, create a mock URL that simulates file content
+        fileUrl = `data:application/pdf;base64,JVBERi0xLjQKJdPr6eEKMSAwIG9iago8PAovVHlwZSAvQ2F0YWxvZwovUGFnZXMgMiAwIFIKPj4KZW5kb2JqCjIgMCBvYmoKPDwKL1R5cGUgL1BhZ2VzCi9LaWRzIFszIDAgUl0KL0NvdW50IDEKPD4KZW5kb2JqCjMgMCBvYmoKPDwKL1R5cGUgL1BhZ2UKL1BhcmVudCAyIDAgUgovTWVkaWFCb3ggWzAgMCA2MTIgNzkyXQovQ29udGVudHMgNCAwIFIKPj4KZW5kb2JqCjQgMCBvYmoKPDwKL0xlbmd0aCAzNgo+PgpzdHJlYW0KQlQKL0YxIDEyIFRmCjEwMCA3MjUgVGQKKERvY3VtZW50IGRlIHRlc3QpIFRqCkVUCmVuZHN0cmVhbQplbmRvYmoKeHJlZgowIDUKMDAwMDAwMDAwMCA2NTUzNSBmCjAwMDAwMDAwMDkgMDAwMDAgbgowMDAwMDAwMDU4IDAwMDAwIG4KMDAwMDAwMDExNSAwMDAwMCBuCjAwMDAwMDAyMTMgMDAwMDAgbgp0cmFpbGVyCjw8Ci9TaXplIDUKL1Jvb3QgMSAwIFIKPj4Kc3RhcnR4cmVmCjI4OQolJUVPRg==`;
+      }
+      
       // Convert file to ContentFile format for the viewer
       const contentFile = {
         id: file.id.toString(),
         name: file.name,
         type: file.name.split('.').pop()?.toLowerCase() as any,
         size: file.size,
-        url: `/api/files/${file.id}`, // Mock URL
+        url: fileUrl,
         author: file.author,
         uploadDate: file.date,
         downloads: file.downloads,
