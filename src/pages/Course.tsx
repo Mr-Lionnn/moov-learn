@@ -64,7 +64,7 @@ const Course = () => {
         { id: 6, title: "Évaluation Finale", duration: "25:00", completed: false, type: "quiz" }
       ],
       'leadership-fundamentals': [
-        { id: 1, title: "Qu'est-ce que le Leadership?", duration: "35:00", completed: false, type: "video" },
+        { id: 1, title: "Fondamentaux du Leadership", duration: "35:00", completed: false, type: "video" },
         { id: 2, title: "Styles de Management", duration: "40:30", completed: false, type: "text" },
         { id: 3, title: "Motivation d'Équipe", duration: "30:45", completed: false, type: "video" },
         { id: 4, title: "Gestion des Conflits", duration: "45:20", completed: false, type: "video" },
