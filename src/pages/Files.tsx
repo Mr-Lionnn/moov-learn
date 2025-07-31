@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
-import DocumentViewer from "@/components/enhanced/DocumentViewer";
+import DocumentViewer from "@/components/content/DocumentViewer";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useDocumentManager } from "@/hooks/useDocumentManager";
@@ -59,7 +59,21 @@ const Files = () => {
 
   const handleViewFile = (file: any) => {
     if (viewDocument(file)) {
-      setSelectedFile(file);
+      // Convert file to ContentFile format for the viewer
+      const contentFile = {
+        id: file.id.toString(),
+        name: file.name,
+        type: file.name.split('.').pop()?.toLowerCase() as any,
+        size: file.size,
+        url: `/api/files/${file.id}`, // Mock URL
+        author: file.author,
+        uploadDate: file.date,
+        downloads: file.downloads,
+        teamIds: [1], // Default team
+        category: file.category || 'document',
+        description: file.description
+      };
+      setSelectedFile(contentFile);
     }
   };
 

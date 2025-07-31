@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileText, Video, Download, Bookmark, Image, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import DocumentViewer from "@/components/enhanced/DocumentViewer";
+import DocumentViewer from "@/components/content/DocumentViewer";
 import { useDocumentManager } from "@/hooks/useDocumentManager";
 import RoleBasedAccess from "@/components/enhanced/RoleBasedAccess";
 
@@ -27,21 +27,35 @@ interface DocumentSectionProps {
 
 const DocumentSection = ({ documents, courseTitle, lessonTitle }: DocumentSectionProps) => {
   const { toast } = useToast();
-  const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
+  const [selectedDocument, setSelectedDocument] = useState<any>(null);
   const { saveDocument, downloadDocument, viewDocument } = useDocumentManager();
 
-  const handleSaveDocument = (document: Document) => {
+  const handleSaveDocument = (document: any) => {
     const moduleId = courseTitle ? `${courseTitle}-${lessonTitle}` : "general";
     saveDocument(document, moduleId);
   };
 
-  const handleDownload = (document: Document) => {
+  const handleDownload = (document: any) => {
     downloadDocument(document);
   };
 
   const handleViewDocument = (document: Document) => {
     if (viewDocument(document)) {
-      setSelectedDocument(document);
+      // Convert Document to ContentFile format for the viewer
+      const contentFile = {
+        id: document.id.toString(),
+        name: document.name,
+        type: document.type.toLowerCase() as any,
+        size: document.size,
+        url: `/api/files/${document.id}`, // Mock URL
+        author: document.author,
+        uploadDate: document.date,
+        downloads: document.downloads,
+        teamIds: [1], // Default team
+        category: document.category || 'document',
+        description: document.description
+      };
+      setSelectedDocument(contentFile);
     }
   };
 
