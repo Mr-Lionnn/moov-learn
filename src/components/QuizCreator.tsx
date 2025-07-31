@@ -9,6 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Plus, Trash2, Save } from "lucide-react";
 import { Quiz, QuizQuestion } from "@/types/quiz";
+import QuizTeamAssignment, { QuizAssignment } from "./quiz/QuizTeamAssignment";
+import QuizPreview from "./quiz/QuizPreview";
 
 interface QuizCreatorProps {
   courseId: string;
@@ -28,6 +30,9 @@ const QuizCreator = ({ courseId, onSave, onCancel, initialQuiz, suggestedTitle }
     questions: [],
     isActive: true
   });
+  
+  const [currentStep, setCurrentStep] = useState<'create' | 'preview' | 'assign'>('create');
+  const [createdQuiz, setCreatedQuiz] = useState<Quiz | null>(null);
 
   const addQuestion = () => {
     const newQuestion: QuizQuestion = {
@@ -72,7 +77,7 @@ const QuizCreator = ({ courseId, onSave, onCancel, initialQuiz, suggestedTitle }
     if (!quiz.title || !quiz.questions?.length) return;
 
     const completeQuiz: Quiz = {
-      id: `quiz_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      id: initialQuiz?.id || `quiz_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       courseId: quiz.courseId!,
       title: quiz.title,
       description: quiz.description || "",
@@ -80,12 +85,53 @@ const QuizCreator = ({ courseId, onSave, onCancel, initialQuiz, suggestedTitle }
       timeLimit: quiz.timeLimit,
       questions: quiz.questions,
       createdBy: "current_user",
-      createdAt: new Date().toISOString(),
+      createdAt: initialQuiz?.createdAt || new Date().toISOString(),
       isActive: quiz.isActive || true
     };
 
-    onSave(completeQuiz);
+    setCreatedQuiz(completeQuiz);
+    setCurrentStep('assign');
   };
+
+  const handleAssignmentComplete = (assignment: QuizAssignment) => {
+    if (createdQuiz) {
+      // Here you would typically save the assignment to your backend
+      console.log('Quiz assignment:', assignment);
+      
+      // Show success message and proceed to preview
+      setCurrentStep('preview');
+    }
+  };
+
+  const handlePreviewEdit = () => {
+    setCurrentStep('create');
+  };
+
+  const handlePreviewClose = () => {
+    if (createdQuiz) {
+      onSave(createdQuiz);
+    }
+  };
+
+  if (currentStep === 'assign' && createdQuiz) {
+    return (
+      <QuizTeamAssignment
+        quiz={createdQuiz}
+        onAssignmentComplete={handleAssignmentComplete}
+        onCancel={onCancel}
+      />
+    );
+  }
+
+  if (currentStep === 'preview' && createdQuiz) {
+    return (
+      <QuizPreview
+        quiz={createdQuiz}
+        onClose={handlePreviewClose}
+        onEdit={handlePreviewEdit}
+      />
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -238,7 +284,7 @@ const QuizCreator = ({ courseId, onSave, onCancel, initialQuiz, suggestedTitle }
         </Button>
         <Button onClick={handleSave} disabled={!quiz.title || !quiz.questions?.length}>
           <Save className="h-4 w-4 mr-2" />
-          Enregistrer le Quiz
+          {initialQuiz ? 'Mettre à Jour le Quiz' : 'Créer et Assigner le Quiz'}
         </Button>
       </div>
     </div>
