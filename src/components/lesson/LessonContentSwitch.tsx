@@ -111,7 +111,13 @@ const LessonContentSwitch = ({
       );
     
     case "text":
-      return <TextLessonContent onComplete={() => setShowRating(true)} />;
+      return (
+        <TextLessonContent 
+          onComplete={() => setShowRating(true)}
+          lessonTitle={lesson.title}
+          courseTitle={courseTitle}
+        />
+      );
     
     case "document":
       // For Moov course documents, use MoovDocumentContent
@@ -126,7 +132,13 @@ const LessonContentSwitch = ({
           />
         );
       }
-      return <TextLessonContent onComplete={() => setShowRating(true)} />;
+      return (
+        <TextLessonContent 
+          onComplete={() => setShowRating(true)}
+          lessonTitle={lesson.title}
+          courseTitle={courseTitle}
+        />
+      );
     
     case "quiz":
       // Use moovCourseQuiz for Moov formation, otherwise use sample quiz
