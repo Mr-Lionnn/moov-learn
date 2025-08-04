@@ -4,11 +4,11 @@ import Header from "@/components/Header";
 import StatsGrid from "@/components/StatsGrid";
 import CourseCard from "@/components/CourseCard";
 import CourseDetailModal from "@/components/CourseDetailModal";
+import SmartSearchBar from "@/components/SmartSearchBar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Input } from "@/components/ui/input";
 import { 
   BookOpen, 
   Clock, 
@@ -36,40 +36,6 @@ const Index = () => {
   const [tasks, setTasks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   
-  const [searchQuery, setSearchQuery] = useState("");
-
-  // Filter courses based on search query
-  const filteredCourses = courses.filter(course => {
-    if (!searchQuery) return true;
-    
-    const searchLower = searchQuery.toLowerCase();
-    const matches = (
-      course.title?.toLowerCase().includes(searchLower) ||
-      course.instructor?.toLowerCase().includes(searchLower) ||
-      course.description?.toLowerCase().includes(searchLower) ||
-      course.category?.toLowerCase().includes(searchLower)
-    );
-    
-    // Debug logging
-    if (searchQuery.length > 0) {
-      console.log('🔍 Search Debug:', {
-        searchQuery: searchQuery,
-        courseTitle: course.title,
-        matches: matches,
-        titleMatch: course.title?.toLowerCase().includes(searchLower)
-      });
-    }
-    
-    return matches;
-  });
-
-  // Filter tasks based on search query
-  const filteredTasks = tasks.filter(task => 
-    !searchQuery || 
-    task.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    task.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    task.category?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   useEffect(() => {
     console.log('🔥 Index useEffect triggered, user:', user);
@@ -203,17 +169,9 @@ const Index = () => {
 
         <StatsGrid />
 
-        {/* Search Bar */}
-        <div className="max-w-2xl mx-auto mb-12 mt-8">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              placeholder="Rechercher formations, modules, créateurs..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 text-center h-12 text-base shadow-sm border-2 focus:border-primary/50"
-            />
-          </div>
+        {/* Smart Search Bar */}
+        <div className="mb-12 mt-8">
+          <SmartSearchBar courses={courses} />
         </div>
 
         <div className="grid lg:grid-cols-2 gap-6 sm:gap-8">
@@ -226,8 +184,8 @@ const Index = () => {
             </div>
             
             <div className="space-y-4">
-              {filteredCourses.length > 0 ? (
-                filteredCourses
+              {courses.length > 0 ? (
+                courses
                   .slice(0, 3)
                   .map((course) => (
                     course && course.id ? (
@@ -240,7 +198,7 @@ const Index = () => {
                   ))
               ) : (
                 <div className="text-center py-8 text-gray-500">
-                  {searchQuery ? "Aucun cours trouvé pour cette recherche" : "Aucun cours disponible pour le moment"}
+                  Aucun cours disponible pour le moment
                 </div>
               )}
             </div>
@@ -255,8 +213,8 @@ const Index = () => {
             </div>
             
             <div className="space-y-4">
-              {filteredTasks.length > 0 ? (
-                filteredTasks
+              {tasks.length > 0 ? (
+                tasks
                   .slice(0, 4)
                   .map((task) => (
                     task && task.id ? (
@@ -325,7 +283,7 @@ const Index = () => {
                   ))
               ) : (
                 <div className="text-center py-8 text-gray-500">
-                  {searchQuery ? "Aucune tâche trouvée pour cette recherche" : "Aucune tâche assignée pour le moment"}
+                  Aucune tâche assignée pour le moment
                 </div>
               )}
             </div>
