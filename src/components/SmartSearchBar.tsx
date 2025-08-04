@@ -61,7 +61,8 @@ const SmartSearchBar = ({ courses, placeholder = "Rechercher formations, modules
   const handleCourseSelect = (course: Course) => {
     setSearchQuery("");
     setIsOpen(false);
-    navigate(`/course/${course.id}`);
+    // Navigate directly to the formation module (first lesson/module)
+    navigate(`/course/${course.id}?start=true`);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
