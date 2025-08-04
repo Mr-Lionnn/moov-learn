@@ -39,13 +39,29 @@ const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   // Filter courses based on search query
-  const filteredCourses = courses.filter(course => 
-    !searchQuery || 
-    course.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    course.instructor?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    course.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    course.category?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredCourses = courses.filter(course => {
+    if (!searchQuery) return true;
+    
+    const searchLower = searchQuery.toLowerCase();
+    const matches = (
+      course.title?.toLowerCase().includes(searchLower) ||
+      course.instructor?.toLowerCase().includes(searchLower) ||
+      course.description?.toLowerCase().includes(searchLower) ||
+      course.category?.toLowerCase().includes(searchLower)
+    );
+    
+    // Debug logging
+    if (searchQuery.length > 0) {
+      console.log('🔍 Search Debug:', {
+        searchQuery: searchQuery,
+        courseTitle: course.title,
+        matches: matches,
+        titleMatch: course.title?.toLowerCase().includes(searchLower)
+      });
+    }
+    
+    return matches;
+  });
 
   // Filter tasks based on search query
   const filteredTasks = tasks.filter(task => 
