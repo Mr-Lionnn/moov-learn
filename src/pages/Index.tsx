@@ -38,6 +38,23 @@ const Index = () => {
   
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Filter courses based on search query
+  const filteredCourses = courses.filter(course => 
+    !searchQuery || 
+    course.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    course.instructor?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    course.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    course.category?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // Filter tasks based on search query
+  const filteredTasks = tasks.filter(task => 
+    !searchQuery || 
+    task.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    task.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    task.category?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   useEffect(() => {
     console.log('🔥 Index useEffect triggered, user:', user);
     
@@ -193,14 +210,8 @@ const Index = () => {
             </div>
             
             <div className="space-y-4">
-              {courses.length > 0 ? (
-                courses
-                  .filter(course => 
-                    !searchQuery || 
-                    course.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    course.instructor?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    course.description?.toLowerCase().includes(searchQuery.toLowerCase())
-                  )
+              {filteredCourses.length > 0 ? (
+                filteredCourses
                   .slice(0, 3)
                   .map((course) => (
                     course && course.id ? (
@@ -228,14 +239,8 @@ const Index = () => {
             </div>
             
             <div className="space-y-4">
-              {tasks.length > 0 ? (
-                tasks
-                  .filter(task => 
-                    !searchQuery || 
-                    task.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    task.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    task.category?.toLowerCase().includes(searchQuery.toLowerCase())
-                  )
+              {filteredTasks.length > 0 ? (
+                filteredTasks
                   .slice(0, 4)
                   .map((task) => (
                     task && task.id ? (
