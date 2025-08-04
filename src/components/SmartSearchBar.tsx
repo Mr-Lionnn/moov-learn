@@ -34,12 +34,14 @@ const SmartSearchBar = ({ courses, placeholder = "Rechercher formations, modules
     }
 
     const searchLower = searchQuery.toLowerCase();
-    const matches = courses.filter(course => 
-      course.title?.toLowerCase().includes(searchLower) ||
-      course.instructor?.toLowerCase().includes(searchLower) ||
-      course.description?.toLowerCase().includes(searchLower) ||
-      course.category?.toLowerCase().includes(searchLower)
-    ).slice(0, 5); // Limit to 5 suggestions
+    const matches = courses.filter(course => {
+      const titleMatch = course.title?.toLowerCase().includes(searchLower);
+      const instructorMatch = course.instructor?.toLowerCase().includes(searchLower);
+      const descriptionMatch = course.description?.toLowerCase().includes(searchLower);
+      const categoryMatch = course.category?.toLowerCase().includes(searchLower);
+      
+      return titleMatch || instructorMatch || descriptionMatch || categoryMatch;
+    }).slice(0, 8); // Show more suggestions
 
     setFilteredCourses(matches);
     setIsOpen(matches.length > 0);
