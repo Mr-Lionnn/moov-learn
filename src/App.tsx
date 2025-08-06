@@ -3,9 +3,9 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "./contexts/AuthContext";
-import ProtectedRoute from "./components/ProtectedRoute";
-import Login from "./pages/Login";
+import { SupabaseAuthProvider } from "./contexts/SupabaseAuthContext";
+import SupabaseProtectedRoute from "./components/SupabaseProtectedRoute";
+import Auth from "./pages/Auth";
 import Index from "./pages/Index";
 import Course from "./pages/Course";
 import CreateCourse from "./pages/CreateCourse";
@@ -49,96 +49,95 @@ function ErrorFallback({error}: {error: Error}) {
 const App = () => (
   <ErrorBoundary FallbackComponent={ErrorFallback}>
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
+      <SupabaseAuthProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <SessionWrapper>
-              <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/" element={
-                  <ProtectedRoute>
-                    <Index />
-                  </ProtectedRoute>
-                } />
-                <Route path="/course/:id" element={
-                  <ProtectedRoute>
-                    <Course />
-                  </ProtectedRoute>
-                } />
-                <Route path="/create-course" element={
-                  <ProtectedRoute>
-                    <CreateCourse />
-                  </ProtectedRoute>
-                } />
-                <Route path="/course-completion" element={
-                  <ProtectedRoute>
-                    <CompletionConfirmation />
-                  </ProtectedRoute>
-                } />
-                <Route path="/my-trainings" element={
-                  <ProtectedRoute>
-                    <MyTrainings />
-                  </ProtectedRoute>
-                } />
-                <Route path="/tasks" element={
-                  <ProtectedRoute>
-                    <Tasks />
-                  </ProtectedRoute>
-                } />
-                <Route path="/employees" element={
-                  <ProtectedRoute>
-                    <Employees />
-                  </ProtectedRoute>
-                } />
-                <Route path="/analytics" element={
-                  <ProtectedRoute>
-                    <Analytics />
-                  </ProtectedRoute>
-                } />
-                <Route path="/team" element={
-                  <ProtectedRoute>
-                    <Team />
-                  </ProtectedRoute>
-                } />
-                <Route path="/settings" element={
-                  <ProtectedRoute>
-                    <Settings />
-                  </ProtectedRoute>
-                } />
-                <Route path="/profile" element={
-                  <ProtectedRoute>
-                    <Profile />
-                  </ProtectedRoute>
-                } />
-                <Route path="/files" element={
-                  <ProtectedRoute>
-                    <Files />
-                  </ProtectedRoute>
-                } />
-                <Route path="/upload-files" element={
-                  <ProtectedRoute>
-                    <FileUpload />
-                  </ProtectedRoute>
-                } />
-                <Route path="/debug" element={
-                  <ProtectedRoute>
-                    <Debug />
-                  </ProtectedRoute>
-                } />
-                <Route path="/admin" element={
-                  <ProtectedRoute>
-                    <Admin />
-                  </ProtectedRoute>
-                } />
+            <Routes>
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/login" element={<Auth />} />
+              <Route path="/" element={
+                <SupabaseProtectedRoute>
+                  <Index />
+                </SupabaseProtectedRoute>
+              } />
+              <Route path="/course/:id" element={
+                <SupabaseProtectedRoute>
+                  <Course />
+                </SupabaseProtectedRoute>
+              } />
+              <Route path="/create-course" element={
+                <SupabaseProtectedRoute>
+                  <CreateCourse />
+                </SupabaseProtectedRoute>
+              } />
+              <Route path="/course-completion" element={
+                <SupabaseProtectedRoute>
+                  <CompletionConfirmation />
+                </SupabaseProtectedRoute>
+              } />
+              <Route path="/my-trainings" element={
+                <SupabaseProtectedRoute>
+                  <MyTrainings />
+                </SupabaseProtectedRoute>
+              } />
+              <Route path="/tasks" element={
+                <SupabaseProtectedRoute>
+                  <Tasks />
+                </SupabaseProtectedRoute>
+              } />
+              <Route path="/employees" element={
+                <SupabaseProtectedRoute>
+                  <Employees />
+                </SupabaseProtectedRoute>
+              } />
+              <Route path="/analytics" element={
+                <SupabaseProtectedRoute>
+                  <Analytics />
+                </SupabaseProtectedRoute>
+              } />
+              <Route path="/team" element={
+                <SupabaseProtectedRoute>
+                  <Team />
+                </SupabaseProtectedRoute>
+              } />
+              <Route path="/settings" element={
+                <SupabaseProtectedRoute>
+                  <Settings />
+                </SupabaseProtectedRoute>
+              } />
+              <Route path="/profile" element={
+                <SupabaseProtectedRoute>
+                  <Profile />
+                </SupabaseProtectedRoute>
+              } />
+              <Route path="/files" element={
+                <SupabaseProtectedRoute>
+                  <Files />
+                </SupabaseProtectedRoute>
+              } />
+              <Route path="/upload-files" element={
+                <SupabaseProtectedRoute>
+                  <FileUpload />
+                </SupabaseProtectedRoute>
+              } />
+              <Route path="/debug" element={
+                <SupabaseProtectedRoute>
+                  <Debug />
+                </SupabaseProtectedRoute>
+              } />
+              <Route path="/admin" element={
+                <SupabaseProtectedRoute>
+                  <Admin />
+                </SupabaseProtectedRoute>
+              } />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
-            </SessionWrapper>
           </BrowserRouter>
         </TooltipProvider>
-      </AuthProvider>
+      </SupabaseAuthProvider>
     </QueryClientProvider>
   </ErrorBoundary>
 );

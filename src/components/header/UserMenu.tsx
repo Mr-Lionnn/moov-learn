@@ -15,7 +15,7 @@ import {
   BookOpen
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
+import { useSupabaseAuth } from "@/contexts/SupabaseAuthContext";
 import { useToast } from "@/hooks/use-toast";
 
 interface UserMenuProps {
@@ -24,16 +24,16 @@ interface UserMenuProps {
 
 const UserMenu = ({ onShowAdminPanel }: UserMenuProps) => {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, signOut } = useSupabaseAuth();
   const { toast } = useToast();
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await signOut();
     toast({
       title: "Déconnexion réussie",
       description: "À bientôt !",
     });
-    navigate("/login");
+    navigate("/auth");
   };
 
   const getInitials = (name: string) => {
