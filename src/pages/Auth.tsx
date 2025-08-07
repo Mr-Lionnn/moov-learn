@@ -47,23 +47,36 @@ const Auth = () => {
     }
 
     try {
-      console.log("Attempting login with:", loginEmail);
-      const { error } = await signIn(loginEmail, loginPassword);
+      console.log("Starting login process...");
+      console.log("Email:", loginEmail);
+      console.log("Supabase auth available:", !!signIn);
       
-      if (error) {
-        console.error("Login error:", error);
-        setErrors({ login: error.message });
+      const result = await signIn(loginEmail, loginPassword);
+      console.log("Login result:", result);
+      
+      if (result.error) {
+        console.error("Login error details:", {
+          message: result.error.message,
+          status: result.error.status,
+          details: result.error
+        });
+        setErrors({ login: `Erreur: ${result.error.message}` });
         return;
       }
 
+      console.log("Login successful, navigating...");
       toast({
         title: "Connexion réussie",
         description: "Bienvenue dans Moov-Learn!"
       });
       navigate("/");
     } catch (error) {
-      console.error("Login catch error:", error);
-      setErrors({ login: "Erreur de connexion. Veuillez réessayer." });
+      console.error("Login exception:", {
+        error,
+        message: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined
+      });
+      setErrors({ login: `Exception: ${error instanceof Error ? error.message : 'Erreur inconnue'}` });
     } finally {
       setIsLoading(false);
     }
@@ -94,22 +107,36 @@ const Auth = () => {
     }
 
     try {
-      console.log("Attempting signup with:", signupData.email);
-      const { error } = await signUp(signupData.email, signupData.password, signupData);
+      console.log("Starting signup process...");
+      console.log("Email:", signupData.email);
+      console.log("Data:", { ...signupData, password: '[HIDDEN]', confirmPassword: '[HIDDEN]' });
+      console.log("Supabase auth available:", !!signUp);
       
-      if (error) {
-        console.error("Signup error:", error);
-        setErrors({ signup: error.message });
+      const result = await signUp(signupData.email, signupData.password, signupData);
+      console.log("Signup result:", result);
+      
+      if (result.error) {
+        console.error("Signup error details:", {
+          message: result.error.message,
+          status: result.error.status,
+          details: result.error
+        });
+        setErrors({ signup: `Erreur: ${result.error.message}` });
         return;
       }
 
+      console.log("Signup successful");
       toast({
         title: "Inscription réussie",
         description: "Vérifiez votre email pour confirmer votre compte."
       });
     } catch (error) {
-      console.error("Signup catch error:", error);
-      setErrors({ signup: "Erreur lors de l'inscription. Veuillez réessayer." });
+      console.error("Signup exception:", {
+        error,
+        message: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined
+      });
+      setErrors({ signup: `Exception: ${error instanceof Error ? error.message : 'Erreur inconnue'}` });
     } finally {
       setIsLoading(false);
     }
