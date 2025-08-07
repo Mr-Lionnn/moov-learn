@@ -47,9 +47,11 @@ const Auth = () => {
     }
 
     try {
+      console.log("Attempting login with:", loginEmail);
       const { error } = await signIn(loginEmail, loginPassword);
       
       if (error) {
+        console.error("Login error:", error);
         setErrors({ login: error.message });
         return;
       }
@@ -60,6 +62,7 @@ const Auth = () => {
       });
       navigate("/");
     } catch (error) {
+      console.error("Login catch error:", error);
       setErrors({ login: "Erreur de connexion. Veuillez réessayer." });
     } finally {
       setIsLoading(false);
@@ -91,9 +94,11 @@ const Auth = () => {
     }
 
     try {
+      console.log("Attempting signup with:", signupData.email);
       const { error } = await signUp(signupData.email, signupData.password, signupData);
       
       if (error) {
+        console.error("Signup error:", error);
         setErrors({ signup: error.message });
         return;
       }
@@ -103,6 +108,7 @@ const Auth = () => {
         description: "Vérifiez votre email pour confirmer votre compte."
       });
     } catch (error) {
+      console.error("Signup catch error:", error);
       setErrors({ signup: "Erreur lors de l'inscription. Veuillez réessayer." });
     } finally {
       setIsLoading(false);
