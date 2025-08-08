@@ -23,13 +23,13 @@ import {
   BarChart3,
   Search
 } from "lucide-react";
-import { useSupabaseAuth } from "@/contexts/SupabaseAuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { testDataService } from "@/services/testDataService";
 import { useNavigate } from "react-router-dom";
 
 
 const Index = () => {
-  const { user } = useSupabaseAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
   const [courses, setCourses] = useState<any[]>([]);
@@ -47,8 +47,8 @@ const Index = () => {
     if (user?.id) {
       try {
         console.log('🔥 About to call getCoursesForUser with user ID:', user.id);
-        const userCourses = testDataService.getCoursesForUser(parseInt(user.id) || 1);
-        const userTasks = testDataService.getTasksForUser(parseInt(user.id) || 1);
+        const userCourses = testDataService.getCoursesForUser(user.id);
+        const userTasks = testDataService.getTasksForUser(user.id);
         
         console.log('🔥 Loaded courses:', userCourses);
         console.log('🔥 Courses with Formation Moov:', userCourses.filter(c => c.title.includes('Moov')));
