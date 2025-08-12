@@ -10,11 +10,11 @@ import { useNavigate } from "react-router-dom";
 import { testDataService } from "@/services/testDataService";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { User, Mail, Shield, AlertTriangle, UserPlus, Building, Users, MapPin } from "lucide-react";
+import { User, Mail, Shield, AlertTriangle, Lock, Building, Users, MapPin } from "lucide-react";
 import { emailSchema, passwordSchema, loginRateLimiter, sanitizeText, generateCSRFToken } from "@/utils/security";
 import { useToast } from "@/hooks/use-toast";
 import UserProfilesDisplay from "@/components/UserProfilesDisplay";
-import RegistrationForm from "@/components/RegistrationForm";
+import PasswordChangeModal from "@/components/PasswordChangeModal";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -111,7 +111,7 @@ const Login = () => {
   };
 
   const [showProfiles, setShowProfiles] = useState(false);
-  const [showRegistration, setShowRegistration] = useState(false);
+  const [showPasswordChange, setShowPasswordChange] = useState(false);
 
   if (showProfiles) {
     return (
@@ -131,8 +131,8 @@ const Login = () => {
     );
   }
 
-  if (showRegistration) {
-    return <RegistrationForm onClose={() => setShowRegistration(false)} />;
+  if (showPasswordChange) {
+    return <PasswordChangeModal onClose={() => setShowPasswordChange(false)} />;
   }
 
   return (
@@ -218,10 +218,10 @@ const Login = () => {
               <Button
                 variant="default"
                 className="w-full moov-gradient text-white"
-                onClick={() => setShowRegistration(true)}
+                onClick={() => setShowPasswordChange(true)}
               >
-                <UserPlus className="h-4 w-4 mr-2" />
-                Créer un Compte
+                <Lock className="h-4 w-4 mr-2" />
+                Modifier le Mot de Passe
               </Button>
             </div>
           </CardContent>

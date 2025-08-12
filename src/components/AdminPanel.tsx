@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { X, Users, BookOpen, BarChart3, Clock, CheckCircle, CheckSquare } from "lucide-react";
+import { X, Users, BookOpen, BarChart3, Clock, CheckCircle, CheckSquare, UserPlus } from "lucide-react";
 import QuizCreator from "./QuizCreator";
 import ModuleCreator from "./module/ModuleCreator";
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,6 +17,7 @@ import DeadlineManagementTab from "./admin/DeadlineManagementTab";
 import StudentProgressTab from "./admin/StudentProgressTab";
 import AnalyticsTab from "./admin/AnalyticsTab";
 import TaskManagementTab from "./admin/TaskManagementTab";
+import UserManagementTab from "./admin/UserManagementTab";
 import { Team } from "@/types/content";
 
 const AdminPanel = ({ onClose }: AdminPanelProps) => {
@@ -219,8 +220,13 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
         </div>
 
         <div className="p-3 sm:p-6 overflow-y-auto max-h-[calc(95vh-80px)] sm:max-h-[calc(90vh-100px)]">
-          <Tabs defaultValue="tasks" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1 h-auto p-1">
+          <Tabs defaultValue="users" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-1 h-auto p-1">
+              <TabsTrigger value="users" className="text-xs sm:text-sm flex-col sm:flex-row gap-1 h-12 sm:h-10">
+                <UserPlus className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline sm:ml-2">Gestion des</span>
+                <span>Utilisateurs</span>
+              </TabsTrigger>
               <TabsTrigger value="tasks" className="text-xs sm:text-sm flex-col sm:flex-row gap-1 h-12 sm:h-10">
                 <CheckSquare className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="hidden sm:inline sm:ml-2">Gestion des</span>
@@ -251,6 +257,10 @@ const AdminPanel = ({ onClose }: AdminPanelProps) => {
                 <span>Analytiques</span>
               </TabsTrigger>
             </TabsList>
+
+            <TabsContent value="users" className="space-y-6">
+              <UserManagementTab />
+            </TabsContent>
 
             <TabsContent value="tasks" className="space-y-6">
               <TaskManagementTab />
