@@ -15,6 +15,7 @@ import DeadlineManagementTab from "@/components/admin/DeadlineManagementTab";
 import StudentProgressTab from "@/components/admin/StudentProgressTab";
 import AnalyticsTab from "@/components/admin/AnalyticsTab";
 import TaskManagementTab from "@/components/admin/TaskManagementTab";
+import UserManagementTab from "@/components/admin/UserManagementTab";
 import { Team } from "@/types/content";
 
 const Admin = () => {
@@ -202,7 +203,7 @@ const Admin = () => {
 
         <div className="bg-white rounded-lg shadow-sm">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1 h-auto p-1 m-4 mb-0">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-1 h-auto p-1 m-4 mb-0">
               <TabsTrigger value="tasks" className="text-xs sm:text-sm flex-col sm:flex-row gap-1 h-12 sm:h-10">
                 <CheckSquare className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="hidden sm:inline sm:ml-2">Gestion des</span>
@@ -227,6 +228,11 @@ const Admin = () => {
                 <Users className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="hidden sm:inline sm:ml-2">Progrès des</span>
                 <span>Employés</span>
+              </TabsTrigger>
+              <TabsTrigger value="users" className="text-xs sm:text-sm flex-col sm:flex-row gap-1 h-12 sm:h-10">
+                <Users className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline sm:ml-2">Gestion des</span>
+                <span>Utilisateurs</span>
               </TabsTrigger>
               <TabsTrigger value="analytics" className="text-xs sm:text-sm flex-col sm:flex-row gap-1 h-12 sm:h-10">
                 <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -277,6 +283,10 @@ const Admin = () => {
 
               <TabsContent value="students" className="space-y-6">
                 <StudentProgressTab studentProgress={studentProgress} />
+              </TabsContent>
+
+              <TabsContent value="users" className="space-y-6">
+                <UserManagementTab />
               </TabsContent>
 
               <TabsContent value="analytics" className="space-y-6">
