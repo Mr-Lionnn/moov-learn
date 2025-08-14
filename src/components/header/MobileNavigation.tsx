@@ -56,19 +56,17 @@ const MobileNavigation = ({
         )}
 
         {/* Information Hub - centralized communication channel */}
-        {(hasPermission('assign_tasks') || user?.role === 'admin' || user?.role === 'team_chief' || user?.role === 'team_responsible') && (
-          <Button 
-            variant="ghost" 
-            className="justify-start text-gray-600 hover:bg-secondary hover:text-white h-10"
-            onClick={() => {
-              navigate("/admin");
-              setShowMobileMenu(false);
-            }}
-          >
-            <Info className="h-4 w-4 mr-3" />
-            Information
-          </Button>
-        )}
+        <Button 
+          variant="ghost" 
+          className="justify-start text-gray-600 hover:bg-secondary hover:text-white h-10"
+          onClick={() => {
+            navigate("/information");
+            setShowMobileMenu(false);
+          }}
+        >
+          <Info className="h-4 w-4 mr-3" />
+          Information
+        </Button>
 
         {/* Team/Employee Section - Role-based */}
         <Button 

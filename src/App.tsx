@@ -7,6 +7,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
 import Index from "./pages/Index";
+import Information from "./pages/Information";
 import Course from "./pages/Course";
 import CreateCourse from "./pages/CreateCourse";
 import CompletionConfirmation from "./components/CompletionConfirmation";
@@ -60,6 +61,11 @@ const App = () => (
                 <Route path="/" element={
                   <ProtectedRoute>
                     <Index />
+                  </ProtectedRoute>
+                } />
+                <Route path="/information" element={
+                  <ProtectedRoute>
+                    <Information />
                   </ProtectedRoute>
                 } />
                 <Route path="/course/:id" element={

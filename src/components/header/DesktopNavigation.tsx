@@ -42,16 +42,14 @@ const DesktopNavigation = ({
       )}
 
       {/* Information Hub - centralized communication channel */}
-      {(hasPermission('assign_tasks') || user?.role === 'admin' || user?.role === 'team_chief' || user?.role === 'team_responsible') && (
-        <Button 
-          variant="ghost" 
-          className="text-gray-600 hover:bg-secondary hover:text-white text-sm px-2 xl:px-3"
-          onClick={() => navigate("/admin")}
-        >
-          <Info className="h-4 w-4 mr-1 xl:mr-2" />
-          <span>Information</span>
-        </Button>
-      )}
+      <Button 
+        variant="ghost" 
+        className="text-gray-600 hover:bg-secondary hover:text-white text-sm px-2 xl:px-3"
+        onClick={() => navigate("/information")}
+      >
+        <Info className="h-4 w-4 mr-1 xl:mr-2" />
+        <span>Information</span>
+      </Button>
 
       {/* Team/Employee Section - Role-based */}
       <Button 
