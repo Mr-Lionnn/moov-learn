@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { 
   BookOpen, 
   FileText,
-  CheckSquare,
+  Info,
   Users, 
   UserCheck, 
   BarChart3 
@@ -55,7 +55,7 @@ const MobileNavigation = ({
           </Button>
         )}
 
-        {/* Unified Administration Button - replaces both Tâches and admin access */}
+        {/* Information Hub - centralized communication channel */}
         {(hasPermission('assign_tasks') || user?.role === 'admin' || user?.role === 'team_chief' || user?.role === 'team_responsible') && (
           <Button 
             variant="ghost" 
@@ -65,8 +65,8 @@ const MobileNavigation = ({
               setShowMobileMenu(false);
             }}
           >
-            <CheckSquare className="h-4 w-4 mr-3" />
-            Administration
+            <Info className="h-4 w-4 mr-3" />
+            Information
           </Button>
         )}
 
