@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import StarRatingDisplay from "@/components/StarRatingDisplay";
+import FormationInfoModal from "@/components/FormationInfoModal";
 import { 
   BookOpen, 
   Clock, 
@@ -15,10 +16,12 @@ import {
   CheckCircle, 
   Award,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Info
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ratingService } from "@/services/ratingService";
+import { ContentFile } from "@/types/content";
 
 // Import Swiper styles
 import 'swiper/css';
@@ -53,6 +56,8 @@ const FormationSwiper = ({ trainings }: FormationSwiperProps) => {
   const navigate = useNavigate();
   const swiperRef = useRef<any>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [selectedFormation, setSelectedFormation] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Get average rating for a training module
   const getModuleRating = (title: string) => {
@@ -100,6 +105,164 @@ const FormationSwiper = ({ trainings }: FormationSwiperProps) => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handleReadMore = (training: Training) => {
+    // Create detailed formation info
+    const formationInfo = {
+      id: training.id.toString(),
+      title: training.title,
+      description: `Formation complète en ${training.category} de niveau ${training.level}`,
+      detailedContent: getDetailedContent(training),
+      duration: training.duration,
+      level: training.level as 'beginner' | 'intermediate' | 'advanced',
+      participants: training.studentsCount,
+      category: training.category,
+      objectives: getObjectives(training),
+      prerequisites: getPrerequisites(training),
+      materials: getMaterials(training),
+      hasDetailedInfo: true
+    };
+
+    setSelectedFormation(formationInfo);
+    setIsModalOpen(true);
+  };
+
+  const getDetailedContent = (training: Training) => {
+    const contents: { [key: string]: string } = {
+      'Formation Moov': `
+        <h3>Présentation complète des services Moov</h3>
+        <p>Cette formation vous permettra de maîtriser l'ensemble des produits et services Moov pour mieux conseiller vos clients.</p>
+        <h4>Modules inclus:</h4>
+        <ul>
+          <li>Intelligence Artificielle Moov - Vidéo de présentation</li>
+          <li>Argumentaires de vente pour les services vocaux</li>
+          <li>Guide pratique des services SVA</li>
+          <li>Techniques de vente pour les commerciaux front office</li>
+        </ul>
+        <h4>Compétences acquises:</h4>
+        <ul>
+          <li>Présentation efficace des offres Moov</li>
+          <li>Utilisation des outils d'Intelligence Artificielle</li>
+          <li>Techniques de négociation avancées</li>
+        </ul>
+      `,
+      'Service Client Excellence': `
+        <h3>Excellence en Service Client</h3>
+        <p>Développez vos compétences en service client pour offrir une expérience exceptionnelle à chaque interaction.</p>
+        <h4>Contenu de la formation:</h4>
+        <ul>
+          <li>Principes fondamentaux du service client</li>
+          <li>Communication efficace et empathique</li>
+          <li>Gestion des situations difficiles</li>
+          <li>Techniques de désescalade</li>
+        </ul>
+      `,
+      'default': `
+        <h3>${training.title}</h3>
+        <p>Formation professionnelle de qualité conçue pour développer vos compétences.</p>
+        <p>Cette formation comprend des modules théoriques et pratiques adaptés à votre niveau.</p>
+      `
+    };
+
+    return contents[training.title] || contents['default'];
+  };
+
+  const getObjectives = (training: Training) => {
+    const objectives: { [key: string]: string[] } = {
+      'Formation Moov': [
+        'Maîtriser les services et produits Moov',
+        'Utiliser efficacement les outils d\'Intelligence Artificielle',
+        'Développer des techniques de vente adaptées',
+        'Améliorer la satisfaction client'
+      ],
+      'Service Client Excellence': [
+        'Développer l\'excellence relationnelle',
+        'Gérer les situations de conflit',
+        'Améliorer la communication client',
+        'Optimiser la satisfaction client'
+      ],
+      'default': [
+        'Acquérir les compétences requises',
+        'Appliquer les bonnes pratiques',
+        'Améliorer ses performances',
+        'Développer son expertise'
+      ]
+    };
+
+    return objectives[training.title] || objectives['default'];
+  };
+
+  const getPrerequisites = (training: Training) => {
+    if (training.level === 'beginner') return undefined;
+    
+    const prerequisites: { [key: string]: string[] } = {
+      'Formation Moov': [
+        'Connaissance de base des télécommunications',
+        'Expérience en vente recommandée'
+      ],
+      'Service Client Excellence': [
+        'Expérience en relation client',
+        'Bases de la communication'
+      ],
+      'default': [
+        'Formation de base requise',
+        'Expérience professionnelle recommandée'
+      ]
+    };
+
+    return prerequisites[training.title] || prerequisites['default'];
+  };
+
+  const getMaterials = (training: Training): ContentFile[] => {
+    if (training.title === 'Formation Moov') {
+      return [
+        {
+          id: 'mia-video',
+          name: 'MIA.mp4',
+          type: 'mp4',
+          size: '125 MB',
+          url: '/MoovCourse/MIA.mp4',
+          author: 'Équipe Moov',
+          uploadDate: '2024-01-15',
+          downloads: 45,
+          teamIds: [1],
+          category: 'Video',
+          duration: '15:30',
+          description: 'Présentation de l\'Intelligence Artificielle Moov'
+        },
+        {
+          id: 'argumentaire-voix',
+          name: 'Argumentaire de Vente Voix',
+          type: 'docx',
+          size: '2.3 MB',
+          url: '/MoovCourse/ARGUMENTAIRE DE VENTE VOIX.docx',
+          author: 'Direction Commerciale',
+          uploadDate: '2024-01-10',
+          downloads: 78,
+          teamIds: [1],
+          category: 'Document',
+          pages: 12,
+          description: 'Guide complet pour la vente des services vocaux'
+        },
+        {
+          id: 'guide-ia',
+          name: 'Guide Intelligence Artificielle',
+          type: 'pdf',
+          size: '4.1 MB',
+          url: '/MoovCourse/Moov Intelligence Artificielle.pdf',
+          author: 'Équipe Technique',
+          uploadDate: '2024-01-08',
+          downloads: 156,
+          teamIds: [1],
+          category: 'Guide',
+          pages: 28,
+          description: 'Documentation technique de l\'IA Moov'
+        }
+      ];
+    }
+
+    return [];
   };
 
   const goToPrevious = () => {
@@ -280,6 +443,10 @@ const FormationSwiper = ({ trainings }: FormationSwiperProps) => {
 
                       {/* Action Buttons */}
                       <div className="flex gap-2">
+                        <Button variant="outline" size="sm" onClick={() => handleReadMore(training)}>
+                          <Info className="h-4 w-4 mr-2" />
+                          Lire Plus
+                        </Button>
                         {training.status === "Terminée" ? (
                           <>
                             <Button variant="outline" size="sm" onClick={() => handleReviewCourse(training)}>
@@ -334,6 +501,16 @@ const FormationSwiper = ({ trainings }: FormationSwiperProps) => {
       <div className="mt-4 text-center text-sm text-gray-500">
         <p>Utilisez les flèches ← → ou glissez pour naviguer • Molette souris supportée</p>
       </div>
+
+      {/* Formation Info Modal */}
+      <FormationInfoModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedFormation(null);
+        }}
+        formation={selectedFormation}
+      />
     </div>
   );
 };

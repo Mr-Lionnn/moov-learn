@@ -5,13 +5,17 @@ import { ArrowLeft } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import Header from "@/components/Header";
 import CoursePlayer from "@/components/CoursePlayer";
+import InlineContentViewer from "@/components/InlineContentViewer";
 import { testDataService } from "@/services/testDataService";
+import { ContentFile } from "@/types/content";
 
 const Course = () => {
   const navigate = useNavigate();
   const { id: courseId } = useParams();
   const [course, setCourse] = useState<any>(null);
   const [lessons, setLessons] = useState<any[]>([]);
+  const [contentFiles, setContentFiles] = useState<ContentFile[]>([]);
+  const [showInlineViewer, setShowInlineViewer] = useState(false);
 
   useEffect(() => {
     // Load course data based on courseId or default to first course
@@ -31,6 +35,13 @@ const Course = () => {
       const courseLessons = generateLessonsForCourse(selectedCourse);
       console.log('🔥 Generated lessons for', selectedCourse.id, ':', courseLessons);
       setLessons(courseLessons);
+      
+      // Generate content files for inline viewing
+      const courseContentFiles = generateContentFiles(selectedCourse);
+      setContentFiles(courseContentFiles);
+      
+      // Enable inline viewer for Formation Moov
+      setShowInlineViewer(selectedCourse.id === 'formation-moov');
     } else {
       console.error('❌ Course not found for ID:', courseId);
       console.log('Available course IDs:', testCourses.map(c => c.id));
@@ -97,6 +108,99 @@ const Course = () => {
       return [];
     }
     return lessons;
+  };
+
+  const generateContentFiles = (course: any): ContentFile[] => {
+    if (course.id === 'formation-moov') {
+      return [
+        {
+          id: 'mia-video',
+          name: 'MIA.mp4',
+          type: 'mp4',
+          size: '125 MB',
+          url: '/MoovCourse/MIA.mp4',
+          author: 'Équipe Moov',
+          uploadDate: '2024-01-15',
+          downloads: 45,
+          teamIds: [1],
+          category: 'Video',
+          duration: '15:30',
+          description: 'Présentation de l\'Intelligence Artificielle Moov'
+        },
+        {
+          id: 'argumentaire-voix',
+          name: 'Argumentaire de Vente Voix.docx',
+          type: 'docx',
+          size: '2.3 MB',
+          url: '/MoovCourse/ARGUMENTAIRE DE VENTE VOIX.docx',
+          author: 'Direction Commerciale',
+          uploadDate: '2024-01-10',
+          downloads: 78,
+          teamIds: [1],
+          category: 'Document',
+          pages: 12,
+          description: 'Guide complet pour la vente des services vocaux'
+        },
+        {
+          id: 'argumentaire-front-office',
+          name: 'Argumentaire Commerciaux Front Office.docx',
+          type: 'docx',
+          size: '1.8 MB',
+          url: '/MoovCourse/Argumentaire de vente commerciaux front office (AgenceMoovshops).docx',
+          author: 'Équipe Commerciale',
+          uploadDate: '2024-01-12',
+          downloads: 62,
+          teamIds: [1],
+          category: 'Document',
+          pages: 8,
+          description: 'Techniques de vente pour les commerciaux en agence'
+        },
+        {
+          id: 'guide-ia',
+          name: 'Guide Intelligence Artificielle.pdf',
+          type: 'pdf',
+          size: '4.1 MB',
+          url: '/MoovCourse/Moov Intelligence Artificielle.pdf',
+          author: 'Équipe Technique',
+          uploadDate: '2024-01-08',
+          downloads: 156,
+          teamIds: [1],
+          category: 'Guide',
+          pages: 28,
+          description: 'Documentation technique complète de l\'IA Moov'
+        },
+        {
+          id: 'presentation-sva',
+          name: 'Présentation SVA.pdf',
+          type: 'pdf',
+          size: '3.2 MB',
+          url: '/MoovCourse/PRESENTATION SVA.pdf',
+          author: 'Direction Produits',
+          uploadDate: '2024-01-11',
+          downloads: 89,
+          teamIds: [1],
+          category: 'Présentation',
+          pages: 15,
+          description: 'Services à Valeur Ajoutée - Guide complet'
+        },
+        {
+          id: 'services-voix-sms-data',
+          name: 'Services Voix SMS Data.pptx',
+          type: 'pptx',
+          size: '8.7 MB',
+          url: '/MoovCourse/SERVICE VOIX SMS DATA.pptx',
+          author: 'Équipe Marketing',
+          uploadDate: '2024-01-09',
+          downloads: 134,
+          teamIds: [1],
+          category: 'Présentation',
+          pages: 45,
+          description: 'Présentation complète de tous les services Moov'
+        }
+      ];
+    }
+
+    return [];
   };
 
   const handleCourseComplete = () => {
@@ -171,7 +275,7 @@ const Course = () => {
     <div className="min-h-screen moov-gradient-subtle">
       <Header />
       
-      <main className="container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6">
+        <main className="container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6">
         <div className="mb-6">
           <Button 
             variant="ghost" 
@@ -194,12 +298,25 @@ const Course = () => {
           </div>
         </div>
 
-        <CoursePlayer
-          courseTitle={course.title}
-          currentLesson={currentLesson}
-          lessons={lessons}
-          onCourseComplete={handleCourseComplete}
-        />
+        {/* Content Display - Use inline viewer for Formation Moov, regular player for others */}
+        {showInlineViewer && contentFiles.length > 0 ? (
+          <InlineContentViewer
+            contentFiles={contentFiles}
+            title={course.title}
+            description={course.description}
+            onComplete={() => {
+              console.log('Formation completed!');
+              navigate("/");
+            }}
+          />
+        ) : (
+          <CoursePlayer
+            courseTitle={course.title}
+            currentLesson={currentLesson}
+            lessons={lessons}
+            onCourseComplete={handleCourseComplete}
+          />
+        )}
       </main>
     </div>
   );

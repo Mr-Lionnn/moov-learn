@@ -16,6 +16,7 @@ import StudentProgressTab from "@/components/admin/StudentProgressTab";
 import AnalyticsTab from "@/components/admin/AnalyticsTab";
 import TaskManagementTab from "@/components/admin/TaskManagementTab";
 import UserManagementTab from "@/components/admin/UserManagementTab";
+import InformationManagement from "@/components/admin/InformationManagement";
 import { Team } from "@/types/content";
 
 const Admin = () => {
