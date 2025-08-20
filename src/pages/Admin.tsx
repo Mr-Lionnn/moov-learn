@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Users, BookOpen, BarChart3, Clock, CheckCircle, CheckSquare } from "lucide-react";
+import { ArrowLeft, Users, BookOpen, BarChart3, Clock, CheckCircle, CheckSquare, Megaphone } from "lucide-react";
 import QuizCreator from "@/components/QuizCreator";
 import ModuleCreator from "@/components/module/ModuleCreator";
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,6 +17,7 @@ import AnalyticsTab from "@/components/admin/AnalyticsTab";
 import TaskManagementTab from "@/components/admin/TaskManagementTab";
 import UserManagementTab from "@/components/admin/UserManagementTab";
 import InformationManagement from "@/components/admin/InformationManagement";
+import { AnnouncementManagementTab } from "@/components/admin/AnnouncementManagementTab";
 import { Team } from "@/types/content";
 
 const Admin = () => {
@@ -204,7 +205,7 @@ const Admin = () => {
 
         <div className="bg-white rounded-lg shadow-sm">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-1 h-auto p-1 m-4 mb-0">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-8 gap-1 h-auto p-1 m-4 mb-0">
               <TabsTrigger value="tasks" className="text-xs sm:text-sm flex-col sm:flex-row gap-1 h-12 sm:h-10">
                 <CheckSquare className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="hidden sm:inline sm:ml-2">Gestion des</span>
@@ -234,6 +235,11 @@ const Admin = () => {
                 <Users className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="hidden sm:inline sm:ml-2">Gestion des</span>
                 <span>Utilisateurs</span>
+              </TabsTrigger>
+              <TabsTrigger value="announcements" className="text-xs sm:text-sm flex-col sm:flex-row gap-1 h-12 sm:h-10">
+                <Megaphone className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline sm:ml-2">Gestion des</span>
+                <span>Annonces</span>
               </TabsTrigger>
               <TabsTrigger value="analytics" className="text-xs sm:text-sm flex-col sm:flex-row gap-1 h-12 sm:h-10">
                 <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -288,6 +294,10 @@ const Admin = () => {
 
               <TabsContent value="users" className="space-y-6">
                 <UserManagementTab />
+              </TabsContent>
+
+              <TabsContent value="announcements" className="space-y-6">
+                <AnnouncementManagementTab />
               </TabsContent>
 
               <TabsContent value="analytics" className="space-y-6">
