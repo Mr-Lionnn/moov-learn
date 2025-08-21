@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import PageTitle from '@/components/PageTitle';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { AnnouncementsList } from '@/components/AnnouncementsList';
 import { 
   Megaphone, 
   Gift, 
@@ -15,10 +17,12 @@ import {
   Bell,
   Users,
   TrendingUp,
-  X
+  X,
+  ArrowLeft
 } from 'lucide-react';
 
 const Information = () => {
+  const navigate = useNavigate();
   const [selectedAnnouncement, setSelectedAnnouncement] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -193,35 +197,42 @@ const Information = () => {
               </h2>
             </div>
 
-            <div className="space-y-4">
-              {announcements.map((announcement) => (
-                <Card key={announcement.id} className={`transition-all hover:shadow-md ${announcement.urgent ? 'border-destructive' : ''}`}>
-                  <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-2">
-                        {getTypeIcon(announcement.type)}
-                        <CardTitle className="text-lg">{announcement.title}</CardTitle>
+            {/* Dynamic Announcements from Database */}
+            <AnnouncementsList />
+
+            {/* Example announcements (keeping for demo purposes) */}
+            <div className="mt-8">
+              <h3 className="text-lg font-semibold mb-4 text-muted-foreground">Exemples d'annonces (demo)</h3>
+              <div className="space-y-4 opacity-60">
+                {announcements.map((announcement) => (
+                  <Card key={announcement.id} className={`transition-all hover:shadow-md ${announcement.urgent ? 'border-destructive' : ''}`}>
+                    <CardHeader className="pb-3">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-center gap-2">
+                          {getTypeIcon(announcement.type)}
+                          <CardTitle className="text-lg">{announcement.title}</CardTitle>
+                        </div>
+                        {getTypeBadge(announcement.type, announcement.urgent)}
                       </div>
-                      {getTypeBadge(announcement.type, announcement.urgent)}
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Calendar className="h-4 w-4" />
-                      {new Date(announcement.date).toLocaleDateString('fr-FR')}
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-foreground mb-4">{announcement.content}</p>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="text-sm"
-                      onClick={() => handleReadMore(announcement)}
-                    >
-                      Lire plus <ChevronRight className="h-4 w-4 ml-1" />
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Calendar className="h-4 w-4" />
+                        {new Date(announcement.date).toLocaleDateString('fr-FR')}
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-foreground mb-4">{announcement.content}</p>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="text-sm"
+                        onClick={() => handleReadMore(announcement)}
+                      >
+                        Lire plus <ChevronRight className="h-4 w-4 ml-1" />
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -274,6 +285,14 @@ const Information = () => {
               </CardContent>
             </Card>
           </div>
+        </div>
+
+        {/* Back Button */}
+        <div className="mt-8 text-center">
+          <Button variant="outline" onClick={() => navigate(-1)}>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Retour
+          </Button>
         </div>
       </div>
 

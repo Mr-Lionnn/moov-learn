@@ -7,6 +7,7 @@ import HeaderLogo from "./header/HeaderLogo";
 import DesktopNavigation from "./header/DesktopNavigation";
 import MobileNavigation from "./header/MobileNavigation";
 import UserMenu from "./header/UserMenu";
+import { NotificationBell } from "./NotificationBell";
 
 interface HeaderProps {}
 
@@ -38,17 +39,7 @@ const Header = () => {
             </div>
 
             {/* Notifications */}
-            <Button 
-              variant="ghost" 
-              size="sm"
-              className="relative p-2"
-              onClick={() => setShowNotifications(true)}
-            >
-              <Bell className="h-4 w-4" />
-              <Badge className="absolute -top-1 -right-1 h-4 w-4 rounded-full p-0 flex items-center justify-center text-xs bg-red-500">
-                3
-              </Badge>
-            </Button>
+            <NotificationBell />
 
             {/* User Menu */}
             <UserMenu />
