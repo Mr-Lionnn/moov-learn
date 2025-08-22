@@ -17,25 +17,35 @@ export const NotificationBell = () => {
   useEffect(() => {
     // Request notification permission on mount
     const requestPermission = async () => {
-      const permission = await notificationService.requestPermission();
-      setHasPermission(permission === 'granted');
+      try {
+        const permission = await notificationService.requestPermission();
+        setHasPermission(permission === 'granted');
+      } catch (error) {
+        console.error('Error requesting notification permission:', error);
+      }
     };
 
     requestPermission();
 
-    // Subscribe to new announcements
+    // Subscribe to new announcements only if user is authenticated
     if (user) {
-      const unsubscribe = notificationService.subscribeToAnnouncements((announcement) => {
-        setNotifications(prev => [announcement, ...prev.slice(0, 9)]); // Keep last 10 notifications
-        
-        // Show toast notification
-        toast.success(`Nouvelle annonce: ${announcement.title}`, {
-          description: announcement.content.replace(/<[^>]*>/g, '').substring(0, 100) + '...',
-          duration: 5000,
+      console.log('Setting up announcement subscription for user:', user.id);
+      try {
+        const unsubscribe = notificationService.subscribeToAnnouncements((announcement) => {
+          console.log('Received announcement notification:', announcement);
+          setNotifications(prev => [announcement, ...prev.slice(0, 9)]); // Keep last 10 notifications
+          
+          // Show toast notification
+          toast.success(`Nouvelle annonce: ${announcement.title}`, {
+            description: announcement.content.replace(/<[^>]*>/g, '').substring(0, 100) + '...',
+            duration: 5000,
+          });
         });
-      });
 
-      return unsubscribe;
+        return unsubscribe;
+      } catch (error) {
+        console.error('Error setting up announcement subscription:', error);
+      }
     }
   }, [user]);
 

@@ -11,48 +11,24 @@ class AnnouncementNotificationService implements NotificationService {
   private subscription: any = null;
 
   subscribeToAnnouncements(callback: (announcement: Announcement) => void) {
-    // Subscribe to real-time changes in announcements table
-    this.subscription = supabase
-      .channel('announcements-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'announcements',
-          filter: 'is_published=eq.true'
-        },
-        (payload) => {
-          const announcement = payload.new as Announcement;
-          callback(announcement);
-          
-          // Send browser notification if permissions are granted
-          this.sendNotification(
-            announcement.title,
-            announcement.content.replace(/<[^>]*>/g, '').substring(0, 100) + '...',
-            {
-              icon: '/favicon.ico',
-              badge: '/favicon.ico',
-              tag: announcement.id,
-              requireInteraction: announcement.priority === 'emergency' || announcement.priority === 'critical'
-            }
-          );
-        }
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'announcements',
-          filter: 'is_published=eq.true'
-        },
-        (payload) => {
-          const announcement = payload.new as Announcement;
-          // Only notify if announcement was just published
-          if (payload.old.is_published === false && announcement.is_published === true) {
+    try {
+      // Subscribe to real-time changes in announcements table
+      this.subscription = supabase
+        .channel('announcements-changes')
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'announcements',
+            filter: 'is_published=eq.true'
+          },
+          (payload) => {
+            console.log('New announcement received:', payload);
+            const announcement = payload.new as Announcement;
             callback(announcement);
             
+            // Send browser notification if permissions are granted
             this.sendNotification(
               announcement.title,
               announcement.content.replace(/<[^>]*>/g, '').substring(0, 100) + '...',
@@ -64,9 +40,46 @@ class AnnouncementNotificationService implements NotificationService {
               }
             );
           }
-        }
-      )
-      .subscribe();
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'announcements',
+            filter: 'is_published=eq.true'
+          },
+          (payload) => {
+            console.log('Announcement updated:', payload);
+            const announcement = payload.new as Announcement;
+            // Only notify if announcement was just published
+            if (payload.old && payload.old.is_published === false && announcement.is_published === true) {
+              callback(announcement);
+              
+              this.sendNotification(
+                announcement.title,
+                announcement.content.replace(/<[^>]*>/g, '').substring(0, 100) + '...',
+                {
+                  icon: '/favicon.ico',
+                  badge: '/favicon.ico',
+                  tag: announcement.id,
+                  requireInteraction: announcement.priority === 'emergency' || announcement.priority === 'critical'
+                }
+              );
+            }
+          }
+        )
+        .subscribe((status) => {
+          console.log('Realtime subscription status:', status);
+          if (status === 'SUBSCRIBED') {
+            console.log('Successfully subscribed to announcement updates');
+          } else if (status === 'CHANNEL_ERROR') {
+            console.error('Error subscribing to announcement updates');
+          }
+        });
+    } catch (error) {
+      console.error('Error setting up realtime subscription:', error);
+    }
 
     // Return unsubscribe function
     return () => {
