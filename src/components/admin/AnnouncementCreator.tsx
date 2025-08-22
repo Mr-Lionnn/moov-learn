@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Upload, X, Save, Send } from 'lucide-react';
+import { Upload, X, Save, Send, Video, Volume2, Image as ImageIcon, FileText, Paperclip } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
@@ -294,39 +294,102 @@ export const AnnouncementCreator: React.FC<AnnouncementCreatorProps> = ({
             </CardContent>
           </Card>
 
-          {/* Attachments */}
+          {/* Multimedia Attachments */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Pièces jointes</CardTitle>
+              <CardTitle className="text-base flex items-center gap-2">
+                <Paperclip className="h-4 w-4" />
+                Pièces jointes multimédia
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div>
-                  <Label htmlFor="attachments">Ajouter des fichiers</Label>
-                  <Input
-                    id="attachments"
+                {/* File Upload Area */}
+                <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
+                  <input
                     type="file"
                     multiple
+                    accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt"
+                    className="hidden"
+                    id="file-upload"
                     onChange={handleFileUpload}
-                    className="cursor-pointer"
                   />
+                  <label 
+                    htmlFor="file-upload" 
+                    className="cursor-pointer flex flex-col items-center gap-2"
+                  >
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Upload className="h-6 w-6 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Cliquer pour télécharger des fichiers</p>
+                      <p className="text-sm text-muted-foreground">ou glisser-déposer ici</p>
+                    </div>
+                  </label>
                 </div>
 
+                {/* Supported formats info */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                  <div className="p-2 bg-blue-50 dark:bg-blue-950/20 rounded text-center">
+                    <Video className="h-4 w-4 mx-auto mb-1 text-blue-600" />
+                    <span>Vidéo</span>
+                    <div className="text-xs text-muted-foreground">MP4, AVI, MOV</div>
+                  </div>
+                  <div className="p-2 bg-green-50 dark:bg-green-950/20 rounded text-center">
+                    <Volume2 className="h-4 w-4 mx-auto mb-1 text-green-600" />
+                    <span>Audio</span>
+                    <div className="text-xs text-muted-foreground">MP3, WAV, M4A</div>
+                  </div>
+                  <div className="p-2 bg-purple-50 dark:bg-purple-950/20 rounded text-center">
+                    <ImageIcon className="h-4 w-4 mx-auto mb-1 text-purple-600" />
+                    <span>Image</span>
+                    <div className="text-xs text-muted-foreground">JPG, PNG, GIF</div>
+                  </div>
+                  <div className="p-2 bg-orange-50 dark:bg-orange-950/20 rounded text-center">
+                    <FileText className="h-4 w-4 mx-auto mb-1 text-orange-600" />
+                    <span>Document</span>
+                    <div className="text-xs text-muted-foreground">PDF, DOC, TXT</div>
+                  </div>
+                </div>
+                
+                {/* Attached Files Display */}
                 {attachments.length > 0 && (
-                  <div className="space-y-2">
-                    <Label>Fichiers sélectionnés:</Label>
-                    {attachments.map((file, index) => (
-                      <div key={index} className="flex items-center justify-between p-2 bg-muted rounded">
-                        <span className="text-sm">{file.name}</span>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeAttachment(index)}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    ))}
+                  <div className="space-y-3">
+                    <h4 className="font-medium flex items-center gap-2">
+                      <Paperclip className="h-4 w-4" />
+                      Fichiers attachés ({attachments.length})
+                    </h4>
+                    <div className="grid gap-2">
+                      {attachments.map((file, index) => {
+                        const isImage = file.type.startsWith('image/');
+                        const isVideo = file.type.startsWith('video/');
+                        const isAudio = file.type.startsWith('audio/');
+                        
+                        return (
+                          <div key={index} className="flex items-center gap-3 p-3 border rounded-lg bg-muted/50">
+                            <div className="flex-shrink-0">
+                              {isImage && <ImageIcon className="h-5 w-5 text-purple-600" />}
+                              {isVideo && <Video className="h-5 w-5 text-blue-600" />}
+                              {isAudio && <Volume2 className="h-5 w-5 text-green-600" />}
+                              {!isImage && !isVideo && !isAudio && <FileText className="h-5 w-5 text-orange-600" />}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium truncate">{file.name}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {(file.size / 1024 / 1024).toFixed(2)} MB
+                              </p>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => removeAttachment(index)}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
               </div>
